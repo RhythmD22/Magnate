@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Smart Finance Management for Students">
+  <meta name="theme-color" content="#1043B1">
+
+  <!-- iOS specific meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Financier">
+
+  <title>Financier – Track Transactions</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="PWA%20icon.png">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Link to page-specific CSS -->
+  <link rel="stylesheet" href="css/track-transactions.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Hamburger Button -->
+    <button class="hamburger" id="hamburger">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <h2 style="display: flex; align-items: center;">
+        <img src="favicon.ico" alt="Financier Logo"
+          style="width:24px; height:24px; margin-right:8px; vertical-align:middle;">
+        Financier
+      </h2>
+      <div class="nav-item">
+        <a href="Goals%20%26%20Categories.html" class="nav-link">
+          <svg viewBox="0 0 24 24" width="24" height="24" preserveAspectRatio="xMidYMid meet">
+            <path
+              d="M9.96094 19.9219C15.459 19.9219 19.9219 15.459 19.9219 9.96094C19.9219 4.46289 15.459 0 9.96094 0C4.46289 0 0 4.46289 0 9.96094C0 15.459 4.46289 19.9219 9.96094 19.9219ZM9.96094 18.2617C5.37109 18.2617 1.66016 14.5508 1.66016 9.96094C1.66016 5.37109 5.37109 1.66016 9.96094 1.66016C14.5508 1.66016 18.2617 5.37109 18.2617 9.96094C18.2617 14.5508 14.5508 18.2617 9.96094 18.2617Z"
+              fill="#508de6" />
+            <path
+              d="M9.96094 16.1523C13.3789 16.1523 16.1523 13.3789 16.1523 9.96094C16.1523 6.54297 13.3789 3.76953 9.96094 3.76953C6.54297 3.76953 3.76953 6.54297 3.76953 9.96094C3.76953 13.3789 6.54297 16.1523 9.96094 16.1523ZM9.96094 14.5801C7.40234 14.5801 5.3418 12.5195 5.3418 9.96094C5.3418 7.40234 7.40234 5.3418 9.96094 5.3418C12.5195 5.3418 14.5801 7.40234 14.5801 9.96094C14.5801 12.5195 12.5195 14.5801 9.96094 14.5801Z"
+              fill="#508de6" />
+            <path
+              d="M9.96094 12.4805C11.3574 12.4805 12.4902 11.3574 12.4902 9.95117C12.4902 8.55469 11.3574 7.42188 9.96094 7.42188C8.56445 7.42188 7.43164 8.55469 7.43164 9.95117C7.43164 11.3574 8.56445 12.4805 9.96094 12.4805Z"
+              fill="#508de6" />
+          </svg>
+          <span class="nav-text">Goals &amp; Categories</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="Track%20Transactions.html" class="nav-link">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M1.29883 18.5156L20.5078 18.5156L20.5078 17.8613C20.5078 17.4707 20.2832 17.2363 19.8828 17.2363L19.2578 17.2363L19.2578 6.69922L20.1172 6.69922C20.6543 6.69922 20.9668 6.30859 20.9668 5.9082C20.9668 5.61523 20.8008 5.36133 20.4395 5.15625L12.0996 0.341797C11.709 0.117188 11.2988 0 10.8984 0C10.498 0 10.0781 0.117188 9.70703 0.341797L1.36719 5.15625C0.996094 5.36133 0.839844 5.61523 0.839844 5.9082C0.839844 6.30859 1.15234 6.69922 1.68945 6.69922L2.54883 6.69922L2.54883 17.2363L1.93359 17.2363C1.5332 17.2363 1.29883 17.4707 1.29883 17.8613ZM4.02344 17.2363L4.02344 5.44922L10.5176 1.80664C10.6348 1.73828 10.7715 1.69922 10.8984 1.69922C11.0254 1.69922 11.1621 1.73828 11.2891 1.80664L17.7832 5.44922L17.7832 17.2363ZM0.78125 20.8398L21.0156 20.8398C21.4453 20.8398 21.8066 20.4785 21.8066 20.0488C21.8066 19.6191 21.4453 19.2676 21.0156 19.2676L0.78125 19.2676C0.351562 19.2676 0 19.6191 0 20.0488C0 20.4785 0.351562 20.8398 0.78125 20.8398Z"
+              fill="#508de6" />
+            <path
+              d="M10.918 14.541C12.5781 14.541 14.043 13.7793 14.043 12.0996C14.043 10.625 12.8613 10.0586 11.5234 9.74609L10.5957 9.53125C9.74609 9.33594 9.02344 8.97461 9.02344 8.17383C9.02344 7.24609 10.0195 6.83594 10.918 6.83594C11.8945 6.83594 12.5586 7.25586 12.8223 8.06641C12.9199 8.36914 13.1055 8.51562 13.3691 8.51562C13.6133 8.51562 13.8965 8.34961 13.8965 8.00781C13.8965 6.75781 12.2949 5.86914 10.918 5.86914C9.3457 5.86914 7.92969 6.74805 7.92969 8.26172C7.92969 9.7168 9.15039 10.2637 10.3516 10.5566L11.2891 10.7715C12.1582 10.9766 12.959 11.2891 12.959 12.1875C12.959 13.252 11.9336 13.584 10.9473 13.584C9.90234 13.584 9.18945 13.252 8.83789 12.3145C8.7207 12.0117 8.55469 11.8945 8.29102 11.8945C8.00781 11.8945 7.77344 12.0801 7.77344 12.4023C7.77344 12.4902 7.79297 12.5977 7.82227 12.7051C8.20312 13.9941 9.63867 14.541 10.918 14.541ZM10.9082 15.7031C11.084 15.7031 11.2305 15.5566 11.2305 15.3809L11.2305 5.05859C11.2305 4.87305 11.084 4.73633 10.9082 4.73633C10.7324 4.73633 10.5859 4.87305 10.5859 5.05859L10.5859 15.3809C10.5859 15.5566 10.7324 15.7031 10.9082 15.7031Z"
+              fill="#508de6" />
+          </svg>
+          <span class="nav-text">Track Transactions</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="Analytics.html" class="nav-link">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M0 17.2559C0 17.6953 0.361328 18.0371 0.78125 18.0371L20.9961 18.0371C21.4258 18.0371 21.7871 17.6953 21.7871 17.2559C21.7871 16.8262 21.4258 16.4746 20.9961 16.4746L0.78125 16.4746C0.361328 16.4746 0 16.8262 0 17.2559Z"
+              fill="#508de6" />
+            <path
+              d="M16.7871 13.9941C16.7871 14.541 17.1289 14.8633 17.6953 14.8633L19.9512 14.8633C20.5078 14.8633 20.8594 14.541 20.8594 13.9941L20.8594 7.53906C20.8594 6.99219 20.5078 6.66016 19.9512 6.66016L17.6953 6.66016C17.1289 6.66016 16.7871 6.99219 16.7871 7.53906Z"
+              fill="#508de6" />
+            <path
+              d="M11.4941 13.9941C11.4941 14.541 11.8457 14.8633 12.4023 14.8633L14.6582 14.8633C15.2246 14.8633 15.5762 14.541 15.5762 13.9941L15.5762 3.0957C15.5762 2.54883 15.2246 2.22656 14.6582 2.22656L12.4023 2.22656C11.8457 2.22656 11.4941 2.54883 11.4941 3.0957Z"
+              fill="#508de6" />
+            <path
+              d="M6.21094 13.9941C6.21094 14.541 6.55273 14.8633 7.10938 14.8633L9.375 14.8633C9.93164 14.8633 10.2832 14.541 10.2832 13.9941L10.2832 0.869141C10.2832 0.322266 9.93164 0 9.375 0L7.10938 0C6.55273 0 6.21094 0.322266 6.21094 0.869141Z"
+              fill="#508de6" />
+            <path
+              d="M0.917969 13.9941C0.917969 14.541 1.26953 14.8633 1.82617 14.8633L4.08203 14.8633C4.64844 14.8633 5 14.541 5 13.9941L5 5.35156C5 4.81445 4.64844 4.48242 4.08203 4.48242L1.82617 4.48242C1.26953 4.48242 0.917969 4.81445 0.917969 5.35156Z"
+              fill="#508de6" />
+          </svg>
+          <span class="nav-text">Analytics</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="Calculator.html" class="nav-link">
+          <svg viewBox="0 0 24 24">
+            <rect x="4" y="2" width="16" height="20" rx="2" fill="#508de6" />
+            <rect x="5" y="3" width="14" height="18" rx="2" fill="#181A1E" />
+            <path d="M9 6h6a1 1 0 0 1 0 2H9a1 1 0 0 1 0-2z" fill="#508de6" />
+            <circle cx="8" cy="10" r="1" fill="#508de6" />
+            <circle cx="12" cy="10" r="1" fill="#508de6" />
+            <circle cx="16" cy="10" r="1" fill="#508de6" />
+            <circle cx="8" cy="14" r="1" fill="#508de6" />
+            <circle cx="12" cy="14" r="1" fill="#508de6" />
+            <rect x="15" y="13" width="2" height="6" rx="1" fill="#508de6" />
+            <circle cx="8" cy="18" r="1" fill="#508de6" />
+            <circle cx="12" cy="18" r="1" fill="#508de6" />
+          </svg>
+          <span class="nav-text">Calculator</span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a href="Money%20Tips.html" class="nav-link">
+          <svg viewBox="0 0 24 24">
+            <g transform="translate(6, 0)">
+              <path
+                d="M0 6.01562C0 9.76562 2.24609 10.6934 2.87109 17.207C2.91016 17.5586 3.10547 17.7832 3.47656 17.7832L9.58984 17.7832C9.9707 17.7832 10.166 17.5586 10.2051 17.207C10.8301 10.6934 13.0664 9.76562 13.0664 6.01562C13.0664 2.64648 10.1855 0 6.5332 0C2.88086 0 0 2.64648 0 6.01562ZM1.47461 6.01562C1.47461 3.37891 3.78906 1.47461 6.5332 1.47461C9.27734 1.47461 11.5918 3.37891 11.5918 6.01562C11.5918 8.81836 9.73633 9.48242 8.85742 16.3086L4.21875 16.3086C3.33008 9.48242 1.47461 8.81836 1.47461 6.01562ZM3.44727 19.8926L9.62891 19.8926C9.95117 19.8926 10.1953 19.6387 10.1953 19.3164C10.1953 19.0039 9.95117 18.75 9.62891 18.75L3.44727 18.75C3.125 18.75 2.87109 19.0039 2.87109 19.3164C2.87109 19.6387 3.125 19.8926 3.44727 19.8926ZM6.5332 22.7246C8.04688 22.7246 9.30664 21.9824 9.4043 20.8594L3.67188 20.8594C3.74023 21.9824 5.00977 22.7246 6.5332 22.7246Z"
+                fill="#508de6" />
+            </g>
+          </svg>
+          <span class="nav-text">Money Tips</span>
+        </a>
+      </div>
+      <!-- Swipe Indicator -->
+      <div class="swipe-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Swipe to close</span>
+      </div>
+      <div class="sidebar-footer" style="color: gray; font-size: 0.8rem; text-align: center; margin-top: auto;">
+        <p>Made with ❤️ at the</p>
+        <p>University of Pittsburgh</p>
+        <br>
+        <p>Images courtesy of Undraw</p>
+      </div>
+    </div>
+    <!-- /SIDEBAR -->
+    <!-- MAIN CONTENT: TRACK TRANSACTIONS -->
+    <div class="main-content">
+      <div class="content-wrapper">
+        <h1 class="page-title">Track Transactions</h1>
+
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions">
+          <!-- Add Expense -->
+          <button class="action-card" id="btnAddExpense">
+            <span class="action-left">
+              <span class="icon-circle" style="background-color: rgba(239,68,68,0.15); color: #EF4444;">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <line x1="7" y1="7" x2="17" y2="17"></line>
+                  <polyline points="17 7 17 17 7 17"></polyline>
+                </svg>
+              </span>
+              <span class="action-label">Add Expense</span>
+            </span>
+            <span class="action-right">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </span>
+          </button>
+
+          <!-- Add Income -->
+          <button class="action-card" id="btnAddIncome">
+            <span class="action-left">
+              <span class="icon-circle" style="background-color: rgba(34,197,94,0.15); color: #22C55E;">
+                <svg class="icon" viewBox="0 0 24 24">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <span class="action-label">Add Income</span>
+            </span>
+            <span class="action-right">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <!-- WEEK CARD -->
+        <div class="week-card">
+          <div class="week-card-header">
+            <button id="prevWeekBtn" class="arrow-btn">&larr;</button>
+            <span id="weekHeading">Week of</span>
+            <button id="nextWeekBtn" class="arrow-btn">&rarr;</button>
+          </div>
+          <div class="transactions-grid">
+            <!-- Left Column: Expenses -->
+            <div class="transactions-column" id="expensesColumn">
+              <h2>Expenses</h2>
+              <!-- Transactions will be rendered here -->
+            </div>
+
+            <!-- Right Column: Income -->
+            <div class="transactions-column" id="incomeColumn">
+              <h2>Income</h2>
+              <!-- Transactions will be rendered here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- MEAL PLANNING SECTION -->
+        <div class="meal-planning">
+          <h2 class="page-title meal-planning-title">Plan your meals/track your grocery budget</h2>
+          <div id="mealPlanContainer"></div>
+          <button id="btnAddMealPlan">+ Create Meal Plan</button>
+        </div>
+      </div> <!-- /content-wrapper -->
+    </div> <!-- /main-content -->
+  </div> <!-- /container -->
+
+  <!-- Modal for Editing Description -->
+  <div id="descriptionModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h2>Edit Meal Plan Description</h2>
+      <textarea id="descriptionInput" rows="5" style="width:100%;"></textarea>
+      <button id="saveDescription" class="btn-meal" style="margin-top: 1rem;">Save</button>
+    </div>
+  </div>
+
+  <script src="js/navigation.js"></script>
+  <!-- Link to page-specific JavaScript -->
+  <script src="js/track-transactions.js"></script>
+</body>
+
+</html>

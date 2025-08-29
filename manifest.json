@@ -1,0 +1,26 @@
+{
+  "name": "Financier",
+  "short_name": "Financier",
+  "description": "Smart Finance Management for Students",
+  "start_url": "/Financier/",
+  "display": "standalone",
+  "background_color": "#181A1E",
+  "theme_color": "#1043B1",
+  "icons": [
+    {
+      "src": "/Financier/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/Financier/PWA%20icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Financier/PWA%20icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
