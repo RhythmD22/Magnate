@@ -1,0 +1,284 @@
+/* ===== Base Background Styles ===== */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background-color: #0F1114;
+  color: #FFFFFF;
+}
+
+/* ===== Layout Container ===== */
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* ===== Sidebar Styles ===== */
+.sidebar {
+  width: 240px;
+  background-color: #181A1E;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.sidebar h2 {
+  margin-bottom: 1.8rem;
+  font-size: 1.8rem;
+  color: #FFFFFF;
+}
+
+.nav-item {
+  padding: 0;
+  margin-bottom: 0.5rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s ease;
+  width: 100%;
+}
+
+.nav-link:hover {
+  background-color: #24272B;
+}
+
+.nav-item svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+  color: #E5E5E5;
+}
+
+.nav-text {
+  font-size: 0.9rem;
+}
+
+.sidebar-buttons {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.btn-secondary {
+  background-color: #2D2F34;
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  text-align: center;
+}
+
+.btn-secondary:hover {
+  background-color: #3A3D42;
+}
+
+.btn-blue {
+  background-color: #1043B1;
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  text-align: center;
+  border: none;
+}
+
+@media (hover: hover) {
+  .btn-blue:hover {
+    background-color: #2D6FE4;
+  }
+}
+
+/* ===== Hamburger Menu Styles ===== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 101;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 2px;
+  background-color: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active .hamburger-line:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ===== Responsive Sidebar Styles ===== */
+@media (max-width: 768px) {
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .container {
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 240px;
+    height: 100%;
+    flex-direction: column;
+    padding: 2rem;
+    transition: left 0.3s ease;
+    z-index: 100;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background-color: #181A1E;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar h2 {
+    margin-top: 50px;
+    margin-bottom: 1.8rem;
+    font-size: 1.8rem;
+    display: block;
+  }
+
+  .sidebar h2 img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-item {
+    padding: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s ease;
+    width: 100%;
+  }
+
+  .nav-link:hover {
+    background-color: #24272B;
+  }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.75rem;
+    color: #E5E5E5;
+  }
+
+  /* Adjust page title position on mobile to avoid overlap */
+  h1.page-title:not(.top-section h1.page-title) {
+    position: fixed;
+    top: 15px;
+    left: 50px;
+    padding-left: 0;
+    z-index: 102;
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  /* Create a full-width transparent header bar */
+  .main-content::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(15, 17, 20, 0.80);
+    z-index: 100;
+  }
+
+  .main-content {
+    padding-top: 60px;
+  }
+
+  /* Swipe indicator inside sidebar */
+  .swipe-indicator {
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+    padding: 0.75rem;
+    color: #9CA3AF;
+    font-size: 0.75rem;
+    border-top: 1px solid #2d2f34;
+    border-bottom: 1px solid #2d2f34;
+    gap: 0.5rem;
+  }
+
+  .swipe-indicator svg {
+    width: 16px;
+    height: 16px;
+    animation: swipePulse 2s infinite;
+  }
+
+  @keyframes swipePulse {
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    50% {
+      transform: translateX(-3px);
+    }
+  }
+}
+
+/* Show swipe indicator only on mobile */
+@media (max-width: 768px) {
+  .swipe-indicator {
+    display: flex;
+  }
+}
+
+/* Hide swipe indicator on desktop */
+@media (min-width: 769px) {
+  .swipe-indicator {
+    display: none !important;
+  }
+}

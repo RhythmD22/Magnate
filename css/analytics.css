@@ -1,0 +1,495 @@
+/* RESET & BASE STYLES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    border: none;
+    outline: none;
+    background: none;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+.content-wrapper {
+    width: 100%;
+    max-width: 1300px;
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    gap: 1rem;
+}
+
+/* PAGE TITLE */
+.page-title {
+    font-size: 1.5rem;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+/* TOP SECTION */
+.top-section {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+/* BUDGET CARD */
+.budget-card {
+    background-color: #181A1E;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 1rem;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-card-image {
+    width: auto;
+    height: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    justify-self: center;
+}
+
+.small-card {
+    background-color: #181A1E;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 1rem;
+    display: inline-block;
+}
+
+.budget-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.budget-heading {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.budget-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1043B1;
+}
+
+/* PROGRESS CIRCLE CARD */
+.progress-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background-color: #181A1E;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.progress-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+}
+
+.circle-text {
+    position: absolute;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1043B1;
+    text-align: center;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 1.2;
+}
+
+/* GRAPH ROW */
+.graph-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+}
+
+.weekly-expenses-card {
+    background-color: #181A1E;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+}
+
+.week-nav {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.week-arrow {
+    background-color: #2D2F34;
+    color: #FFFFFF;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+@media (hover: hover) {
+    .week-arrow:hover {
+        background-color: #3A3D42;
+    }
+}
+
+.week-label {
+    font-size: 0.9rem;
+    color: #FFFFFF;
+}
+
+.bar-chart-container {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    background-color: #0F1114;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Weekly Category Cards Container */
+.total-expenses-card {
+    background-color: #181A1E;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.expenses-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+#categoriesCards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.expense-category-card {
+    background-color: #24272B;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 0.75rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.expense-category-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.expense-category-breakdown {
+    font-size: 0.9rem;
+    color: #B0B0B0;
+    text-align: center;
+}
+
+.expense-category-breakdown .percentage {
+    font-weight: 500;
+}
+
+.category-progress-bar {
+    background-color: #2D2F34;
+    border-radius: 4px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.category-progress-fill {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+/* Monthly Card Wrapper */
+.monthly-category-wrapper {
+    background-color: #181A1E;
+    border: 1px solid #2D2F34;
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.monthly-category-wrapper .card-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#monthlyCategoryCards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .main-content {
+        padding: 60px 1rem 1rem;
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        padding: 0;
+    }
+
+    .top-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        padding: 0;
+    }
+
+    .budget-card {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        width: 100%;
+        margin: 0;
+    }
+
+    .top-section>* {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .graph-row {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        padding: 0;
+    }
+
+    .page-title {
+        font-size: 1.2rem;
+    }
+
+    .budget-heading {
+        font-size: 1rem;
+    }
+
+    .budget-amount {
+        font-size: 1.5rem;
+    }
+
+    .progress-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .circle-container {
+        width: 160px;
+        height: 160px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .circle-container svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .circle-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.3rem;
+        text-align: center;
+        line-height: 1.4;
+        width: 100%;
+    }
+
+    .progress-circle {
+        width: 100%;
+        height: 100%;
+    }
+
+    .top-card-image {
+        max-height: 140px;
+        width: auto;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+
+    .small-card {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.75rem;
+    }
+
+    .expense-category-title {
+        font-size: 0.85rem;
+    }
+
+    .expense-category-breakdown {
+        font-size: 0.8rem;
+    }
+
+    .graph-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .weekly-expenses-card .week-nav {
+        position: static;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5rem;
+        text-align: center;
+    }
+
+    .bar-chart-container {
+        height: 240px;
+    }
+}
+
+@media (hover: hover) {
+
+    #toggleCategoryView:hover,
+    #toggleMonthlyView:hover {
+        color: #508de6 !important;
+    }
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .button-group {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.export-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background-color: #1043B1;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.export-btn:hover {
+    background-color: #2D6FE4;
+    cursor: pointer;
+}
+
+@media (hover: none) {
+    .export-btn:hover {
+        background-color: #1043B1;
+        cursor: pointer;
+    }
+}

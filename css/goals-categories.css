@@ -1,0 +1,294 @@
+/* RESET & BASE STYLES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+.dollar {
+  color: #4e80ee;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* PAGE TITLE */
+.page-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* SECTION HEADERS */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* GOALS SECTION */
+.goals-section {
+  margin-bottom: 2rem;
+}
+
+.goal-card {
+  background-color: #181A1E;
+  border: 1px solid #2D2F34;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.goal-info h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.goal-info p {
+  font-size: 0.85rem;
+  color: #A3A3A3;
+  min-height: 1.2rem;
+  /* Ensures consistent height whether there's text or not */
+}
+
+.goal-progress {
+  margin-top: 0.5rem;
+}
+
+.goal-info .goal-progress+p {
+  margin-top: 0.4rem;
+}
+
+.progress-bar-bg {
+  background-color: #2D2F34;
+  border-radius: 4px;
+  height: 8px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background-color: #1043B1;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.goal-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* TOTAL MONTHLY BUDGET SECTION */
+.budget-section {
+  margin-bottom: 2rem;
+}
+
+.monthly-budget-card {
+  background-color: #181A1E;
+  border: 1px solid #2D2F34;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.budget-text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.budget-amount {
+  font-size: 1.3rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#prevMonth,
+#nextMonth {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: auto;
+  vertical-align: middle;
+}
+
+#currentMonthYear {
+  vertical-align: middle;
+}
+
+/* EXPENSE CATEGORIES SECTION */
+.categories-section {
+  margin-bottom: 2rem;
+}
+
+.category-card {
+  background-color: #181A1E;
+  border: 1px solid #2D2F34;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.category-info h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.category-info p {
+  font-size: 0.85rem;
+  color: #A3A3A3;
+}
+
+.category-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  cursor: pointer;
+  color: #9CA3AF;
+  transition: color 0.2s ease;
+  background-color: #2D2F34;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: auto;
+  vertical-align: middle;
+}
+
+@media (hover: hover) {
+  .icon-btn:hover {
+    color: #FFFFFF;
+    background-color: #3A3D42;
+  }
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 60px 1rem 1rem;
+    overflow-x: hidden;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+  }
+
+  .section-header h2 {
+    font-size: 1rem;
+  }
+
+  .goal-card,
+  .monthly-budget-card,
+  .category-card {
+    padding: 0.75rem;
+  }
+
+  .goal-info h4,
+  .category-info h4 {
+    font-size: 0.9rem;
+  }
+
+  .goal-info p,
+  .category-info p {
+    font-size: 0.8rem;
+  }
+
+  .budget-amount {
+    font-size: 1.1rem;
+  }
+
+  .icon-btn {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    height: auto;
+  }
+
+  .icon-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .progress-bar-bg {
+    height: 6px;
+  }
+}
+
+@media (hover: hover) {
+  .monthly-budget-card button:hover {
+    color: #508de6 !important;
+  }
+}
+
+@media (hover: hover) {
+  .category-card button:hover {
+    color: #508de6 !important;
+  }
+}

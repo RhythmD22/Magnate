@@ -1,0 +1,221 @@
+/* RESET & BASE STYLES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+/* LAYOUT */
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem 2rem;
+}
+
+/* Inner wrapper to limit width and center everything */
+.content-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TOP SECTION */
+.top-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.top-section h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.top-section p {
+  font-size: 1rem;
+  color: #B0B0B0;
+  margin-bottom: 1.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-primary {
+  background-color: #1043B1;
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2D6FE4;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  .btn-primary:hover {
+    background-color: #1043B1;
+    /* Revert to original background color */
+  }
+}
+
+/* FEATURE CARDS */
+.feature-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.card {
+  background-color: #1C1F24;
+  width: 260px;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform 0.2s ease;
+  border: 1px solid #2d2f34;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  color: #3B82F6;
+  background-color: #161a1d;
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+
+#cardGoalSetting svg path,
+#cardExpenseTracking svg path,
+#cardVisualAnalytics svg path {
+  transform: translate(2px, 2px);
+}
+
+.card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #B0B0B0;
+}
+
+/* ICON WRAPPER for small icon cards */
+.icon-wrapper {
+  margin-bottom: 1rem;
+}
+
+/* WHY STUDENTS LOVE US */
+.why-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.why-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.why-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.why-card {
+  background-color: #1C1F24;
+  width: 260px;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid #2d2f34;
+}
+
+.why-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.why-card p {
+  font-size: 0.9rem;
+  color: #B0B0B0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .main-content {
+    padding: 60px 1rem 1rem;
+  }
+
+  .top-section h1 {
+    font-size: 1.5rem;
+  }
+
+  .top-section p {
+    font-size: 0.9rem;
+  }
+
+  .feature-cards,
+  .why-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .card,
+  .why-card {
+    width: 100%;
+    max-width: 300px;
+    padding: 1rem;
+  }
+
+  .btn-primary {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
