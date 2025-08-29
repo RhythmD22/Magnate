@@ -1,8 +1,8 @@
-# Financier - College Budgeting Web App
+# Magnate - Budgeting Web App
 
 ## Overview
 
-Financier is a lightweight web application that helps college students track spending, plan budgets and manage income. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
+Magnate is a lightweight web application that helps college students track spending, plan budgets and manage income. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
 
 ## Getting Started
 
@@ -13,12 +13,12 @@ Financier is a lightweight web application that helps college students track spe
    ```
    Then open `http://localhost:8000` in your browser. You can also open `index.html` directly without a server.
 3. If you prefer not to run a server, the latest version is hosted on GitHub Pages:
-   <https://rhythmd22.github.io/Financier/>
+   <https://rhythmd22.github.io/Magnate/>
 
 ## Progressive Web App (PWA) Support
 
-Financier can be installed as a Progressive Web App on mobile devices:
-1. Open the site in Safari on iOS at <https://rhythmd22.github.io/Financier/>.
+Magnate can be installed as a Progressive Web App on mobile devices:
+1. Open the site in Safari on iOS at <https://rhythmd22.github.io/Magnate/>.
 2. Tap the "Share" button.
 3. Select "Add to Home Screen".
 4. The app will now appear on your home screen and launch in full-screen mode.
