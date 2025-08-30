@@ -464,14 +464,16 @@ button {
 .notes-preview li input[type="checkbox"] {
   margin-right: 0.5rem;
   vertical-align: middle;
-  accent-color: #3B82F6; /* Blue color to match the theme */
+  accent-color: #3B82F6;
+  /* Blue color to match the theme */
 }
 
 .markdown-checkbox {
   margin-right: 0.5rem;
   vertical-align: middle;
   transform: scale(1.2);
-  accent-color: #3B82F6; /* Blue color to match the theme */
+  accent-color: #3B82F6;
+  /* Blue color to match the theme */
 }
 
 .markdown-checkbox:hover {
