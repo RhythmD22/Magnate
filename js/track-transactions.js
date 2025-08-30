@@ -515,6 +515,12 @@ function parseMarkdown(text) {
   text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
   text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
 
+  // Convert bullet points (unordered lists)
+  // First, wrap consecutive bullet points in <ul> tags
+  text = text.replace(/^(\s*\*\s.*(?:\n\s*\*\s.*)*)$/gm, '<ul>\n$1\n</ul>');
+  // Then convert individual bullet points
+  text = text.replace(/^\s*\*\s(.*)$/gm, '<li>$1</li>');
+
   // Convert bold and italic
   text = text.replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>');
   text = text.replace(/\*(.*)\*/gim, '<em>$1</em>');
