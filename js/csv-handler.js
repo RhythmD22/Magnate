@@ -379,17 +379,59 @@ function parseCSVData(csvData) {
                 break;
 
             case 'notes':
-                if (values.length >= 1) {
-                    const [notes] = values;
-                    newNotes = notes || '';
+                // Collect all lines until we reach the next section
+                let notesLines = [line];
+
+                // Continue collecting lines until we find a section header
+                while (lineIndex < lines.length) {
+                    const nextLine = lines[lineIndex].trim();
+                    // Check if this is a new section header
+                    if (nextLine === 'Current Week Start,' ||
+                        nextLine === 'Date,Type,Title,Amount,Category' ||
+                        nextLine === 'Month,Total Budget' ||
+                        nextLine === 'Category,Default Budget' ||
+                        nextLine === 'Month,Category,Monthly Budget' ||
+                        nextLine === 'Goal ID,Title,Description,Current,Target' ||
+                        nextLine === 'Meal Plan ID,Title,Category,Description,Deductions' ||
+                        nextLine === 'Calculation') {
+                        break;
+                    }
+
+                    // If not a section header, add it to notes
+                    if (lineIndex < lines.length) {
+                        // Parse the line properly to handle CSV escaping
+                        const nextValues = parseCSVLine(lines[lineIndex]);
+                        if (nextValues.length > 0) {
+                            notesLines.push(nextValues[0]);
+                        }
+                        lineIndex++;
+                    }
                 }
-                // After reading notes, we should move to the next section
-                // We'll check if the next line is a section header
+
+                newNotes = notesLines.join('\n');
+
+                // Determine what the next section is
                 if (lineIndex < lines.length) {
                     const nextLine = lines[lineIndex].trim();
                     if (nextLine === 'Current Week Start,') {
                         section = 'metadata';
+                    } else if (nextLine === 'Date,Type,Title,Amount,Category') {
+                        section = 'transactions';
+                    } else if (nextLine === 'Month,Total Budget') {
+                        section = 'monthlyBudgets';
+                    } else if (nextLine === 'Category,Default Budget') {
+                        section = 'categories';
+                    } else if (nextLine === 'Month,Category,Monthly Budget') {
+                        section = 'categoryBudgets';
+                    } else if (nextLine === 'Goal ID,Title,Description,Current,Target') {
+                        section = 'goals';
+                    } else if (nextLine === 'Meal Plan ID,Title,Category,Description,Deductions') {
+                        section = 'mealPlans';
+                    } else if (nextLine === 'Calculation') {
+                        section = 'calculatorHistory';
                     }
+                    // Continue to process this line in the next iteration
+                    continue;
                 }
                 break;
 
