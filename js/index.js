@@ -33,11 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // Add hover effects to feature cards
   const featureCards = document.querySelectorAll('.card');
   featureCards.forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
       this.style.zIndex = '10';
     });
-    
-    card.addEventListener('mouseleave', function() {
+
+    card.addEventListener('mouseleave', function () {
       this.style.zIndex = '1';
     });
   });
