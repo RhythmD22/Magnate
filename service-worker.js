@@ -1,34 +1,36 @@
-// Service Worker for Financier PWA (Static Site)
+// Service Worker for Magnate PWA (Static Site)
 
-const CACHE_NAME = 'financier-v1.0.0';
+const CACHE_NAME = 'magnate-v1.0.0';
 const urlsToCache = [
-  '/Financier/',
-  '/Financier/manifest.json',
-  '/Financier/index.html',
-  '/Financier/Goals%20%26%20Categories.html',
-  '/Financier/Track%20Transactions.html',
-  '/Financier/Analytics.html',
-  '/Financier/Calculator.html',
-  '/Financier/Money%20Tips.html',
-  '/Financier/css/styles.css',
-  '/Financier/css/index.css',
-  '/Financier/css/goals-categories.css',
-  '/Financier/css/track-transactions.css',
-  '/Financier/css/analytics.css',
-  '/Financier/css/calculator.css',
-  '/Financier/css/money-tips.css',
-  '/Financier/js/index.js',
-  '/Financier/js/goals-categories.js',
-  '/Financier/js/track-transactions.js',
-  '/Financier/js/analytics.js',
-  '/Financier/js/csv-handler.js',
-  '/Financier/js/calculator.js',
-  '/Financier/js/money-tips.js',
-  '/Financier/js/navigation.js',
-  '/Financier/favicon.ico',
-  '/Financier/PWA%20icon.png',
-  '/Financier/Images/undraw_calculator.png',
-  '/Financier/Images/undraw_online-calendar.png'
+  '/Magnate/',
+  '/Magnate/manifest.json',
+  '/Magnate/index.html',
+  '/Magnate/Goals%20%26%20Categories.html',
+  '/Magnate/Track%20Transactions.html',
+  '/Magnate/Analytics.html',
+  '/Magnate/Calculator.html',
+  '/Magnate/Money%20Tips.html',
+  '/Magnate/css/styles.css',
+  '/Magnate/css/index.css',
+  '/Magnate/css/goals-categories.css',
+  '/Magnate/css/track-transactions.css',
+  '/Magnate/css/analytics.css',
+  '/Magnate/css/calculator.css',
+  '/Magnate/css/money-tips.css',
+  '/Magnate/js/index.js',
+  '/Magnate/js/goals-categories.js',
+  '/Magnate/js/track-transactions.js',
+  '/Magnate/js/analytics.js',
+  '/Magnate/js/csv-handler.js',
+  '/Magnate/js/calculator.js',
+  '/Magnate/js/money-tips.js',
+  '/Magnate/js/navigation.js',
+  '/Magnate/favicon.ico',
+  '/Magnate/apple-touch-icon.png',
+  '/Magnate/android-chrome-192x192.png',
+  '/Magnate/android-chrome-512x512.png',
+  '/Magnate/Images/undraw_calculator.png',
+  '/Magnate/Images/undraw_online-calendar.png'
 ];
 
 // Install event - cache all static assets
@@ -55,7 +57,7 @@ self.addEventListener('fetch', event => {
         return response || fetch(event.request).catch(() => {
           // For navigation requests, return index.html as fallback
           if (event.request.mode === 'navigate') {
-            return caches.match('/Financier/index.html');
+            return caches.match('/Magnate/index.html');
           }
         });
       })
