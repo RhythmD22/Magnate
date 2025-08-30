@@ -2,7 +2,7 @@
 
 ## Overview
 
-Magnate is a lightweight web application that helps college students track spending, plan budgets and manage income. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
+Magnate is a lightweight web application designed for anyone who wants to take control of their finances. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
 
 ## Getting Started
 
