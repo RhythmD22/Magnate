@@ -13,8 +13,8 @@ if ('serviceWorker' in navigator) {
 
 // Redirect logic wrapped in DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function () {
-  if (window.location.pathname === '/Financier/index.html') {
-    window.location.replace('/Financier/');
+  if (window.location.pathname === '/Magnate/index.html') {
+    window.location.replace('/Magnate/');
   }
 
   // Hamburger menu toggle and swipe functionality

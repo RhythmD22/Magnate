@@ -1,7 +1,7 @@
 // Mapping of categories to their corresponding colors.
 const categoryColors = {
-  "textbook": "#5C6BC0",
-  "food-dining": "#FF9800",
+  "subscriptions": "#5C6BC0",
+  "food": "#FF9800",
   "shopping-smart": "#4CAF50",
   "finance": "#f1bd41",
   "transportation": "#00BCD4",
@@ -12,55 +12,55 @@ const categoryColors = {
 
 // Bank of money-saving tips per category.
 const tipsBank = {
-  "textbook": [
-    "Buy used textbooks whenever possible.",
-    "Rent textbooks instead of purchasing.",
-    "Share books with a classmate.",
-    "Use the library’s copy for reference.",
-    "Check for older editions that are still relevant.",
-    "Sell your books back at the end of the semester.",
-    "Look for digital versions—they’re often cheaper.",
-    "Use open-source or free online materials.",
-    "Check Facebook groups or campus boards for book swaps.",
-    "Avoid buying books before classes start—you might not need them.",
-    "Use price comparison tools like BookFinder.",
-    "Download free eBooks from Google Books or Project Gutenberg.",
-    "Scan chapters at the library instead of buying the book.",
-    "Avoid the campus bookstore—compare online prices first.",
-    "Split costs and take turns scanning pages.",
-    "Ask professors if the book is truly necessary.",
-    "Use PDF versions from educational sources.",
-    "Check Reddit or Discord for textbook share groups.",
-    "Use apps like Libby to borrow digital books.",
-    "Ask older students if they still have books to sell."
+  "subscriptions": [
+    "Audit all your subscriptions monthly.",
+    "Cancel unused services immediately.",
+    "Share family plans with friends or family.",
+    "Use free trials wisely—set calendar reminders.",
+    "Bundle services for discounts (phone, internet, streaming).",
+    "Switch to annual billing—often cheaper than monthly.",
+    "Look for discounts and promotions for premium services.",
+    "Choose ad-supported free versions when available.",
+    "Rotate subscriptions based on your current needs.",
+    "Negotiate with providers for better rates.",
+    "Use cashback apps and reward points for subscription payments.",
+    "Use library resources for free access to premium databases.",
+    "Track subscription costs to see the total monthly impact.",
+    "Set spending limits on your payment methods for subscriptions.",
+    "Opt for basic plans instead of premium tiers.",
+    "Use browser extensions to view content if you're tempted to subscribe.",
+    "Downgrade plans during months you won't use them heavily.",
+    "Cancel free trials before they charge.",
+    "Combine similar services under one provider for family discounts.",
+    "Review and adjust your subscriptions quarterly."
   ],
-  "food-dining": [
+  "food": [
     "Meal prep instead of eating out.",
-    "Use coupons and student discounts.",
+    "Use coupons and look for discounts.",
     "Don’t grocery shop while hungry.",
     "Shop store brands—they’re cheaper.",
-    "Cook with roommates to split costs.",
+    "Cook with family or friends to split costs.",
     "Plan meals around what’s on sale.",
-    "Bring snacks to campus to avoid vending machines.",
+    "Bring snacks from home to avoid convenience store purchases.",
     "Freeze leftovers for easy meals later.",
     "Drink more water—it’s free and healthy.",
     "Avoid delivery fees by picking up your order.",
     "Use apps like Too Good To Go for discounted meals.",
-    "Cook in bulk and portion for the week.",
     "Skip lattes—brew your own coffee.",
-    "Attend campus events with free food.",
-    "Use loyalty apps for freebies and deals.",
+    "Look for community events with free food.",
     "Try “meatless Mondays” to cut grocery costs.",
     "Make a grocery list and stick to it.",
-    "Keep snacks in your bag to avoid impulse buys.",
+    "Keep snacks at home to avoid impulse buys.",
     "Avoid pre-cut produce—do it yourself.",
-    "Use cashback apps like Ibotta when shopping."
+    "Use cashback apps like Ibotta when shopping.",
+    "Buy generic brands for pantry staples.",
+    "Plan your meals for the week ahead."
   ],
   "shopping-smart": [
     "Wait 24 hours before making non-essential purchases.",
     "Use browser extensions for coupon codes.",
     "Buy in off-seasons for clothes and tech.",
-    "Join student discount programs like UNiDAYS & Student App Centre.",
+    "Join discount programs and loyalty schemes.",
     "Never pay full price—always search for a promo.",
     "Use cashback sites like Rakuten.",
     "Unsubscribe from marketing emails to resist temptation.",
@@ -76,7 +76,7 @@ const tipsBank = {
     "Borrow instead of buying rarely-used items.",
     "Use price tracking tools like CamelCamelCamel.",
     "Wait for major sale events like Black Friday & Cyber Monday.",
-    "Ask about student discounts at checkout, even if it’s not advertised."
+    "Set a shopping wishlist to avoid impulse purchases."
   ],
   "finance": [
     "Track every dollar—use a budgeting app.",
@@ -85,15 +85,15 @@ const tipsBank = {
     "Avoid credit card debt—pay in full monthly.",
     "Set up auto-transfer to savings every payday.",
     "Check your bank statements for subscriptions to cancel.",
-    "Use a student checking account with no fees.",
+    "Use a checking account with no fees.",
     "Pay off high-interest loans first.",
-    "Only take out student loans for what you need.",
+    "Only borrow what you need.",
     "Understand how interest accrues on your debt.",
     "Avoid payday loans—explore safer alternatives.",
     "Round up purchases to build savings passively.",
     "Open a high-yield savings account.",
     "Learn basic investing early—time is your ally.",
-    "File your taxes on time—don’t miss student deductions.",
+    "File your taxes on time.",
     "Get a part-time job to build experience and income.",
     "Use free financial literacy tools or workshops.",
     "Avoid buying something just because it’s on sale.",
@@ -102,7 +102,7 @@ const tipsBank = {
   ],
   "transportation": [
     "Use public transit instead of rideshares.",
-    "Look into student transit passes—they’re often discounted.",
+    "Look into discounted transit passes.",
     "Walk or bike when possible—it’s free and healthy.",
     "Use carpool apps to share rides and costs.",
     "Avoid peak-time fares on transit systems.",
@@ -112,14 +112,14 @@ const tipsBank = {
     "Download gas price comparison apps.",
     "Use cruise control on highways to save fuel.",
     "Maintain your car—prevent expensive issues later.",
-    "Consider car sharing or Zipcar instead of owning.",
-    "Use student discounts on travel apps like Greyhound or Amtrak.",
+    "Consider car sharing instead of owning.",
+    "Look for discounts on travel apps.",
     "Skip parking fees by using free lots or biking.",
     "Split gas with friends for longer trips.",
     "Plan ahead to avoid surge pricing for rideshares.",
     "Avoid idling—turn off your car if you’re waiting.",
     "Use reward programs for gas stations.",
-    "Take advantage of campus shuttle services.",
+    "Take advantage of shuttle services if available.",
     "Use preloaded transit cards to track and control spending."
   ],
   "housing-utilities": [
@@ -134,32 +134,32 @@ const tipsBank = {
     "Report maintenance issues early to avoid big repairs.",
     "Buy secondhand furniture or get it free on local boards.",
     "Avoid housing with unnecessary amenities you won’t use.",
-    "Consider off-campus housing if it’s cheaper.",
-    "Share streaming accounts and split the bill.",
-    "Don’t pay for cable—use streaming or free apps.",
+    "Consider different housing options if it’s cheaper.",
+    "Use smart power strips to reduce phantom energy usage.",
+    "Seal air leaks around doors and windows to improve insulation.",
     "Wash clothes in cold water to save energy.",
     "Air dry laundry to save electricity.",
     "Monitor your water usage—shorter showers save money.",
-    "Check for student housing subsidies or programs.",
-    "Keep windows closed when heating or cooling is on.",
+    "Look for housing assistance programs.",
+    "Insulate your water heater to save on heating costs.",
     "Choose housing that includes utilities in rent."
   ],
   "health-wellness": [
-    "Use your campus gym—it’s often free.",
-    "Take advantage of student health clinics.",
+    "Use community gym facilities when possible.",
+    "Take advantage of community health clinics.",
     "Use generic medications—they cost less.",
     "Don’t skip preventative care—it saves long-term.",
     "Learn simple home remedies for common issues.",
     "Stay hydrated—water is free.",
     "Get enough sleep—it reduces costly health issues.",
     "Use free meditation or fitness apps.",
-    "Avoid vending machines—bring your own snacks.",
+    "Avoid convenience store snacks—bring your own.",
     "Budget for self-care—it’s not a luxury.",
-    "Join free fitness groups or campus classes.",
-    "Cook nutritious meals instead of buying supplements.",
+    "Join free fitness groups in your community.",
+    "Grow your own herbs or vegetables to save on grocery costs.",
     "Quit smoking/vaping—it’s expensive and unhealthy.",
-    "Walk to class—it’s exercise and saves money.",
-    "Check if your school offers mental health resources.",
+    "Walk regularly—it’s exercise and saves money.",
+    "Shop around for the best prescription drug prices.",
     "Avoid energy drinks—get natural rest instead.",
     "Keep a reusable water bottle on you.",
     "Use health insurance benefits like free annual checkups.",
@@ -167,27 +167,27 @@ const tipsBank = {
     "Compare prices at different pharmacies for prescriptions."
   ],
   "entertainment": [
-    "Use your student ID for museum and event discounts.",
+    "Look for discounts on museum and event tickets.",
     "Host movie nights with friends instead of going out.",
     "Stream content instead of paying for cable.",
-    "Attend free campus events.",
-    "Use Spotify or Apple Music’s student discount.",
+    "Attend free community events.",
+    "Use music streaming services with family plans.",
     "Game during free trials or on free-to-play platforms.",
     "Explore local parks and hikes for free fun.",
     "Use the library for free books and movies.",
-    "Share streaming accounts with roommates.",
+    "Share streaming accounts with family.",
     "Look for free concerts or open mic nights.",
     "Try board games or card games at home.",
     "Volunteer at events to get in free.",
-    "Use student discounts at theaters and bowling alleys.",
+    "Look for discounts at theaters and entertainment venues.",
     "Limit impulse purchases at the app store.",
-    "Try creative hobbies like writing, drawing, or DIY crafts.",
-    "Attend game nights or club events.",
+    "Create a home library with borrowed books and magazines.",
+    "Explore local community centers for free activities.",
     "Use YouTube for free classes and entertainment.",
     "Plan themed nights with potlucks.",
     "Look for deals on Groupon or local apps.",
     "Follow local social media for free/cheap events."
-  ]
+  ],
 };
 
 // Utility: shuffle an array in place.
@@ -258,12 +258,12 @@ document.querySelectorAll('.category-button').forEach(button => {
 
 // Initialize default category on page load.
 window.addEventListener('DOMContentLoaded', () => {
-  updateTips('textbook');
-  const defaultBtn = document.querySelector('.category-button[data-category="textbook"]');
+  updateTips('subscriptions');
+  const defaultBtn = document.querySelector('.category-button[data-category="subscriptions"]');
   defaultBtn.classList.add('active');
-  defaultBtn.style.color = categoryColors["textbook"];
+  defaultBtn.style.color = categoryColors["subscriptions"];
   defaultBtn.querySelectorAll('svg path').forEach(path => {
-    path.setAttribute('fill', categoryColors["textbook"]);
+    path.setAttribute('fill', categoryColors["subscriptions"]);
   });
 });
 

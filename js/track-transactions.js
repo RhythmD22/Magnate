@@ -503,10 +503,145 @@ saveDescription.onclick = function () {
   saveData();
 }
 
+/* Notes Section Functionality */
+// Simple markdown parser for basic formatting and checkboxes
+function parseMarkdown(text) {
+  // Convert checkboxes [ ] and [x] to actual checkboxes
+  text = text.replace(/\[ \]/g, '<input type="checkbox" class="markdown-checkbox">');
+  text = text.replace(/\[x\]/g, '<input type="checkbox" class="markdown-checkbox" checked>');
+  
+  // Convert markdown headers
+  text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+  
+  // Convert bold and italic
+  text = text.replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>');
+  text = text.replace(/\*(.*)\*/gim, '<em>$1</em>');
+  
+  // Convert links
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank">$1</a>');
+  
+  // Convert line breaks to paragraphs
+  text = text.replace(/\n\n/g, '</p><p>');
+  text = '<p>' + text + '</p>';
+  
+  // Handle line breaks within paragraphs
+  text = text.replace(/\n/g, '<br>');
+  
+  return text;
+}
+
+// Load notes from localStorage
+function loadNotes() {
+  const storedNotes = localStorage.getItem('notes');
+  return storedNotes ? storedNotes : '';
+}
+
+// Save notes to localStorage
+function saveNotes(notes) {
+  localStorage.setItem('notes', notes);
+}
+
+// Render notes in preview mode
+function renderNotesPreview() {
+  const notes = loadNotes();
+  const previewElement = document.getElementById('notesPreview');
+  previewElement.innerHTML = parseMarkdown(notes);
+  
+  // Add event listeners to checkboxes
+  const checkboxes = previewElement.querySelectorAll('.markdown-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      // Update the textarea with the new checkbox state
+      const notes = document.getElementById('notesTextarea').value;
+      const lines = notes.split('\n');
+      const checkboxIndex = Array.from(checkboxes).indexOf(this);
+      
+      // Find and update the corresponding checkbox in the text
+      let foundIndex = -1;
+      let checkedCount = 0;
+      for (let i = 0; i < lines.length; i++) {
+        const checkboxMatches = lines[i].match(/\[ \]|\[x\]/g);
+        if (checkboxMatches) {
+          for (let j = 0; j < checkboxMatches.length; j++) {
+            if (checkedCount === checkboxIndex) {
+              foundIndex = i;
+              break;
+            }
+            checkedCount++;
+          }
+          if (foundIndex !== -1) break;
+        }
+      }
+      
+      if (foundIndex !== -1) {
+        if (this.checked) {
+          lines[foundIndex] = lines[foundIndex].replace(/\[ \]/, '[x]');
+        } else {
+          lines[foundIndex] = lines[foundIndex].replace(/\[x\]/, '[ ]');
+        }
+        
+        const updatedNotes = lines.join('\n');
+        document.getElementById('notesTextarea').value = updatedNotes;
+        saveNotes(updatedNotes);
+      }
+    });
+  });
+}
+
+// Initialize notes functionality
+function initNotes() {
+  const notes = loadNotes();
+  const textarea = document.getElementById('notesTextarea');
+  
+  // Only set the placeholder text if there are no saved notes
+  if (!notes) {
+    // The placeholder is already set in the HTML, so we don't need to do anything here
+  } else {
+    textarea.value = notes;
+  }
+  
+  // Toggle between edit and preview modes
+  document.getElementById('btnTogglePreview').addEventListener('click', function() {
+    const textarea = document.getElementById('notesTextarea');
+    const preview = document.getElementById('notesPreview');
+    const button = document.getElementById('btnTogglePreview');
+    
+    if (textarea.style.display !== 'none') {
+      // Switch to preview mode
+      textarea.style.display = 'none';
+      preview.style.display = 'block';
+      button.textContent = 'Edit';
+      button.classList.add('active');
+      renderNotesPreview();
+    } else {
+      // Switch to edit mode
+      textarea.style.display = 'block';
+      preview.style.display = 'none';
+      button.textContent = 'Preview';
+      button.classList.remove('active');
+    }
+  });
+  
+  // Auto-save notes when typing stops for 1 second
+  let saveTimeout;
+  textarea.addEventListener('input', function() {
+    clearTimeout(saveTimeout);
+    const notes = this.value;
+    saveTimeout = setTimeout(() => {
+      saveNotes(notes);
+    }, 1000);
+  });
+}
+
 /* Final Render Calls */
 renderTransactions();
 renderMealPlans();
 saveData();
+
+// Initialize notes section
+initNotes();
 
 // Refresh data when page becomes visible (e.g., after import in Analytics.html)
 document.addEventListener('visibilitychange', function () {

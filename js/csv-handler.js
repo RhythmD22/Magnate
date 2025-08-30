@@ -59,6 +59,7 @@ function exportCSV() {
         }
     ];
     let calculatorHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
+    let notes = localStorage.getItem('notes') || ''; // Get notes from localStorage
     let currentWeekStart = localStorage.getItem('currentWeekStart') || '';
 
     let csvContent = '';
@@ -131,6 +132,11 @@ function exportCSV() {
     });
     csvContent += '\n';
 
+    // Notes Section
+    csvContent += 'Notes\n';
+    csvContent += `${escapeCSVField(notes)}\n`;
+    csvContent += '\n';
+
     // Additional Information
     csvContent += `Current Week Start,${currentWeekStart}\n`;
     csvContent += `Exported On,${new Date().toISOString()}\n`;
@@ -140,7 +146,7 @@ function exportCSV() {
     let url = URL.createObjectURL(blob);
     let link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', 'financier_data_export.csv');
+    link.setAttribute('download', 'magnate_data_export.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -186,6 +192,7 @@ function parseCSVData(csvData) {
         }
     ]; // Start with default meal plan
     let newCalculatorHistory = []; // New array for calculator history
+    let newNotes = ''; // New variable for notes
     let newCurrentWeekStart = '';
 
     // Split CSV into lines
@@ -218,6 +225,9 @@ function parseCSVData(csvData) {
             continue;
         } else if (line === 'Calculation') {
             section = 'calculatorHistory';
+            continue;
+        } else if (line === 'Notes') {
+            section = 'notes';
             continue;
         } else if (line.startsWith('Current Week Start,')) {
             section = 'metadata';
@@ -368,6 +378,21 @@ function parseCSVData(csvData) {
                 }
                 break;
 
+            case 'notes':
+                if (values.length >= 1) {
+                    const [notes] = values;
+                    newNotes = notes || '';
+                }
+                // After reading notes, we should move to the next section
+                // We'll check if the next line is a section header
+                if (lineIndex < lines.length) {
+                    const nextLine = lines[lineIndex].trim();
+                    if (nextLine === 'Current Week Start,') {
+                        section = 'metadata';
+                    }
+                }
+                break;
+
             case 'metadata':
                 if (values[0] === 'Current Week Start') {
                     newCurrentWeekStart = values[1];
@@ -387,6 +412,7 @@ function parseCSVData(csvData) {
         localStorage.setItem('goals', JSON.stringify(newGoals)); // Save goals
         localStorage.setItem('mealPlans', JSON.stringify(newMealPlans)); // Save meal plans
         localStorage.setItem('calcHistory', JSON.stringify(newCalculatorHistory)); // Save calculator history
+        localStorage.setItem('notes', newNotes); // Save notes
         if (newCurrentWeekStart) {
             localStorage.setItem('currentWeekStart', newCurrentWeekStart);
         }
