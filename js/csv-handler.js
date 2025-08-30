@@ -380,13 +380,23 @@ function parseCSVData(csvData) {
 
             case 'notes':
                 // Collect all lines until we reach the next section
-                let notesLines = [line];
+                let notesLines = [];
+
+                // Add the current line if it's not a metadata line
+                if (line !== 'Current Week Start,' && !line.startsWith('Current Week Start,')) {
+                    // Parse the line properly to handle CSV escaping
+                    const currentValues = parseCSVLine(line);
+                    if (currentValues.length > 0) {
+                        notesLines.push(currentValues[0]);
+                    }
+                }
 
                 // Continue collecting lines until we find a section header
                 while (lineIndex < lines.length) {
                     const nextLine = lines[lineIndex].trim();
                     // Check if this is a new section header
                     if (nextLine === 'Current Week Start,' ||
+                        nextLine.startsWith('Current Week Start,') ||
                         nextLine === 'Date,Type,Title,Amount,Category' ||
                         nextLine === 'Month,Total Budget' ||
                         nextLine === 'Category,Default Budget' ||
@@ -401,7 +411,7 @@ function parseCSVData(csvData) {
                     if (lineIndex < lines.length) {
                         // Parse the line properly to handle CSV escaping
                         const nextValues = parseCSVLine(lines[lineIndex]);
-                        if (nextValues.length > 0) {
+                        if (nextValues.length > 0 && nextValues[0] !== 'Exported On') {
                             notesLines.push(nextValues[0]);
                         }
                         lineIndex++;
@@ -413,7 +423,7 @@ function parseCSVData(csvData) {
                 // Determine what the next section is
                 if (lineIndex < lines.length) {
                     const nextLine = lines[lineIndex].trim();
-                    if (nextLine === 'Current Week Start,') {
+                    if (nextLine === 'Current Week Start,' || nextLine.startsWith('Current Week Start,')) {
                         section = 'metadata';
                     } else if (nextLine === 'Date,Type,Title,Amount,Category') {
                         section = 'transactions';
