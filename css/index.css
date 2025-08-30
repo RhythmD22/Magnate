@@ -28,6 +28,31 @@ button {
   flex-direction: column;
   align-items: center;
   padding: 4rem 2rem 2rem;
+  position: relative;
+}
+
+/* Animated background elements */
+.main-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 80%, rgba(80, 141, 230, 0.1) 0%, transparent 25%),
+              radial-gradient(circle at 80% 20%, rgba(45, 111, 228, 0.1) 0%, transparent 25%);
+  animation: backgroundPulse 15s ease-in-out infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes backgroundPulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
 /* Inner wrapper to limit width and center everything */
@@ -37,6 +62,8 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 /* TOP SECTION */
@@ -44,11 +71,14 @@ button {
   text-align: center;
   margin-bottom: 3rem;
   width: 100%;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .top-section h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
+  opacity: 0;
+  animation: slideInDown 0.6s ease-out 0.2s forwards;
 }
 
 .top-section p {
@@ -58,6 +88,8 @@ button {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out 0.4s forwards;
 }
 
 .btn-primary {
@@ -66,11 +98,52 @@ button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   border-radius: 6px;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out 0.6s forwards;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
   background-color: #2D6FE4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+.btn-primary:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(50, 50);
+    opacity: 0;
+  }
 }
 
 /* Disable hover effects on touch devices */
@@ -78,6 +151,40 @@ button {
   .btn-primary:hover {
     background-color: #1043B1;
     /* Revert to original background color */
+    transform: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Entrance animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -100,12 +207,40 @@ button {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
   border: 1px solid #2d2f34;
+  opacity: 0;
+  transform: translateY(20px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:nth-child(1) {
+  animation: cardEntrance 0.5s ease-out 0.8s forwards;
+}
+
+.card:nth-child(2) {
+  animation: cardEntrance 0.5s ease-out 1s forwards;
+}
+
+.card:nth-child(3) {
+  animation: cardEntrance 0.5s ease-out 1.2s forwards;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  border-color: #3B82F6;
 }
 
 .card svg {
@@ -116,6 +251,20 @@ button {
   background-color: #161a1d;
   padding: 0.75rem;
   border-radius: 6px;
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+.card:hover svg {
+  transform: scale(1.1);
+}
+
+/* Prevent background color change on touch devices for better visibility */
+@media (hover: none) {
+  .card:hover svg {
+    background-color: #161a1d;
+    transform: scale(1.1);
+  }
 }
 
 #cardGoalSetting svg path,
@@ -127,6 +276,11 @@ button {
 .card h3 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.card:hover h3 {
+  color: #3B82F6;
 }
 
 .card p {
@@ -144,6 +298,8 @@ button {
   text-align: center;
   margin-bottom: 3rem;
   width: 100%;
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out 1.4s forwards;
 }
 
 .why-section h2 {
@@ -166,11 +322,25 @@ button {
   padding: 1.5rem;
   text-align: center;
   border: 1px solid #2d2f34;
+  transition: all 0.3s ease;
+  transform: scale(0.95);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.why-card:hover {
+  transform: scale(1);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  border-color: #4e80ee;
 }
 
 .why-card h3 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.why-card:hover h3 {
+  color: #4e80ee;
 }
 
 .why-card p {
