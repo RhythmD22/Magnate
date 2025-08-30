@@ -219,13 +219,13 @@ button {
   border-color: inherit;
 }
 
-.category-button[data-category="textbook"]:hover,
-.category-button.active[data-category="textbook"] {
+.category-button[data-category="subscriptions"]:hover,
+.category-button.active[data-category="subscriptions"] {
   border-color: #5C6BC0;
 }
 
-.category-button[data-category="food-dining"]:hover,
-.category-button.active[data-category="food-dining"] {
+.category-button[data-category="food"]:hover,
+.category-button.active[data-category="food"] {
   border-color: #FF9800;
 }
 
