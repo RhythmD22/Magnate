@@ -7,7 +7,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 a {
@@ -160,8 +160,9 @@ button {
 
   .category-button {
     min-width: auto;
-    padding: 0.5rem;
-    font-size: 0.85rem;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
   }
 
   .category-icon {
@@ -175,7 +176,8 @@ button {
   }
 
   .page-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    line-height: 1.3;
   }
 
   .arrow-line {
@@ -190,7 +192,8 @@ button {
   .tip-card {
     min-width: 200px;
     padding: 1.2rem;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   .main-content {

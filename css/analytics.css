@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 a {
@@ -346,15 +346,18 @@ button {
     }
 
     .page-title {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+        line-height: 1.3;
     }
 
     .budget-heading {
-        font-size: 1rem;
+        font-size: 1.1rem;
+        line-height: 1.4;
     }
 
     .budget-amount {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+        line-height: 1.3;
     }
 
     .progress-card {
@@ -384,7 +387,7 @@ button {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         text-align: center;
         line-height: 1.4;
         width: 100%;
@@ -409,11 +412,13 @@ button {
     }
 
     .expense-category-title {
-        font-size: 0.85rem;
+        font-size: 1rem;
+        line-height: 1.4;
     }
 
     .expense-category-breakdown {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
     }
 
     .graph-header {
@@ -435,6 +440,17 @@ button {
 
     .bar-chart-container {
         height: 240px;
+    }
+
+    .week-label {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    .week-arrow {
+        font-size: 1rem;
+        min-width: 35px;
+        min-height: 35px;
     }
 }
 
