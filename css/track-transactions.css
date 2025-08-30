@@ -365,7 +365,7 @@ button {
 
 .notes-title {
   font-size: 1.1rem;
-  margin-bottom: 0;
+  margin-bottom: -0.25rem;
 }
 
 .notes-actions {
@@ -592,7 +592,7 @@ svg.icon {
   }
 
   .action-label {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
   }
 
   .week-card {
@@ -631,22 +631,32 @@ svg.icon {
     margin-left: -1rem;
   }
 
+  .notes-title {
+    font-size: 1rem;
+    margin-bottom: -0.45rem;
+  }
+
   .meal-card {
     padding: 0.75rem;
   }
 
   .meal-title {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .meal-category,
   .meal-description {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
   }
 
   .btn-meal {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding: 0.4rem 0.8rem;
+  }
+
+  .btn-toggle-preview {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.75rem;
   }
 
   .modal-content {
