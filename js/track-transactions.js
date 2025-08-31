@@ -504,140 +504,36 @@ saveDescription.onclick = function () {
 }
 
 /* Notes Section Functionality */
-// Simple markdown parser for basic formatting and checkboxes
-function parseMarkdown(text) {
-  // Convert checkboxes [ ] and [x] to actual checkboxes
-  text = text.replace(/\[ \]/g, '<input type="checkbox" class="markdown-checkbox">');
-  text = text.replace(/\[x\]/g, '<input type="checkbox" class="markdown-checkbox" checked>');
+// Initialize EasyMDE editor
+let easyMDE;
 
-  // Convert markdown headers
-  text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-  text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-  text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-
-  // Convert bullet points (unordered lists)
-  // First, wrap consecutive bullet points in <ul> tags
-  text = text.replace(/^(\s*\*\s.*(?:\n\s*\*\s.*)*)$/gm, '<ul>\n$1\n</ul>');
-  // Then convert individual bullet points
-  text = text.replace(/^\s*\*\s(.*)$/gm, '<li>$1</li>');
-
-  // Convert bold and italic
-  text = text.replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>');
-  text = text.replace(/\*(.*)\*/gim, '<em>$1</em>');
-
-  // Convert links
-  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank">$1</a>');
-
-  // Convert line breaks to paragraphs
-  text = text.replace(/\n\n/g, '</p><p>');
-  text = '<p>' + text + '</p>';
-
-  // Handle line breaks within paragraphs
-  text = text.replace(/\n/g, '<br>');
-
-  return text;
-}
-
-// Load notes from localStorage
-function loadNotes() {
-  const storedNotes = localStorage.getItem('notes');
-  return storedNotes ? storedNotes : '';
-}
-
-// Save notes to localStorage
-function saveNotes(notes) {
-  localStorage.setItem('notes', notes);
-}
-
-// Render notes in preview mode
-function renderNotesPreview() {
-  const notes = loadNotes();
-  const previewElement = document.getElementById('notesPreview');
-  previewElement.innerHTML = parseMarkdown(notes);
-
-  // Add event listeners to checkboxes
-  const checkboxes = previewElement.querySelectorAll('.markdown-checkbox');
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function () {
-      // Update the textarea with the new checkbox state
-      const notes = document.getElementById('notesTextarea').value;
-      const lines = notes.split('\n');
-      const checkboxIndex = Array.from(checkboxes).indexOf(this);
-
-      // Find and update the corresponding checkbox in the text
-      let foundIndex = -1;
-      let checkedCount = 0;
-      for (let i = 0; i < lines.length; i++) {
-        const checkboxMatches = lines[i].match(/\[ \]|\[x\]/g);
-        if (checkboxMatches) {
-          for (let j = 0; j < checkboxMatches.length; j++) {
-            if (checkedCount === checkboxIndex) {
-              foundIndex = i;
-              break;
-            }
-            checkedCount++;
-          }
-          if (foundIndex !== -1) break;
-        }
-      }
-
-      if (foundIndex !== -1) {
-        if (this.checked) {
-          lines[foundIndex] = lines[foundIndex].replace(/\[ \]/, '[x]');
-        } else {
-          lines[foundIndex] = lines[foundIndex].replace(/\[x\]/, '[ ]');
-        }
-
-        const updatedNotes = lines.join('\n');
-        document.getElementById('notesTextarea').value = updatedNotes;
-        saveNotes(updatedNotes);
-      }
-    });
-  });
-}
-
-// Initialize notes functionality
 function initNotes() {
-  const notes = loadNotes();
-  const textarea = document.getElementById('notesTextarea');
+  // Load notes from localStorage
+  const storedNotes = localStorage.getItem('notes');
+  const notes = storedNotes ? storedNotes : '';
 
-  // Only set the placeholder text if there are no saved notes
-  if (!notes) {
-    // The placeholder is already set in the HTML, so we don't need to do anything here
-  } else {
-    textarea.value = notes;
-  }
-
-  // Toggle between edit and preview modes
-  document.getElementById('btnTogglePreview').addEventListener('click', function () {
-    const textarea = document.getElementById('notesTextarea');
-    const preview = document.getElementById('notesPreview');
-    const button = document.getElementById('btnTogglePreview');
-
-    if (textarea.style.display !== 'none') {
-      // Switch to preview mode
-      textarea.style.display = 'none';
-      preview.style.display = 'block';
-      button.textContent = 'Edit';
-      button.classList.add('active');
-      renderNotesPreview();
-    } else {
-      // Switch to edit mode
-      textarea.style.display = 'block';
-      preview.style.display = 'none';
-      button.textContent = 'Preview';
-      button.classList.remove('active');
-    }
+  // Initialize EasyMDE on the textarea with simplified configuration
+  easyMDE = new EasyMDE({
+    element: document.getElementById("notesTextarea"),
+    initialValue: notes,
+    placeholder: "# Markdown Support\n\n## Formatting\n- **Bold text with double asterisks\n- *Italic text with single asterisks\n\n## Headers\n- # Header 1\n- ## Header 2\n- ### Header 3\n- #### Header 4\n- ##### Header 5\n- ###### Header 6\n\n## Lists\n- Bullet points with asterisks\n  * First item\n  * Second item\n  * Third item\n- Numbered lists with numbers\n  1. First item\n  2. Second item\n  3. Third item\n\n## Media Elements\n- [Link Text](https://) to create links\n- ![Image](https://) to insert images\n\n\n",
+    autosave: {
+      enabled: true,
+      uniqueId: "magnate-notes",
+      delay: 1000,
+    },
+    autofocus: false,
+    spellChecker: true,
+    inputStyle: "contenteditable",
+    nativeSpellcheck: true,
+    sideBySideFullscreen: false,
+    status: ["autosave", "lines", "words"], // Enable status bar with autosave, lines, and words
+    toolbar: ["bold", "italic", "heading", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "|", "preview", "side-by-side", "fullscreen", "|", "guide"],
   });
 
-  // Auto-save notes when typing stops for 1 second
-  let saveTimeout;
-  textarea.addEventListener('input', function () {
-    clearTimeout(saveTimeout);
-    const notes = this.value;
-    saveTimeout = setTimeout(() => {
-      saveNotes(notes);
-    }, 1000);
+  // Add event listener for changes to save to localStorage
+  easyMDE.codemirror.on("change", function () {
+    localStorage.setItem('notes', easyMDE.value());
   });
 }
 
