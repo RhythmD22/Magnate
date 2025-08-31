@@ -176,6 +176,20 @@ button {
   font-size: 0.9rem;
   line-height: 1.4;
   width: 100%;
+  font-family: 'SF Mono', monospace;
+}
+
+.history-list div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-list .timestamp {
+  color: #888;
+  font-size: 0.75rem;
+  margin-left: 1rem;
+  white-space: nowrap;
 }
 
 /* ILLUSTRATION PANEL */
@@ -274,5 +288,6 @@ button {
   .history-list {
     font-size: 0.95rem;
     line-height: 1.5;
+    font-family: 'SF Mono', monospace;
   }
 }
