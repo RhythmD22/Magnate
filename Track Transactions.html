@@ -20,6 +20,8 @@
   <link rel="stylesheet" href="css/styles.css">
   <!-- Link to page-specific CSS -->
   <link rel="stylesheet" href="css/track-transactions.css">
+  <!-- Include EasyMDE from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 </head>
 
 <body>
@@ -214,35 +216,9 @@
         <div class="notes-section">
           <div class="notes-header">
             <h2 class="notes-title">Notes</h2>
-            <div class="notes-actions">
-              <button class="btn-toggle-preview" id="btnTogglePreview">Preview</button>
-            </div>
           </div>
           <div class="notes-container">
-            <textarea class="notes-textarea" id="notesTextarea" placeholder="Add your notes here...
-
-# Markdown Support
-
-## Formatting
-- **Bold** text with double asterisks
-- *Italic* text with single asterisks
-- [Link](https://example.com) to websites
-
-## Headers
-- # Header 1
-- ## Header 2
-- ### Header 3
-
-## Lists
-- Bullet points with asterisks
-  * First item
-  * Second item
-  * Third item
-
-## Checklists
-- [ ] Unchecked item
-- [x] Checked item (click in preview mode)"></textarea>
-            <div class="notes-preview" id="notesPreview" style="display: none;"></div>
+            <textarea class="notes-textarea" id="notesTextarea"></textarea>
           </div>
         </div>
       </div> <!-- /content-wrapper -->
@@ -261,6 +237,7 @@
 
   <script src="js/navigation.js"></script>
   <!-- Link to page-specific JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <script src="js/track-transactions.js"></script>
 </body>
 
