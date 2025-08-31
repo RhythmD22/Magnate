@@ -9,13 +9,38 @@ function promptNumber(message) {
 }
 
 function promptDate(message) {
-    let dateInput = prompt(message + " (YYYY-MM-DD) or leave blank for today:");
-    if (dateInput === null) return null;
-    dateInput = dateInput.trim();
-    if (dateInput === "") {
-        return new Date().toISOString().slice(0, 10);
-    }
-    return dateInput;
+    let dateInput;
+
+    do {
+        dateInput = prompt(message + " (MM/DD/YYYY) or leave blank for today:");
+        if (dateInput === null) return null;
+        dateInput = dateInput.trim();
+
+        // If blank, use today
+        if (dateInput === "") {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        // Validate MM/DD/YYYY format
+        if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateInput)) {
+            alert("Please enter a valid date in MM/DD/YYYY format.");
+            continue;
+        }
+
+        // Parse and validate the date
+        const [month, day, year] = dateInput.split("/");
+        const dateObj = new Date(year, month - 1, day);
+
+        // Check if the date is valid
+        if (dateObj.getFullYear() != year || dateObj.getMonth() != month - 1 || dateObj.getDate() != day) {
+            alert("Please enter a valid date.");
+            continue;
+        }
+
+        // Convert to ISO format for storage
+        return dateObj.toISOString().slice(0, 10);
+
+    } while (true);
 }
 
 function generateId() {
@@ -69,9 +94,10 @@ let currentWeekStart = localStorage.getItem('currentWeekStart')
     : getMonday(new Date());
 
 function updateWeekLabel() {
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    // Format as "Week of Month Day, Year" to match the original format
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('weekLabel').textContent =
-        'Week of ' + currentWeekStart.toLocaleDateString(undefined, options);
+        'Week of ' + currentWeekStart.toLocaleDateString('en-US', options);
 }
 
 // Prev/Next week event listeners
@@ -155,7 +181,8 @@ function renderWeeklyChart() {
         let dt = new Date(currentWeekStart);
         dt.setDate(dt.getDate() + i);
         weekDates.push(dt);
-        labels.push(dt.toLocaleDateString(undefined, { weekday: 'short' }));
+        // Format as day abbreviations (Mon, Tue, etc.)
+        labels.push(dt.toLocaleDateString('en-US', { weekday: 'short' }));
     }
 
     let expenseData = [];

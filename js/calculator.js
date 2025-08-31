@@ -2,17 +2,57 @@
 const calcHistoryElement = document.getElementById('calcHistory');
 let calcHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
 
+// Convert old format entries (strings) to new format (objects with timestamp)
+// For backward compatibility, we'll use a generic "Imported" timestamp for old entries
+let needsSave = false;
+for (let i = 0; i < calcHistory.length; i++) {
+  if (typeof calcHistory[i] === 'string') {
+    calcHistory[i] = {
+      calculation: calcHistory[i],
+      timestamp: new Date().toISOString() // Use current time for imported entries
+    };
+    needsSave = true;
+  }
+}
+
+// Save updated format back to localStorage if needed
+if (needsSave) {
+  localStorage.setItem('calcHistory', JSON.stringify(calcHistory));
+}
+
 function loadCalcHistory() {
   calcHistoryElement.innerHTML = '';
   calcHistory.forEach(entry => {
     const div = document.createElement('div');
-    div.textContent = entry;
+    // All entries should now be in the new format, but we'll keep the check for safety
+    if (typeof entry === 'object' && entry.calculation && entry.timestamp) {
+      // Format the ISO timestamp for display
+      const dateObj = new Date(entry.timestamp);
+      // Display format: MM/DD/YYYY HH:MM
+      const displayTimestamp = dateObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
+        dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+      // New format with timestamp
+      div.innerHTML = `<span class="calculation">${entry.calculation}</span><span class="timestamp">${displayTimestamp}</span>`;
+    } else {
+      // Fallback for any unexpected format
+      console.warn('Unexpected history entry format:', entry);
+    }
     calcHistoryElement.prepend(div);
   });
 }
 
 function addHistoryEntry(entryText) {
-  calcHistory.unshift(entryText);
+  // Create an object with the calculation and timestamp
+  const now = new Date();
+  // Store in ISO format for consistency and easy parsing
+  const isoTimestamp = now.toISOString();
+  const historyEntry = {
+    calculation: entryText,
+    timestamp: isoTimestamp
+  };
+
+  calcHistory.unshift(historyEntry);
   localStorage.setItem('calcHistory', JSON.stringify(calcHistory));
   loadCalcHistory();
 }

@@ -126,9 +126,15 @@ function exportCSV() {
     csvContent += '\n';
 
     // Calculator History Section
-    csvContent += 'Calculation\n';
+    csvContent += 'Calculation,Timestamp\n';
     calculatorHistory.forEach(entry => {
-        csvContent += `${escapeCSVField(entry)}\n`;
+        // New format with timestamp
+        // Format the ISO timestamp for export
+        const dateObj = new Date(entry.timestamp);
+        // Export format: MM/DD/YYYY HH:MM
+        const displayTimestamp = dateObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
+            dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        csvContent += `${escapeCSVField(entry.calculation)},${escapeCSVField(displayTimestamp)}\n`;
     });
     csvContent += '\n';
 
@@ -223,7 +229,7 @@ function parseCSVData(csvData) {
         } else if (line === 'Meal Plan ID,Title,Category,Description,Deductions') {
             section = 'mealPlans';
             continue;
-        } else if (line === 'Calculation') {
+        } else if (line === 'Calculation,Timestamp') {
             section = 'calculatorHistory';
             continue;
         } else if (line === 'Notes') {
@@ -373,8 +379,22 @@ function parseCSVData(csvData) {
 
             case 'calculatorHistory':
                 if (values.length >= 1) {
-                    const [calculation] = values;
-                    newCalculatorHistory.push(calculation || '');
+                    const [calculation, timestamp] = values;
+                    // Parse the display timestamp back to ISO format
+                    let isoTimestamp = timestamp;
+                    // If it looks like a display timestamp (MM/DD/YYYY HH:MM), convert it to ISO
+                    if (/^\d{1,2}\/\d{1,2}\/\d{4} \d{2}:\d{2}$/.test(timestamp)) {
+                        const [datePart, timePart] = timestamp.split(' ');
+                        const [month, day, year] = datePart.split('/');
+                        const [hours, minutes] = timePart.split(':');
+                        const dateObj = new Date(year, month - 1, day, hours, minutes);
+                        isoTimestamp = dateObj.toISOString();
+                    }
+
+                    newCalculatorHistory.push({
+                        calculation: calculation || '',
+                        timestamp: isoTimestamp
+                    });
                 }
                 break;
 
@@ -403,7 +423,7 @@ function parseCSVData(csvData) {
                         nextLine === 'Month,Category,Monthly Budget' ||
                         nextLine === 'Goal ID,Title,Description,Current,Target' ||
                         nextLine === 'Meal Plan ID,Title,Category,Description,Deductions' ||
-                        nextLine === 'Calculation') {
+                        nextLine === 'Calculation,Timestamp') {
                         break;
                     }
 
@@ -437,7 +457,7 @@ function parseCSVData(csvData) {
                         section = 'goals';
                     } else if (nextLine === 'Meal Plan ID,Title,Category,Description,Deductions') {
                         section = 'mealPlans';
-                    } else if (nextLine === 'Calculation') {
+                    } else if (nextLine === 'Calculation,Timestamp') {
                         section = 'calculatorHistory';
                     }
                     // Continue to process this line in the next iteration

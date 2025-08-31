@@ -10,19 +10,49 @@ function promptNumber(message) {
 function getLocalDateString(d) {
   const tempDate = new Date(d);
   tempDate.setMinutes(tempDate.getMinutes() - tempDate.getTimezoneOffset());
-  return tempDate.toISOString().slice(0, 10);
+  // Return in MM/DD/YYYY format
+  return tempDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
 }
 
 function promptDate(message, defaultDate) {
   defaultDate = defaultDate || new Date();
   let defaultString = getLocalDateString(defaultDate);
-  let dateInput = prompt(message + " (YYYY-MM-DD) or leave blank for " + defaultString + ":");
-  if (dateInput === null) return null;
-  dateInput = dateInput.trim();
-  if (dateInput === "") {
-    return defaultString;
-  }
-  return dateInput;
+  let dateInput;
+
+  do {
+    dateInput = prompt(message + " (MM/DD/YYYY) or leave blank for " + defaultString + ":");
+    if (dateInput === null) return null;
+    dateInput = dateInput.trim();
+
+    // If blank, use default
+    if (dateInput === "") {
+      return defaultString;
+    }
+
+    // Validate MM/DD/YYYY format
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateInput)) {
+      alert("Please enter a valid date in MM/DD/YYYY format.");
+      continue;
+    }
+
+    // Parse and validate the date
+    const [month, day, year] = dateInput.split("/");
+    const dateObj = new Date(year, month - 1, day);
+
+    // Check if the date is valid
+    if (dateObj.getFullYear() != year || dateObj.getMonth() != month - 1 || dateObj.getDate() != day) {
+      alert("Please enter a valid date.");
+      continue;
+    }
+
+    // Return the validated date in MM/DD/YYYY format
+    return dateInput;
+
+  } while (true);
 }
 
 function generateId() {
@@ -78,8 +108,9 @@ let currentWeekStart = localStorage.getItem('currentWeekStart')
   : getMonday(new Date());
 
 function updateWeekHeading() {
+  // Format as "Week of Month Day, Year" to match the original format
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  document.getElementById('weekHeading').textContent = "Week of " + currentWeekStart.toLocaleDateString(undefined, options);
+  document.getElementById('weekHeading').textContent = "Week of " + currentWeekStart.toLocaleDateString('en-US', options);
 }
 
 // renderTransactions: compare dates as strings ("YYYY-MM-DD")
@@ -131,9 +162,15 @@ function createTransactionCard(item, type) {
   const dateElem = document.createElement('p');
   dateElem.className = 'transaction-date';
 
-  // Convert the stored date string to a local date object, then to YYYY-MM-DD
+  // Convert the stored date string to a local date object, then format as MM/DD/YYYY
   const localParsed = parseLocalDateString(item.date);
-  dateElem.textContent = "Date: " + getLocalDateString(localParsed);
+  // Format as MM/DD/YYYY to match the calculator date format
+  const formattedDate = localParsed.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  dateElem.textContent = "Date: " + formattedDate;
 
   leftDiv.appendChild(title);
   leftDiv.appendChild(categoryElem);
@@ -189,10 +226,40 @@ function editTransaction(id, type) {
     let newAmount = promptNumber("Edit amount (e.g., 80 for $80):");
     if (newAmount === null) return;
 
-    let newDate = prompt("Edit date (YYYY-MM-DD):", item.date);
-    if (newDate === null) return;
-    newDate = newDate.trim();
-    if (newDate === "") return;
+    // Date editing with validation
+    let newDate;
+    do {
+      newDate = prompt("Edit date (MM/DD/YYYY):", getLocalDateString(new Date(item.date)));
+      if (newDate === null) return; // User cancelled
+
+      newDate = newDate.trim();
+
+      // If blank, keep current date
+      if (newDate === "") {
+        newDate = item.date;
+        break;
+      }
+
+      // Validate MM/DD/YYYY format
+      if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(newDate)) {
+        alert("Please enter a valid date in MM/DD/YYYY format.");
+        continue;
+      }
+
+      // Parse and validate the date
+      const [month, day, year] = newDate.split("/");
+      const dateObj = new Date(year, month - 1, day);
+
+      // Check if the date is valid
+      if (dateObj.getFullYear() != year || dateObj.getMonth() != month - 1 || dateObj.getDate() != day) {
+        alert("Please enter a valid date.");
+        continue;
+      }
+
+      // Valid date, break out of loop
+      break;
+
+    } while (true);
 
     item.title = newTitle;
     item.category = newCategory;
@@ -201,7 +268,7 @@ function editTransaction(id, type) {
     } else {
       item.amount = Math.abs(newAmount);
     }
-    item.date = newDate;
+    item.date = parseLocalDateString(newDate).toISOString().slice(0, 10);  // Store in ISO format
 
     // Use parseLocalDateString to interpret date in local time
     const newDateObj = parseLocalDateString(newDate);
@@ -221,10 +288,15 @@ function editTransaction(id, type) {
   }
 }
 
+// Convert MM/DD/YYYY input to Date object
 function parseLocalDateString(dateString) {
-  // Split the YYYY-MM-DD input
-  const [year, month, day] = dateString.split("-");
-  // Create a new Date in local time (month is zero-based)
+  // First check if it's already in YYYY-MM-DD format (from storage)
+  if (dateString.includes("-")) {
+    const [year, month, day] = dateString.split("-");
+    return new Date(+year, +month - 1, +day);
+  }
+  // Otherwise assume it's MM/DD/YYYY format (from user input)
+  const [month, day, year] = dateString.split("/");
   return new Date(+year, +month - 1, +day);
 }
 
@@ -271,7 +343,7 @@ document.getElementById('btnAddExpense').addEventListener('click', () => {
     title: title.trim(),
     category: category ? category.trim() : "",
     amount: -Math.abs(amount),
-    date: date
+    date: parseLocalDateString(date).toISOString().slice(0, 10)  // Store in ISO format
   };
   expenses.push(newExpense);
   const newDateObj = parseLocalDateString(date);
@@ -297,7 +369,7 @@ document.getElementById('btnAddIncome').addEventListener('click', () => {
     title: title.trim(),
     category: category ? category.trim() : "",
     amount: Math.abs(amount),
-    date: date
+    date: parseLocalDateString(date).toISOString().slice(0, 10)  // Store in ISO format
   };
   incomes.push(newIncome);
   const newDateObj = parseLocalDateString(date);
@@ -408,7 +480,7 @@ function addDeduction(planId) {
     title: `Deduction from ${plan.title}: ${deduction.description}`,
     category: deduction.category,
     amount: deduction.amount,
-    date: date
+    date: parseLocalDateString(date).toISOString().slice(0, 10)  // Store in ISO format
   };
   expenses.push(newExpense);
 
