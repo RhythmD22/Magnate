@@ -200,6 +200,74 @@ button {
   white-space: nowrap;
 }
 
+/* History entry styling */
+.history-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.history-entry .calculation {
+  flex-grow: 1;
+  margin-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-entry .timestamp {
+  color: #888;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  margin-right: 25px;
+}
+
+.history-entry .delete-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  background: none;
+  border: none;
+  padding: 2px;
+}
+
+.history-entry .delete-btn:hover {
+  opacity: 1;
+}
+
+.history-entry.selected {
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: 4px;
+}
+
+/* Desktop: Hide delete buttons by default, show on hover */
+@media (hover: hover) {
+  .history-entry .delete-btn {
+    display: none;
+  }
+  
+  .history-entry:hover .delete-btn {
+    display: block;
+  }
+}
+
+/* Mobile: Show delete button when entry is selected */
+@media (hover: none) {
+  .history-entry .delete-btn {
+    display: none;
+  }
+  
+  .history-entry.selected .delete-btn {
+    display: block;
+  }
+}
+
 /* ILLUSTRATION PANEL */
 .illustration {
   border-radius: 8px;
