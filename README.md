@@ -53,7 +53,9 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 - **Core Technologies**: HTML5, CSS3, JavaScript (ES6+)
 - **Data Storage**: `localStorage` for client-side data persistence
 - **UI Framework**: Custom CSS with responsive design for mobile and desktop
-- **External Libraries**: Chart.js (loaded via CDN) for data visualization in the Analytics section
+- **External Libraries**: 
+  - EasyMDE (loaded via CDN) for markdown-enabled notes editing in the Track Transactions section
+  - Chart.js (loaded via CDN) for data visualization in the Analytics section
 - **PWA Support**: Includes a service worker for offline functionality and installability
 
 ## License
