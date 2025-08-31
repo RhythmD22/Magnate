@@ -237,8 +237,18 @@ button {
   padding: 2px;
 }
 
-.history-entry .delete-btn:hover {
-  opacity: 1;
+/* Desktop: Show hover effect only on devices with hover capability */
+@media (hover: hover) {
+  .history-entry .delete-btn:hover {
+    opacity: 1;
+  }
+}
+
+/* Mobile: No hover effect on touch devices */
+@media (hover: none) {
+  .history-entry .delete-btn {
+    opacity: 0.7; /* Ensure consistent opacity on mobile */
+  }
 }
 
 .history-entry.selected {
