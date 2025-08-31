@@ -368,47 +368,19 @@ button {
   margin-bottom: -0.25rem;
 }
 
-.notes-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-toggle-preview {
-  background-color: #2D2F34;
-  color: #FFFFFF;
-  border: 1px solid #3B82F6;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-@media (hover: hover) {
-  .btn-toggle-preview:hover {
-    background-color: #3B82F6;
-  }
-}
-
-.btn-toggle-preview.active {
-  background-color: #3B82F6;
-}
-
 .notes-container {
   position: relative;
+  border: none;
 }
 
 .notes-textarea {
-  width: 100%;
-  min-height: 150px;
   background-color: #181A1E;
+  color: #FFFFFF;
   border: 1px solid #2D2F34;
   border-radius: 6px;
-  padding: 1rem;
-  color: #FFFFFF;
-  font-family: sans-serif;
-  font-size: 0.95rem;
-  resize: vertical;
+  min-height: 150px;
+  padding: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .notes-textarea:focus {
@@ -416,112 +388,133 @@ button {
   border-color: #3B82F6;
 }
 
-.notes-preview {
-  width: 100%;
-  min-height: 150px;
-  background-color: #181A1E;
-  border: 1px solid #2D2F34;
-  border-radius: 6px;
-  padding: 1rem;
+/* EasyMDE Editor Styles */
+.CodeMirror,
+.CodeMirror-scroll,
+.editor-preview {
+  background-color: #181A1E !important;
   color: #FFFFFF;
-  font-family: sans-serif;
-  font-size: 0.95rem;
-  overflow-y: auto;
+  border: none !important;
+  border-radius: 0 0 6px 6px;
+  min-height: 150px;
 }
 
-/* Markdown styling */
-.notes-preview h1 {
-  font-size: 1.5rem;
-  margin: 1rem 0 0.5rem;
+.CodeMirror-focused {
+  border-color: #3B82F6;
 }
 
-.notes-preview h2 {
-  font-size: 1.3rem;
-  margin: 1rem 0 0.5rem;
+.editor-toolbar {
+  background-color: #303233 !important;
+  border: 1px solid #303233 !important;
+  border-bottom: none !important;
+  border-radius: 6px 6px 0 0;
+  padding: 0 10px 0 46px;
 }
 
-.notes-preview h3 {
-  font-size: 1.1rem;
-  margin: 1rem 0 0.5rem;
-}
-
-.notes-preview p {
-  margin: 0.5rem 0;
-  line-height: 1.5;
-}
-
-.notes-preview ul,
-.notes-preview ol {
-  margin: 0.5rem 0 0.5rem 1.5rem;
-  padding: 0;
-}
-
-.notes-preview li {
-  margin: 0.25rem 0;
-  display: list-item;
-}
-
-.notes-preview li input[type="checkbox"] {
-  margin-right: 0.5rem;
-  vertical-align: middle;
-  accent-color: #3B82F6;
-  /* Blue color to match the theme */
-}
-
-.markdown-checkbox {
-  margin-right: 0.5rem;
-  vertical-align: middle;
-  transform: scale(1.2);
-  accent-color: #3B82F6;
-  /* Blue color to match the theme */
-}
-
-.markdown-checkbox:hover {
-  cursor: pointer;
-}
-
-.notes-preview strong {
-  font-weight: bold;
-}
-
-.notes-preview strong {
-  font-weight: bold;
-}
-
-.notes-preview em {
-  font-style: italic;
-}
-
-.notes-preview a {
-  color: #3B82F6;
-  text-decoration: underline;
-}
-
-.notes-preview code {
-  background-color: #2D2F34;
-  padding: 0.1rem 0.25rem;
-  border-radius: 3px;
-  font-family: monospace;
-}
-
-.notes-preview pre {
-  background-color: #2D2F34;
-  padding: 0.5rem;
-  border-radius: 6px;
-  overflow-x: auto;
-  margin: 0.5rem 0;
-}
-
-.notes-preview pre code {
+.editor-toolbar:before {
   background: none;
-  padding: 0;
 }
 
-.notes-preview blockquote {
-  border-left: 3px solid #3B82F6;
-  padding-left: 1rem;
-  margin: 0.5rem 0;
-  color: #CCCCCC;
+.editor-toolbar:after {
+  background: none;
+}
+
+.editor-toolbar i.separator {
+  border-left: 1px solid #404243;
+  border-right: 1px solid #404243;
+  color: #FFFFFF;
+}
+
+.editor-toolbar a,
+.editor-toolbar button {
+  color: #000000 !important;
+  background: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  border-radius: 3px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+  margin: 5px 2px !important;
+  padding: 0 5px !important;
+  display: inline-block !important;
+  line-height: 30px !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+.editor-toolbar a:hover,
+.editor-toolbar a.active,
+.editor-toolbar button:hover,
+.editor-toolbar button.active {
+  background: #fcfcfc !important;
+  border-color: #95a5a6 !important;
+  color: #000000 !important;
+}
+
+.editor-toolbar a:before,
+.editor-toolbar button:before {
+  color: #000000 !important;
+}
+
+.editor-toolbar a:hover:before,
+.editor-toolbar a.active:before,
+.editor-toolbar button:hover:before,
+.editor-toolbar button.active:before {
+  color: #000000 !important;
+}
+
+.editor-preview-side {
+  background-color: #181A1E !important;
+  border: 1px solid #303233 !important;
+  border-radius: 0 0 6px 6px;
+}
+
+/* Fullscreen mode */
+.editor-toolbar.fullscreen {
+  background-color: #303233 !important;
+}
+
+.CodeMirror-fullscreen {
+  background-color: #181A1E !important;
+  border: none !important;
+}
+
+.editor-preview-side {
+  background-color: #181A1E;
+}
+
+.CodeMirror-gutter,
+.CodeMirror-gutters {
+  background-color: #303233 !important;
+  border-right: 1px solid #404243 !important;
+}
+
+.CodeMirror-linenumber {
+  color: #CCCCCC !important;
+}
+
+.CodeMirror-cursor {
+  border-left: 1px solid #FFFFFF !important;
+}
+
+/* Status bar styles */
+.editor-statusbar {
+  background-color: #303233 !important;
+  border: 1px solid #303233 !important;
+  border-top: none !important;
+  border-radius: 0 0 6px 6px;
+  color: #CCCCCC !important;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+}
+
+.editor-statusbar span {
+  color: #CCCCCC !important;
+}
+
+.editor-statusbar .autosave {
+  color: #34D399 !important;
 }
 
 /* Modal Styles */
@@ -648,12 +641,6 @@ svg.icon {
     line-height: 1.4;
   }
 
-  .notes-title {
-    font-size: 1.1rem;
-    margin-bottom: -0.45rem;
-    line-height: 1.4;
-  }
-
   .meal-card {
     padding: 0.75rem;
   }
@@ -674,20 +661,10 @@ svg.icon {
     padding: 0.5rem 0.9rem;
   }
 
-  .btn-toggle-preview {
-    font-size: 0.95rem;
-    padding: 0.4rem 0.8rem;
-  }
-
   .modal-content {
     width: 95%;
     margin: 5% auto;
     padding: 1rem;
   }
 
-  .notes-textarea,
-  .notes-preview {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
 }
