@@ -95,10 +95,13 @@ function appendNumber(num) {
 }
 
 function chooseOperation(op) {
+  // If we have a pending operation, compute it first
+  if (currentOperation && storedValue !== null) {
+    compute();
+  }
+  // If we don't have a stored value yet, store the current value
   if (storedValue === null) {
     storedValue = currentValue;
-  } else if (currentOperation) {
-    compute();
   }
   currentOperation = op;
   shouldReset = true;
@@ -126,7 +129,7 @@ function compute() {
   addHistoryEntry(entry);
 
   currentValue = result.toString();
-  storedValue = null;
+  storedValue = result.toString(); // Keep the result as the new stored value for chaining
   currentOperation = null;
   updateDisplay(currentValue);
   shouldReset = true;
