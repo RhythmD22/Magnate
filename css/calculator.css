@@ -247,7 +247,8 @@ button {
 /* Mobile: No hover effect on touch devices */
 @media (hover: none) {
   .history-entry .delete-btn {
-    opacity: 0.7; /* Ensure consistent opacity on mobile */
+    opacity: 0.7;
+    /* Ensure consistent opacity on mobile */
   }
 }
 
@@ -261,7 +262,7 @@ button {
   .history-entry .delete-btn {
     display: none;
   }
-  
+
   .history-entry:hover .delete-btn {
     display: block;
   }
@@ -272,7 +273,7 @@ button {
   .history-entry .delete-btn {
     display: none;
   }
-  
+
   .history-entry.selected .delete-btn {
     display: block;
   }
