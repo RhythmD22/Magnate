@@ -516,7 +516,7 @@ function initNotes() {
   easyMDE = new EasyMDE({
     element: document.getElementById("notesTextarea"),
     initialValue: notes,
-    placeholder: "# Markdown Support\n\n## Formatting\n- **Bold text with double asterisks\n- *Italic text with single asterisks\n\n## Headers\n- # Header 1\n- ## Header 2\n- ### Header 3\n- #### Header 4\n- ##### Header 5\n- ###### Header 6\n\n## Lists\n- Bullet points with asterisks\n  * First item\n  * Second item\n  * Third item\n- Numbered lists with numbers\n  1. First item\n  2. Second item\n  3. Third item\n\n## Media Elements\n- [Link Text](https://) to create links\n- ![Image](https://) to insert images\n\n\n",
+    placeholder: "# Markdown Support\n\n## Formatting\n- **Bold** text with double asterisks\n- *Italic* text with single asterisks\n\n## Headers\n- # Header 1\n- ## Header 2\n- ### Header 3\n- #### Header 4\n- ##### Header 5\n- ###### Header 6\n\n## Lists\n- Bullet points with asterisks\n  * First item\n  * Second item\n  * Third item\n- Numbered lists with numbers\n  1. First item\n  2. Second item\n  3. Third item\n\n## Media Elements\n- [Link Text](https://) to create links\n- ![Image](https://) to insert images\n\n\n",
     autosave: {
       enabled: true,
       uniqueId: "magnate-notes",
