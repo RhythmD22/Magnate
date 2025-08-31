@@ -43,7 +43,7 @@ function loadCalcHistory() {
           </svg>
         </button>
       `;
-      
+
       // Add event listener for delete button
       const deleteBtn = div.querySelector('.delete-btn');
       deleteBtn.addEventListener('click', (e) => {
@@ -51,29 +51,29 @@ function loadCalcHistory() {
         const index = parseInt(deleteBtn.getAttribute('data-index'));
         deleteHistoryEntry(index);
       });
-      
+
       // Add click/tap behavior for mobile
-      div.addEventListener('click', function(e) {
+      div.addEventListener('click', function (e) {
         // Check if it's a touch device and the click wasn't on the delete button
         if (('ontouchstart' in window || navigator.maxTouchPoints) && e.target !== deleteBtn) {
           // Prevent default to avoid triggering computation
           e.preventDefault();
-          
+
           // Toggle selected class
           const isSelected = this.classList.contains('selected');
-          
+
           // Remove selected class from all entries
           document.querySelectorAll('.history-entry').forEach(entry => {
             entry.classList.remove('selected');
           });
-          
+
           // Add selected class to this entry if it wasn't already selected
           if (!isSelected) {
             this.classList.add('selected');
           }
         }
       });
-      
+
       calcHistoryElement.prepend(div);
     } else {
       // Fallback for any unexpected format
