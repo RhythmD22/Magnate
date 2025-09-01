@@ -54,6 +54,7 @@ button {
 .section-header h2 {
   font-size: 1.1rem;
   font-weight: 500;
+  margin-bottom: -1.5rem;
 }
 
 /* GOALS SECTION */
@@ -83,7 +84,6 @@ button {
   font-size: 0.85rem;
   color: #A3A3A3;
   min-height: 1.2rem;
-  /* Ensures consistent height whether there's text or not */
 }
 
 .goal-progress {
@@ -241,6 +241,8 @@ button {
   .section-header h2 {
     font-size: 1.1rem;
     line-height: 1.4;
+    margin-bottom: -1.5rem;
+    font-weight: 500;
   }
 
   .goal-card,

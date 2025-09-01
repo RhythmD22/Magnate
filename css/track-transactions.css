@@ -18,8 +18,6 @@ button {
   background: none;
 }
 
-/* LAYOUT */
-
 /* MAIN CONTENT */
 .main-content {
   flex: 1;
@@ -210,6 +208,36 @@ button {
   color: #34D399;
 }
 
+.icon-btn {
+  cursor: pointer;
+  color: #9CA3AF;
+  transition: color 0.2s ease;
+  background-color: #2D2F34;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: auto;
+  vertical-align: middle;
+}
+
+@media (hover: hover) {
+  .icon-btn:hover {
+    color: #FFFFFF;
+    background-color: #3A3D42;
+  }
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
+}
+
 .transaction-actions {
   display: flex;
   flex-direction: column;
@@ -217,63 +245,82 @@ button {
   gap: 0.5rem;
 }
 
-.icon-btn {
-  cursor: pointer;
-  color: #9CA3AF;
-  transition: color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  height: auto;
-}
-
-@media (hover: hover) {
-  .icon-btn:hover {
-    color: #FFFFFF;
-  }
-}
-
-.icon-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* MEAL PLANNING */
-.meal-planning {
+/* TRANSACTION GROUPS */
+.transaction-groups {
   margin-top: 2rem;
   width: 100%;
 }
 
-.meal-planning h2 {
+.transaction-groups-title {
   font-size: 1.1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
 }
 
-.meal-card {
+.transaction-group-card {
   background-color: #181A1E;
   border: 1px solid #2D2F34;
   border-radius: 6px;
   padding: 1rem;
   margin-bottom: 1rem;
   position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.meal-title {
-  font-size: 1rem;
+.transaction-group-title {
+  font-size: 1.1rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  color: #FFFFFF;
 }
 
-.meal-category,
-.meal-description {
+.transaction-group-budget {
   font-size: 0.9rem;
   color: #A3A3A3;
-  margin-bottom: 0.5rem;
-  white-space: pre-wrap;
+  font-weight: 500;
 }
 
-.btn-meal {
+.transaction-group-total {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #FFFFFF;
+  padding: 0.5rem;
+  background-color: #2D2F34;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #2D2F34;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-item-title {
+  font-size: 0.95rem;
+  color: #CCCCCC;
+}
+
+.transaction-item-amount {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.transaction-item-amount.expense {
+  color: #F87171;
+}
+
+.transaction-item-amount.income {
+  color: #34D399;
+}
+
+.btn-transaction {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -287,66 +334,8 @@ button {
 }
 
 @media (hover: hover) {
-  .btn-meal:hover {
+  .btn-transaction:hover {
     background-color: #1043B1;
-  }
-}
-
-.btn-deduction {
-  background-color: #eb5245 !important;
-  color: #FFFFFF !important;
-  transition: background 0.2s ease;
-}
-
-@media (hover: hover) {
-  .btn-deduction:hover {
-    background-color: #dc2626 !important;
-  }
-}
-
-.meal-actions {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.meal-actions .icon-btn {
-  background-color: #2D2F34;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  height: auto;
-}
-
-@media (hover: hover) {
-  .meal-actions .icon-btn:hover {
-    background-color: #3A3D42;
-    color: #FFFFFF;
-  }
-}
-
-#btnAddMealPlan {
-  background-color: #1043B1;
-  color: #FFFFFF;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: none;
-  font-size: 0.9rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background 0.2s ease;
-}
-
-@media (hover: hover) {
-  #btnAddMealPlan:hover {
-    background-color: #2D6FE4;
   }
 }
 
@@ -366,6 +355,7 @@ button {
 .notes-title {
   font-size: 1.1rem;
   margin-bottom: -0.25rem;
+  font-weight: 500;
 }
 
 .notes-container {
@@ -517,44 +507,7 @@ button {
   color: #34D399 !important;
 }
 
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
-.modal-content {
-  background-color: #181A1E;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #2D2F34;
-  border-radius: 6px;
-  width: 90%;
-  max-width: 600px;
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-  color: #fff;
-  text-decoration: none;
-}
-
-/* ICONS*/
+/* ICONS */
 svg.icon {
   width: 20px;
   height: 20px;
@@ -603,6 +556,7 @@ svg.icon {
   .transactions-column h2 {
     font-size: 1.1rem;
     line-height: 1.4;
+    margin-bottom: 1rem;
   }
 
   .transaction-card {
@@ -630,35 +584,11 @@ svg.icon {
     line-height: 1.4;
   }
 
-  .meal-planning h2 {
+  .transaction-groups-title,
+  .notes-title {
     font-size: 1.1rem;
-    text-align: left;
-    align-self: flex-start;
-    width: 100%;
-    padding-left: 1rem;
-    /* Match container padding */
-    margin-left: -1rem;
     line-height: 1.4;
-  }
-
-  .meal-card {
-    padding: 0.75rem;
-  }
-
-  .meal-title {
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-
-  .meal-category,
-  .meal-description {
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-
-  .btn-meal {
-    font-size: 0.95rem;
-    padding: 0.5rem 0.9rem;
+    font-weight: 500;
   }
 
   .modal-content {

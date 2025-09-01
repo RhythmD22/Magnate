@@ -5,7 +5,6 @@ body {
   height: 100%;
   background-color: #0F1114;
   color: #FFFFFF;
-  /* Improved base font size for better readability */
   font-size: 16px;
   line-height: 1.5;
 }
@@ -143,7 +142,6 @@ body {
   body {
     height: 100%;
     overflow: hidden;
-    /* Improved base font size for mobile */
     font-size: 16px;
     line-height: 1.5;
   }
@@ -201,7 +199,6 @@ body {
     color: inherit;
     transition: background 0.2s ease;
     width: 100%;
-    /* Increased font size for better readability */
     font-size: 1.1rem;
   }
 
@@ -225,7 +222,6 @@ body {
     z-index: 102;
     font-size: 1.3rem;
     margin: 0;
-    /* Increased font size for better readability */
     line-height: 1.3;
   }
 
