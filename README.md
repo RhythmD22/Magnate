@@ -40,7 +40,7 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 
 - **Goal Setting:** Define and track financial goals with customizable categories.
 - **Expense & Income Tracking:** Add transactions with titles, amounts, categories, and dates.
-- **Meal Planning Deductions:** A unique feature allowing users to log planned expenses (e.g., groceries for the week) and deduct them from specific categories.
+- **Transaction Groups:** View transactions grouped by category with net totals and budget information.
 - **Notes Section:** Take and organize notes with markdown support, including headers, bold/italic text, links, and checklists.
 - **Visual Summaries:** Interactive charts (using Chart.js loaded via CDN) for weekly and monthly spending/income.
 - **Built-in Calculator:** A financial calculator with history, accessible within the app.
@@ -51,12 +51,12 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 ## Technology Stack
 
 - **Core Technologies**: HTML5, CSS3, JavaScript (ES6+)
-- **Data Storage**: `localStorage` for client-side data persistence.
-- **UI Framework**: Custom CSS with responsive design for mobile and desktop.
+- **Data Storage**: `localStorage` for client-side data persistence
+- **UI Framework**: Custom CSS with responsive design for mobile and desktop
 - **External Libraries**: 
-  - EasyMDE (loaded via CDN) for markdown-enabled notes editing in the Track Transactions section.
-  - Chart.js (loaded via CDN) for data visualization in the Analytics section.
-- **PWA Support**: Includes a service worker for offline functionality and installability.
+  - EasyMDE (loaded via CDN) for markdown-enabled notes editing in the Track Transactions section
+  - Chart.js (loaded via CDN) for data visualization in the Analytics section
+- **PWA Support**: Includes a service worker for offline functionality and installability
 
 ## License
 

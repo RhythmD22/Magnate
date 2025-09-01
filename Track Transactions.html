@@ -7,7 +7,6 @@
   <meta name="description" content="Smart Finance Management">
   <meta name="theme-color" content="#1043B1">
 
-  <!-- iOS specific meta tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Magnate">
@@ -18,21 +17,19 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
   <link rel="stylesheet" href="css/styles.css">
-  <!-- Link to page-specific CSS -->
   <link rel="stylesheet" href="css/track-transactions.css">
-  <!-- Include EasyMDE from CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 </head>
 
 <body>
   <div class="container">
-    <!-- Hamburger Button -->
+    <!-- Hamburger Button for mobile navigation -->
     <button class="hamburger" id="hamburger">
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
     </button>
-    <!-- SIDEBAR -->
+    <!-- Sidebar navigation menu -->
     <div class="sidebar" id="sidebar">
       <h2 style="display: flex; align-items: center;">
         <img src="android-chrome-512x512.png" alt="Magnate Logo"
@@ -134,8 +131,8 @@
         <p>Images courtesy of Undraw</p>
       </div>
     </div>
-    <!-- /SIDEBAR -->
-    <!-- MAIN CONTENT: TRACK TRANSACTIONS -->
+    <!-- /Sidebar -->
+    <!-- Main content area for tracking transactions -->
     <div class="main-content">
       <div class="content-wrapper">
         <h1 class="page-title">Track Transactions</h1>
@@ -183,7 +180,7 @@
           </button>
         </div>
 
-        <!-- WEEK CARD -->
+        <!-- Week navigation card -->
         <div class="week-card">
           <div class="week-card-header">
             <button id="prevWeekBtn" class="arrow-btn">&larr;</button>
@@ -191,13 +188,13 @@
             <button id="nextWeekBtn" class="arrow-btn">&rarr;</button>
           </div>
           <div class="transactions-grid">
-            <!-- Left Column: Expenses -->
+            <!-- Expenses column -->
             <div class="transactions-column" id="expensesColumn">
               <h2>Expenses</h2>
               <!-- Transactions will be rendered here -->
             </div>
 
-            <!-- Right Column: Income -->
+            <!-- Income column -->
             <div class="transactions-column" id="incomeColumn">
               <h2>Income</h2>
               <!-- Transactions will be rendered here -->
@@ -205,14 +202,13 @@
           </div>
         </div>
 
-        <!-- MEAL PLANNING SECTION -->
-        <div class="meal-planning">
-          <h2 class="page-title meal-planning-title">Plan meals/track your grocery budget</h2>
-          <div id="mealPlanContainer"></div>
-          <button id="btnAddMealPlan">+ Create Meal Plan</button>
+        <!-- Transaction groups section -->
+        <div class="transaction-groups">
+          <h2 class="transaction-groups-title">Transaction Groups</h2>
+          <div id="transactionGroupsContainer"></div>
         </div>
 
-        <!-- NOTES SECTION -->
+        <!-- Notes section -->
         <div class="notes-section">
           <div class="notes-header">
             <h2 class="notes-title">Notes</h2>
@@ -225,18 +221,7 @@
     </div> <!-- /main-content -->
   </div> <!-- /container -->
 
-  <!-- Modal for Editing Description -->
-  <div id="descriptionModal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h2>Edit Meal Plan Description</h2>
-      <textarea id="descriptionInput" rows="5" style="width:100%;"></textarea>
-      <button id="saveDescription" class="btn-meal" style="margin-top: 1rem;">Save</button>
-    </div>
-  </div>
-
   <script src="js/navigation.js"></script>
-  <!-- Link to page-specific JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <script src="js/track-transactions.js"></script>
 </body>

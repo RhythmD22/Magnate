@@ -7,7 +7,6 @@
     <meta name="description" content="Smart Finance Management">
     <meta name="theme-color" content="#1043B1">
 
-    <!-- iOS specific meta tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Magnate">
@@ -18,21 +17,19 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Include Chart.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Link to page-specific CSS -->
     <link rel="stylesheet" href="css/analytics.css">
 </head>
 
 <body>
     <div class="container">
-        <!-- Hamburger Button -->
+        <!-- Hamburger Button for mobile navigation -->
         <button class="hamburger" id="hamburger">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
         </button>
-        <!-- SIDEBAR -->
+        <!-- Sidebar navigation menu -->
         <div class="sidebar" id="sidebar">
             <h2 style="display: flex; align-items: center;">
                 <img src="android-chrome-512x512.png" alt="Magnate Logo"
@@ -134,8 +131,8 @@
                 <p>Images courtesy of Undraw</p>
             </div>
         </div>
-        <!-- /SIDEBAR -->
-        <!-- MAIN CONTENT -->
+        <!-- /Sidebar -->
+        <!-- Main content area for analytics -->
         <div class="main-content">
             <div class="content-wrapper">
                 <!-- PAGE TITLE -->
@@ -168,7 +165,7 @@
                         </div>
                     </div>
 
-                    <!-- Progress Circle Card -->
+                    <!-- Progress circle visualization card -->
                     <div class="progress-card">
                         <div class="progress-circle">
                             <div class="circle-container">
@@ -192,11 +189,11 @@
                         </div>
                     </div>
                 </div>
-                <!-- /TOP SECTION -->
+                <!-- End of top section -->
 
-                <!-- GRAPH ROW -->
+                <!-- Graph row containing weekly expenses/income overview and category cards -->
                 <div class="graph-row">
-                    <!-- Weekly Expenses/Income Overview Graph -->
+                    <!-- Weekly expenses/income overview graph -->
                     <div class="weekly-expenses-card">
                         <h2 style="font-size: 1.1rem;">Weekly Expenses/Income Overview</h2>
                         <div class="week-nav">
@@ -209,7 +206,7 @@
                         </div>
                     </div>
 
-                    <!-- Weekly Category Card with Toggle -->
+                    <!-- Weekly category card with toggle functionality -->
                     <div class="total-expenses-card">
                         <div class="card-header" style="display: flex; align-items: center; width: 100%;">
                             <div class="expenses-title" id="categoryCardTitle">Weekly Spending by Category:</div>
@@ -221,9 +218,9 @@
                         <div id="categoriesCards"></div>
                     </div>
                 </div>
-                <!-- /GRAPH ROW -->
+                <!-- End of graph row -->
 
-                <!-- MONTHLY CARD WRAPPER -->
+                <!-- Monthly category wrapper -->
                 <div class="monthly-category-wrapper">
                     <div class="card-header" style="display: flex; align-items: center; width: 100%;">
                         <div class="expenses-title" id="monthlyCardTitle">Monthly Spending by Category:</div>
@@ -234,13 +231,12 @@
                     </div>
                     <div id="monthlyCategoryCards"></div>
                 </div>
-                <!-- /MONTHLY CARD WRAPPER -->
+                <!-- End of monthly category wrapper -->
             </div> <!-- /content-wrapper -->
         </div> <!-- /main-content -->
     </div> <!-- /container -->
 
     <script src="js/navigation.js"></script>
-    <!-- Link to page-specific JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/analytics.js"></script>
     <script src="js/csv-handler.js"></script>

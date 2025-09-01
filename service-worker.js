@@ -49,13 +49,11 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve cached content when offline
 self.addEventListener('fetch', event => {
-  // For static sites, we can use a simpler cache-first strategy
   event.respondWith(
     caches.match(event.request)
       .then(response => {
         // Return cached version or fetch from network
         return response || fetch(event.request).catch(() => {
-          // For navigation requests, return index.html as fallback
           if (event.request.mode === 'navigate') {
             return caches.match('/Magnate/index.html');
           }
