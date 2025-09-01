@@ -48,16 +48,6 @@ function exportCSV() {
     let categories = JSON.parse(localStorage.getItem('categories')) || [];
     let categoryBudgets = JSON.parse(localStorage.getItem('categoryBudgets')) || {};
     let goals = JSON.parse(localStorage.getItem('goals')) || [];
-    let mealPlans = JSON.parse(localStorage.getItem('mealPlans')) || [
-        {
-            id: "default",
-            title: "Meal Plan",
-            category:
-                "For accurate analytics, please use consistent category names across all entries (expenses, incomes, and meal plans). For example, if you label an expense as 'Groceries,' use 'Groceries' for your meal plan category as well.",
-            description: "",
-            deductions: []
-        }
-    ];
     let calculatorHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
     let notes = localStorage.getItem('notes') || ''; // Get notes from localStorage
     let currentWeekStart = localStorage.getItem('currentWeekStart') || '';
@@ -107,28 +97,9 @@ function exportCSV() {
     });
     csvContent += '\n';
 
-    // Meal Plans Section
-    csvContent += 'Meal Plan ID,Title,Category,Description,Deductions\n';
-    mealPlans.forEach(plan => {
-        // Skip the default plan
-        if (plan.id === "default") return;
-
-        // Process deductions
-        let deductionsStr = '';
-        if (plan.deductions && plan.deductions.length > 0) {
-            deductionsStr = plan.deductions.map(d => {
-                return `${escapeCSVField(d.description)}|${escapeCSVField(d.category)}|${d.amount}`;
-            }).join(';');
-        }
-
-        csvContent += `${plan.id},${escapeCSVField(plan.title)},${escapeCSVField(plan.category)},${escapeCSVField(plan.description)},"${deductionsStr}"\n`;
-    });
-    csvContent += '\n';
-
     // Calculator History Section
     csvContent += 'Calculation,Timestamp\n';
     calculatorHistory.forEach(entry => {
-        // New format with timestamp
         // Format the ISO timestamp for export
         const dateObj = new Date(entry.timestamp);
         // Export format: MM/DD/YYYY HH:MM
@@ -187,16 +158,6 @@ function parseCSVData(csvData) {
     let newCategories = [...existingCategories]; // Start with existing categories
     let newCategoryBudgets = {};
     let newGoals = []; // New array for goals
-    let newMealPlans = [
-        {
-            id: "default",
-            title: "Meal Plan",
-            category:
-                "For accurate analytics, please use consistent category names across all entries (expenses, incomes, and meal plans). For example, if you label an expense as 'Groceries,' use 'Groceries' for your meal plan category as well.",
-            description: "",
-            deductions: []
-        }
-    ]; // Start with default meal plan
     let newCalculatorHistory = []; // New array for calculator history
     let newNotes = ''; // New variable for notes
     let newCurrentWeekStart = '';
@@ -225,9 +186,6 @@ function parseCSVData(csvData) {
             continue;
         } else if (line === 'Goal ID,Title,Description,Current,Target') {
             section = 'goals';
-            continue;
-        } else if (line === 'Meal Plan ID,Title,Category,Description,Deductions') {
-            section = 'mealPlans';
             continue;
         } else if (line === 'Calculation,Timestamp') {
             section = 'calculatorHistory';
@@ -339,44 +297,6 @@ function parseCSVData(csvData) {
                 }
                 break;
 
-            case 'mealPlans':
-                if (values.length >= 5) {
-                    const [id, title, category, description, deductions] = values;
-
-                    // Parse deductions if they exist
-                    let deductionArray = [];
-                    if (deductions && deductions !== '""' && deductions !== '"' && deductions !== '') {
-                        // Remove surrounding quotes if they exist
-                        let deductionsStr = deductions;
-                        if (deductionsStr.startsWith('"') && deductionsStr.endsWith('"')) {
-                            deductionsStr = deductionsStr.slice(1, -1);
-                        }
-                        // Split by semicolon to get each deduction
-                        const deductionItems = deductionsStr.split(';');
-                        deductionArray = deductionItems.map(item => {
-                            // Split by pipe to get description, category, and amount
-                            const parts = item.split('|');
-                            return {
-                                description: parts[0] || '',
-                                category: parts[1] || '',
-                                amount: parseFloat(parts[2]) || 0
-                            };
-                        });
-                    }
-
-                    // Skip the default plan
-                    if (id !== "default") {
-                        newMealPlans.push({
-                            id: id || Date.now() + Math.floor(Math.random() * 10000),
-                            title: title || '',
-                            category: category || '',
-                            description: description || '',
-                            deductions: deductionArray
-                        });
-                    }
-                }
-                break;
-
             case 'calculatorHistory':
                 if (values.length >= 1) {
                     const [calculation, timestamp] = values;
@@ -422,7 +342,6 @@ function parseCSVData(csvData) {
                         nextLine === 'Category,Default Budget' ||
                         nextLine === 'Month,Category,Monthly Budget' ||
                         nextLine === 'Goal ID,Title,Description,Current,Target' ||
-                        nextLine === 'Meal Plan ID,Title,Category,Description,Deductions' ||
                         nextLine === 'Calculation,Timestamp') {
                         break;
                     }
@@ -455,8 +374,6 @@ function parseCSVData(csvData) {
                         section = 'categoryBudgets';
                     } else if (nextLine === 'Goal ID,Title,Description,Current,Target') {
                         section = 'goals';
-                    } else if (nextLine === 'Meal Plan ID,Title,Category,Description,Deductions') {
-                        section = 'mealPlans';
                     } else if (nextLine === 'Calculation,Timestamp') {
                         section = 'calculatorHistory';
                     }
@@ -482,7 +399,6 @@ function parseCSVData(csvData) {
         localStorage.setItem('categories', JSON.stringify(newCategories));
         localStorage.setItem('categoryBudgets', JSON.stringify(newCategoryBudgets));
         localStorage.setItem('goals', JSON.stringify(newGoals)); // Save goals
-        localStorage.setItem('mealPlans', JSON.stringify(newMealPlans)); // Save meal plans
         localStorage.setItem('calcHistory', JSON.stringify(newCalculatorHistory)); // Save calculator history
         localStorage.setItem('notes', newNotes); // Save notes
         if (newCurrentWeekStart) {

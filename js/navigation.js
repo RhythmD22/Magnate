@@ -1,4 +1,3 @@
-// Hamburger menu toggle
 const hamburger = document.getElementById('hamburger');
 const sidebar = document.getElementById('sidebar');
 
@@ -10,9 +9,8 @@ hamburger.addEventListener('click', () => {
 // Swipe to close sidebar functionality
 let touchStartX = 0;
 let touchEndX = 0;
-const minSwipeDistance = 50; // Minimum distance to register as a swipe
+const minSwipeDistance = 50;
 
-// Add touch event listeners to the sidebar for swipe detection
 sidebar.addEventListener('touchstart', (e) => {
   touchStartX = e.changedTouches[0].screenX;
 }, { passive: true });
@@ -35,7 +33,7 @@ function handleSwipe() {
   }
 }
 
-// Optional: Add swipe detection to the entire container for better UX
+// Add swipe detection to the entire container for better UX
 const container = document.querySelector('.container');
 container.addEventListener('touchstart', (e) => {
   touchStartX = e.changedTouches[0].screenX;

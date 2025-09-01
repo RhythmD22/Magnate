@@ -1,4 +1,3 @@
-// Main application logic wrapped in DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function () {
 
     // Prompt helper
@@ -121,17 +120,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateAnalytics() {
-        console.log("Goals:", goals);
-        console.log("Categories:", categories);
-        console.log("Monthly Budgets:", monthlyBudgets);
-        console.log("Category Budgets:", categoryBudgets);
         saveData();
     }
 
     // Render Goals
     function renderGoals() {
         const container = document.getElementById('goalsContainer');
-        if (!container) return; // Check if element exists
+        if (!container) return;
         container.innerHTML = "";
         goals.forEach(goal => {
             const card = document.createElement('div');
@@ -193,10 +188,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Render Expense Categories with monthly budget and month navigation (using global selectedMonth)
+    // Render Expense Categories with monthly budget and month navigation
     function renderCategories() {
         const container = document.getElementById('categoriesContainer');
-        if (!container) return; // Check if element exists
+        if (!container) return;
         container.innerHTML = "";
 
         let monthKey = getMonthKey(selectedMonth);

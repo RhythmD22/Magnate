@@ -1,15 +1,12 @@
-// Load and display calculation history from localStorage
 const calcHistoryElement = document.getElementById('calcHistory');
 let calcHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
 
-// Convert old format entries (strings) to new format (objects with timestamp)
-// For backward compatibility, we'll use a generic "Imported" timestamp for old entries
 let needsSave = false;
 for (let i = 0; i < calcHistory.length; i++) {
   if (typeof calcHistory[i] === 'string') {
     calcHistory[i] = {
       calculation: calcHistory[i],
-      timestamp: new Date().toISOString() // Use current time for imported entries
+      timestamp: new Date().toISOString()
     };
     needsSave = true;
   }
@@ -24,15 +21,12 @@ function loadCalcHistory() {
   calcHistoryElement.innerHTML = '';
   calcHistory.forEach((entry, index) => {
     const div = document.createElement('div');
-    // All entries should now be in the new format, but we'll keep the check for safety
     if (typeof entry === 'object' && entry.calculation && entry.timestamp) {
       // Format the ISO timestamp for display
       const dateObj = new Date(entry.timestamp);
-      // Display format: MM/DD/YYYY HH:MM
       const displayTimestamp = dateObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
         dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
-      // New format with timestamp and delete button
       div.className = 'history-entry';
       div.innerHTML = `
         <span class="calculation">${entry.calculation}</span>
@@ -44,7 +38,6 @@ function loadCalcHistory() {
         </button>
       `;
 
-      // Add event listener for delete button
       const deleteBtn = div.querySelector('.delete-btn');
       deleteBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -52,22 +45,16 @@ function loadCalcHistory() {
         deleteHistoryEntry(index);
       });
 
-      // Add click/tap behavior for mobile
       div.addEventListener('click', function (e) {
-        // Check if it's a touch device and the click wasn't on the delete button
         if (('ontouchstart' in window || navigator.maxTouchPoints) && e.target !== deleteBtn) {
-          // Prevent default to avoid triggering computation
           e.preventDefault();
 
-          // Toggle selected class
           const isSelected = this.classList.contains('selected');
 
-          // Remove selected class from all entries
           document.querySelectorAll('.history-entry').forEach(entry => {
             entry.classList.remove('selected');
           });
 
-          // Add selected class to this entry if it wasn't already selected
           if (!isSelected) {
             this.classList.add('selected');
           }
@@ -76,16 +63,13 @@ function loadCalcHistory() {
 
       calcHistoryElement.prepend(div);
     } else {
-      // Fallback for any unexpected format
       console.warn('Unexpected history entry format:', entry);
     }
   });
 }
 
 function addHistoryEntry(entryText) {
-  // Create an object with the calculation and timestamp
   const now = new Date();
-  // Store in ISO format for consistency and easy parsing
   const isoTimestamp = now.toISOString();
   const historyEntry = {
     calculation: entryText,
@@ -113,7 +97,6 @@ document.getElementById('clearHistoryBtn').addEventListener('click', () => {
   }
 });
 
-// Calculator logic
 const calcDisplay = document.getElementById('calcDisplay');
 let currentValue = '0';
 let storedValue = null;
@@ -143,11 +126,9 @@ function appendNumber(num) {
 }
 
 function chooseOperation(op) {
-  // If we have a pending operation, compute it first
   if (currentOperation && storedValue !== null) {
     compute();
   }
-  // If we don't have a stored value yet, store the current value
   if (storedValue === null) {
     storedValue = currentValue;
   }
@@ -172,12 +153,11 @@ function compute() {
   }
   result = parseFloat(result.toFixed(8));
 
-  // Log calculation to history
   const entry = `${storedValue} ${currentOperation} ${currentValue} = ${result}`;
   addHistoryEntry(entry);
 
   currentValue = result.toString();
-  storedValue = result.toString(); // Keep the result as the new stored value for chaining
+  storedValue = result.toString();
   currentOperation = null;
   updateDisplay(currentValue);
   shouldReset = true;

@@ -562,5 +562,4 @@ function updateMonthlyCategoryCards() {
     }
 }
 
-/* Final Render Calls */
 updateAnalytics();

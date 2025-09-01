@@ -1,4 +1,3 @@
-// Mapping of categories to their corresponding colors.
 const categoryColors = {
   "subscriptions": "#5C6BC0",
   "food": "#FF9800",
@@ -10,7 +9,6 @@ const categoryColors = {
   "entertainment": "#AA00FF"
 };
 
-// Bank of money-saving tips per category.
 const tipsBank = {
   "subscriptions": [
     "Audit all your subscriptions monthly.",

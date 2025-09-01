@@ -11,18 +11,17 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Redirect logic wrapped in DOMContentLoaded
+// DOM Ready Initializations
 document.addEventListener('DOMContentLoaded', function () {
+  // Redirect from old path
   if (window.location.pathname === '/Financier/index.html') {
     window.location.replace('/Financier/');
   }
 
-  // Hamburger menu toggle and swipe functionality
-  // These will run after the DOM is fully loaded as well
+  // Get Started button animation and navigation
   const getStartedBtn = document.getElementById('getStartedBtn');
   if (getStartedBtn) {
     getStartedBtn.addEventListener('click', function () {
-      // Add animation effect on click
       getStartedBtn.classList.add('clicked');
       setTimeout(() => {
         window.location.href = "Goals%20%26%20Categories.html";
@@ -30,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Add hover effects to feature cards
+  // Feature cards hover effects
   const featureCards = document.querySelectorAll('.card');
   featureCards.forEach(card => {
     card.addEventListener('mouseenter', function () {
