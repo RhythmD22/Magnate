@@ -6,6 +6,21 @@ hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('active');
 });
 
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+  // Only apply on mobile devices (when hamburger is visible)
+  if (window.innerWidth <= 768) {
+    // Check if sidebar is currently open
+    if (sidebar.classList.contains('active')) {
+      // Check if the click is outside the sidebar and hamburger button
+      if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+        sidebar.classList.remove('active');
+        hamburger.classList.remove('active');
+      }
+    }
+  }
+});
+
 // Swipe to close sidebar functionality
 let touchStartX = 0;
 let touchEndX = 0;
