@@ -273,31 +273,86 @@ document.addEventListener('DOMContentLoaded', function () {
     function editGoal(id) {
         let goal = goals.find(g => g.id === id);
         if (goal) {
+            // Track whether we have any changes to save
+            let hasChanges = false;
+
+            // Title prompt
             let newTitle = prompt("Edit goal title:", goal.title);
-            if (newTitle === null) return;
-            newTitle = sanitizeText(newTitle.trim());
-            if (newTitle === "") newTitle = goal.title;
-
-            let newDesc = prompt("Edit goal description:", goal.description);
-            if (newDesc === null) return;
-            newDesc = sanitizeText(newDesc.trim());
-
-            let newCurrent = promptNumber("Edit current saved amount (current: " + goal.current + "):");
-            if (newCurrent === null) return;
-
-            let newTarget = promptNumber("Edit goal target amount (current: " + goal.target + "):");
-            if (newTarget === null) return;
-            if (newTarget <= 0) {
-                alert("Target must be greater than 0.");
+            if (newTitle === null) {
+                // User cancelled, but we might have previous changes to save
+                if (hasChanges) {
+                    renderGoals();
+                    updateAnalytics();
+                }
                 return;
             }
+            newTitle = sanitizeText(newTitle.trim());
+            if (newTitle === "") newTitle = goal.title;
+            if (newTitle !== goal.title) {
+                goal.title = newTitle;
+                hasChanges = true;
+            }
 
-            goal.title = newTitle;
-            goal.description = newDesc;
-            goal.current = newCurrent;
-            goal.target = newTarget;
-            renderGoals();
-            updateAnalytics();
+            // Description prompt
+            let newDesc = prompt("Edit goal description:", goal.description);
+            if (newDesc === null) {
+                // User cancelled, but we might have previous changes to save
+                if (hasChanges) {
+                    renderGoals();
+                    updateAnalytics();
+                }
+                return;
+            }
+            newDesc = sanitizeText(newDesc.trim());
+            if (newDesc !== goal.description) {
+                goal.description = newDesc;
+                hasChanges = true;
+            }
+
+            // Current amount prompt
+            let newCurrent = promptNumber("Edit current saved amount (current: " + goal.current + "):");
+            if (newCurrent === null) {
+                // User cancelled, but we might have previous changes to save
+                if (hasChanges) {
+                    renderGoals();
+                    updateAnalytics();
+                }
+                return;
+            }
+            if (newCurrent !== goal.current) {
+                goal.current = newCurrent;
+                hasChanges = true;
+            }
+
+            // Target amount prompt
+            let newTarget = promptNumber("Edit goal target amount (current: " + goal.target + "):");
+            if (newTarget === null) {
+                // User cancelled, but we might have previous changes to save
+                if (hasChanges) {
+                    renderGoals();
+                    updateAnalytics();
+                }
+                return;
+            }
+            if (newTarget <= 0) {
+                alert("Target must be greater than 0.");
+                // Even if there was an error, save any previous valid changes
+                if (hasChanges) {
+                    renderGoals();
+                    updateAnalytics();
+                }
+                return;
+            }
+            if (newTarget !== goal.target) {
+                goal.target = newTarget;
+                hasChanges = true;
+            }
+
+            // If we have changes, render and update
+            if (hasChanges) {
+                renderGoals();
+                updateAnalytics();
+            }
         }
     }
 
@@ -313,10 +368,19 @@ document.addEventListener('DOMContentLoaded', function () {
     function editCategory(id) {
         let cat = categories.find(c => c.id === id);
         if (cat) {
+            let hasChanges = false;
+
             let newName = prompt("Edit category name:", cat.name);
-            if (newName === null) return;
+            if (newName === null) {
+                // No changes to save for category edit
+                return;
+            }
             newName = newName.trim();
             if (newName === "") newName = cat.name;
+            if (newName !== cat.name) {
+                cat.name = newName;
+                hasChanges = true;
+            }
 
             let monthKey = getMonthKey(selectedMonth);
             // Ensure an object for this month exists
@@ -327,13 +391,26 @@ document.addEventListener('DOMContentLoaded', function () {
             const catIdStr = String(cat.id);
             let currentBudget = categoryBudgets[monthKey][catIdStr] !== undefined ? categoryBudgets[monthKey][catIdStr] : cat.budget;
             let newBudget = promptNumber("Edit monthly budget for " + cat.name + " (current: " + currentBudget + "):");
-            if (newBudget === null) return;
+            if (newBudget === null) {
+                // User cancelled budget edit, but save name change if it happened
+                if (hasChanges) {
+                    renderCategories();
+                    updateAnalytics();
+                }
+                return;
+            }
+            if (newBudget !== currentBudget) {
+                // Update the budget in the categoryBudgets for the current month
+                categoryBudgets[monthKey][catIdStr] = newBudget;
+                localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
+                hasChanges = true;
+            }
 
-            // Update the budget in the categoryBudgets for the current month
-            categoryBudgets[monthKey][catIdStr] = newBudget;
-            localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
-            renderCategories();
-            updateAnalytics();
+            // If we have changes, render and update
+            if (hasChanges) {
+                renderCategories();
+                updateAnalytics();
+            }
         }
     }
 
