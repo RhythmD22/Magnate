@@ -1,24 +1,22 @@
 const hamburger = document.getElementById('hamburger');
 const sidebar = document.getElementById('sidebar');
 
+// Create backdrop element
+const backdrop = document.createElement('div');
+backdrop.className = 'sidebar-backdrop';
+document.body.appendChild(backdrop);
+
 hamburger.addEventListener('click', () => {
   sidebar.classList.toggle('active');
   hamburger.classList.toggle('active');
+  backdrop.classList.toggle('active');
 });
 
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-  // Only apply on mobile devices (when hamburger is visible)
-  if (window.innerWidth <= 768) {
-    // Check if sidebar is currently open
-    if (sidebar.classList.contains('active')) {
-      // Check if the click is outside the sidebar and hamburger button
-      if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-        sidebar.classList.remove('active');
-        hamburger.classList.remove('active');
-      }
-    }
-  }
+// Close sidebar when clicking on backdrop
+backdrop.addEventListener('click', () => {
+  sidebar.classList.remove('active');
+  hamburger.classList.remove('active');
+  backdrop.classList.remove('active');
 });
 
 // Swipe to close sidebar functionality
@@ -44,6 +42,7 @@ function handleSwipe() {
     if (sidebar.classList.contains('active')) {
       sidebar.classList.remove('active');
       hamburger.classList.remove('active');
+      backdrop.classList.remove('active');
     }
   }
 }
