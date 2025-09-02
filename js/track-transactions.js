@@ -17,6 +17,16 @@ function getLocalDateString(d) {
   });
 }
 
+// Function to format ISO date string for display in prompts
+function formatDateForPrompt(isoDateString) {
+  // For ISO date strings (YYYY-MM-DD), we want to display them as MM/DD/YYYY
+  if (isoDateString && isoDateString.includes("-")) {
+    const [year, month, day] = isoDateString.split("-");
+    return `${month}/${day}/${year}`;
+  }
+  return isoDateString;
+}
+
 function promptDate(message, defaultDate) {
   defaultDate = defaultDate || new Date();
   let defaultString = getLocalDateString(defaultDate);
@@ -203,7 +213,9 @@ function editTransaction(id, type) {
     // Date editing with validation
     let newDate;
     do {
-      newDate = prompt("Edit date (MM/DD/YYYY):", getLocalDateString(new Date(item.date)));
+      // Use formatDateForPrompt to correctly format the stored date for display
+      const currentDateString = formatDateForPrompt(item.date);
+      newDate = prompt("Edit date (MM/DD/YYYY):", currentDateString);
       if (newDate === null) return; // User cancelled
 
       newDate = newDate.trim();
