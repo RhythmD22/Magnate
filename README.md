@@ -2,7 +2,7 @@
 
 ## Overview
 
-Magnate is a lightweight web application designed for anyone who wants to take control of their finances. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
+Magnate is a lightweight web application designed for anyone who wants to take control of their finances. Magnate is a spinoff of the Financier project, building upon its foundation to create a more mature and developed version with enhanced features. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
 
 ## Getting Started
 
@@ -30,7 +30,7 @@ The web app consists of several static HTML pages, each serving a specific funct
 - `index.html`: The main landing page with quick links to other sections.
 - `Goals & Categories.html`: Configure custom categories and set financial goals.
 - `Track Transactions.html`: Record income and expenses for each category.
-- `Analytics.html`: View charts summarizing weekly and monthly spending trends (uses Chart.js for data visualization).
+- `Analytics.html`: View charts summarizing weekly and monthly spending trends.
 - `Calculator.html`: Perform calculations without leaving the app.
 - `Money Tips.html`: Browse practical budgeting advice.
 
@@ -40,13 +40,24 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 
 - **Goal Setting:** Define and track financial goals with customizable categories.
 - **Expense & Income Tracking:** Add transactions with titles, amounts, categories, and dates.
-- **Transaction Groups:** View transactions grouped by category with net totals and budget information.
-- **Notes Section:** Take and organize notes with markdown support, including headers, bold/italic text, links, and checklists.
 - **Visual Summaries:** Interactive charts (using Chart.js loaded via CDN) for weekly and monthly spending/income.
 - **Built-in Calculator:** A financial calculator with history, accessible within the app.
 - **Budgeting Tips:** Static content providing financial advice.
 - **Local Data Storage:** All data is saved in the browser's `localStorage` and can be exported/imported as a CSV file.
 - **PWA Support:** Can be installed on mobile devices for a native app-like experience with offline capabilities.
+
+## New Features and Improvements
+
+- **Transaction Groups Section (NEW)**: Replaced the meal plan section with a new Transaction Groups feature to group transactions and display budget information.
+- **Notes Section (NEW)**: Added a new notes section with markdown support via EasyMDE CDN integration.
+- **UI Improvements**: Added background containers for SVG action buttons in Track Transactions for better visual consistency.
+- **UI Consistency**: Fixed font sizing and spacing issues between headings and containers for improved consistency in Goals & Categories and Track Transactions pages.
+- **Calculator Logic**: Improved sequential calculator with more robust logic for handling operations.
+- **Layout Optimization**: Switched from grid to Flexbox layout in the Calculator section to prevent display movement during calculations.
+- **Calculation Management (NEW)**: Added timestamps to each calculation included in the CSV export/import functionality.
+- **Transaction Deletion (NEW)**: Implemented the ability to delete individual transactions.
+- **Category Update**: Changed "Textbooks" category to "Subscriptions" to better serve the target audience.
+- **Content Updates**: Revised various tips to better align with the website's audience and goals.
 
 ## Technology Stack
 
