@@ -48,16 +48,19 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 
 ## New Features and Improvements
 
-- **Transaction Groups Section (NEW)**: Replaced the meal plan section with a new Transaction Groups feature to group transactions and display budget information.
-- **Notes Section (NEW)**: Added a new notes section with markdown support via EasyMDE CDN integration.
-- **UI Improvements**: Added background containers for SVG action buttons in Track Transactions for better visual consistency.
+- **Improved Mobile Spacing**: Increased vertical spacing in Financial Goals cards on mobile devices for better readability and usability.
+- **Partial Save Functionality**: Implemented partial save functionality for goal, category, and transaction editing, allowing users to save completed prompts even if they cancel subsequent prompts.
 - **UI Consistency**: Fixed font sizing and spacing issues between headings and containers for improved consistency in Goals & Categories and Track Transactions pages.
+- **Transaction Groups Section**: Replaced the meal plan section with a new Transaction Groups feature to group transactions and display budget information.
+- **Notes Section**: Added a new notes section with markdown support via EasyMDE CDN integration.
+- **UI Improvements**: Added background containers for SVG action buttons in Track Transactions for better visual consistency.
 - **Calculator Logic**: Improved sequential calculator with more robust logic for handling operations.
 - **Layout Optimization**: Switched from grid to Flexbox layout in the Calculator section to prevent display movement during calculations.
-- **Calculation Management (NEW)**: Added timestamps to each calculation included in the CSV export/import functionality.
-- **Transaction Deletion (NEW)**: Implemented the ability to delete individual transactions.
+- **Calculation Management**: Added timestamps to each calculation included in the CSV export/import functionality.
+- **Transaction Deletion**: Implemented the ability to delete individual transactions.
 - **Category Update**: Changed "Textbooks" category to "Subscriptions" to better serve the target audience.
 - **Content Updates**: Revised various tips to better align with the website's audience and goals.
+- **Mobile Sidebar Close Functionality**: Added functionality to close the sidebar on mobile devices when tapping outside the sidebar area, with a backdrop overlay to prevent accidental taps on main content.
 
 ## Technology Stack
 
