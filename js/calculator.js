@@ -99,9 +99,9 @@ document.getElementById('clearHistoryBtn').addEventListener('click', () => {
 
 const calcDisplay = document.getElementById('calcDisplay');
 let currentValue = '0';
-let storedValue = null;
+let previousValue = null;
 let currentOperation = null;
-let shouldReset = false;
+let waitingForOperand = false;
 
 function updateDisplay(value) {
   calcDisplay.textContent = value;
@@ -109,94 +109,162 @@ function updateDisplay(value) {
 
 function clearAll() {
   currentValue = '0';
-  storedValue = null;
+  previousValue = null;
   currentOperation = null;
-  shouldReset = false;
+  waitingForOperand = false;
   updateDisplay(currentValue);
 }
 
-function appendNumber(num) {
-  if (currentValue === '0' || shouldReset) {
-    currentValue = num;
-    shouldReset = false;
+function inputDigit(digit) {
+  if (waitingForOperand) {
+    currentValue = digit;
+    waitingForOperand = false;
   } else {
-    currentValue += num;
+    currentValue = currentValue === '0' ? digit : currentValue + digit;
   }
   updateDisplay(currentValue);
 }
 
-function chooseOperation(op) {
-  if (currentOperation && storedValue !== null) {
-    compute();
+function inputDecimal() {
+  if (waitingForOperand) {
+    currentValue = '0.';
+    waitingForOperand = false;
+  } else if (!currentValue.includes('.')) {
+    currentValue += '.';
   }
-  if (storedValue === null) {
-    storedValue = currentValue;
-  }
-  currentOperation = op;
-  shouldReset = true;
+  updateDisplay(currentValue);
 }
 
-function compute() {
-  if (!currentOperation || storedValue === null) return;
-  const prev = parseFloat(storedValue);
-  const current = parseFloat(currentValue);
-  let result = 0;
-  switch (currentOperation) {
-    case '+': result = prev + current; break;
-    case '-': result = prev - current; break;
-    case '*': result = prev * current; break;
-    case '/':
-      if (current === 0) { alert('Cannot divide by zero'); return; }
-      result = prev / current;
-      break;
-    default: return;
+function handleOperator(nextOperator) {
+  const inputValue = parseFloat(currentValue);
+
+  if (previousValue === null) {
+    previousValue = inputValue;
+  } else if (currentOperation) {
+    const currentValueFloat = parseFloat(currentValue);
+    let result = 0;
+
+    switch (currentOperation) {
+      case '+':
+        result = previousValue + currentValueFloat;
+        break;
+      case '-':
+        result = previousValue - currentValueFloat;
+        break;
+      case '*':
+        result = previousValue * currentValueFloat;
+        break;
+      case '/':
+        if (currentValueFloat === 0) {
+          alert('Cannot divide by zero');
+          clearAll();
+          return;
+        }
+        result = previousValue / currentValueFloat;
+        break;
+    }
+
+    result = parseFloat(result.toPrecision(12));
+    currentValue = `${result}`;
+    updateDisplay(currentValue);
+    previousValue = result;
+
+    // Add to history
+    const entry = `${previousValue} ${currentOperation} ${currentValueFloat} = ${result}`;
+    addHistoryEntry(entry);
   }
-  result = parseFloat(result.toFixed(8));
 
-  const entry = `${storedValue} ${currentOperation} ${currentValue} = ${result}`;
-  addHistoryEntry(entry);
+  waitingForOperand = true;
+  currentOperation = nextOperator;
+}
 
-  currentValue = result.toString();
-  storedValue = result.toString();
-  currentOperation = null;
+function handleEquals() {
+  if (currentOperation && previousValue !== null) {
+    const inputValue = parseFloat(currentValue);
+    let result = 0;
+
+    switch (currentOperation) {
+      case '+':
+        result = previousValue + inputValue;
+        break;
+      case '-':
+        result = previousValue - inputValue;
+        break;
+      case '*':
+        result = previousValue * inputValue;
+        break;
+      case '/':
+        if (inputValue === 0) {
+          alert('Cannot divide by zero');
+          clearAll();
+          return;
+        }
+        result = previousValue / inputValue;
+        break;
+    }
+
+    result = parseFloat(result.toPrecision(12));
+
+    // Add to history
+    const entry = `${previousValue} ${currentOperation} ${inputValue} = ${result}`;
+    addHistoryEntry(entry);
+
+    currentValue = `${result}`;
+    updateDisplay(currentValue);
+
+    // Reset for next calculation
+    previousValue = null;
+    currentOperation = null;
+    waitingForOperand = true;
+  }
+}
+
+function handleSign() {
+  currentValue = parseFloat(currentValue) * -1 + '';
   updateDisplay(currentValue);
-  shouldReset = true;
+}
+
+function handlePercent() {
+  currentValue = parseFloat(currentValue) / 100 + '';
+  updateDisplay(currentValue);
 }
 
 document.querySelectorAll('.calc-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const num = btn.getAttribute('data-num');
     const action = btn.getAttribute('data-action');
+
     if (num !== null) {
-      if (num === '.' && currentValue.includes('.')) return;
-      appendNumber(num);
+      if (num === '.') {
+        inputDecimal();
+      } else {
+        inputDigit(num);
+      }
     } else if (action !== null) {
       switch (action) {
         case 'clear':
           clearAll();
           break;
         case 'sign':
-          currentValue = (parseFloat(currentValue) * -1).toString();
-          updateDisplay(currentValue);
+          handleSign();
           break;
         case 'percent':
-          currentValue = (parseFloat(currentValue) / 100).toString();
-          updateDisplay(currentValue);
+          handlePercent();
           break;
         case 'divide':
-          chooseOperation('/');
+          handleOperator('/');
           break;
         case 'multiply':
-          chooseOperation('*');
+          handleOperator('*');
           break;
         case 'subtract':
-          chooseOperation('-');
+          handleOperator('-');
           break;
         case 'add':
-          chooseOperation('+');
+          handleOperator('+');
           break;
         case 'equals':
-          compute();
+          handleEquals();
           break;
       }
     }
