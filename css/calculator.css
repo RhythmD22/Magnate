@@ -115,19 +115,19 @@ button {
 }
 
 .btn-ac {
-  background-color: #EF4444;
-}
-
-.btn-ac:hover {
   background-color: #dc2626;
 }
 
+.btn-ac:hover {
+  background-color: #EF4444;
+}
+
 .btn-equals {
-  background-color: #3B82F6;
+  background-color: #2D6FE4;
 }
 
 .btn-equals:hover {
-  background-color: #2D6FE4;
+  background-color: #3B82F6;
 }
 
 /* HISTORY PANEL */
@@ -158,7 +158,7 @@ button {
 }
 
 #clearHistoryBtn {
-  background-color: #EF4444;
+  background-color: #dc2626;
   color: #FFFFFF;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
@@ -169,13 +169,13 @@ button {
 }
 
 #clearHistoryBtn:hover {
-  background-color: #dc2626;
+  background-color: #EF4444;
 }
 
 /* Disable hover effects on touch devices */
 @media (hover: none) {
   #clearHistoryBtn:hover {
-    background-color: #EF4444;
+    background-color: #dc2626;
   }
 }
 
