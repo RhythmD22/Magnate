@@ -1,9 +1,22 @@
 const hamburger = document.getElementById('hamburger');
 const sidebar = document.getElementById('sidebar');
 
+// Create backdrop element
+const backdrop = document.createElement('div');
+backdrop.className = 'sidebar-backdrop';
+document.body.appendChild(backdrop);
+
 hamburger.addEventListener('click', () => {
   sidebar.classList.toggle('active');
   hamburger.classList.toggle('active');
+  backdrop.classList.toggle('active');
+});
+
+// Close sidebar when clicking on backdrop
+backdrop.addEventListener('click', () => {
+  sidebar.classList.remove('active');
+  hamburger.classList.remove('active');
+  backdrop.classList.remove('active');
 });
 
 // Swipe to close sidebar functionality
@@ -29,6 +42,7 @@ function handleSwipe() {
     if (sidebar.classList.contains('active')) {
       sidebar.classList.remove('active');
       hamburger.classList.remove('active');
+      backdrop.classList.remove('active');
     }
   }
 }
