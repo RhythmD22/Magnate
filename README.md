@@ -57,10 +57,11 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 - **Calculator Logic**: Improved sequential calculator with more robust logic for handling operations.
 - **Layout Optimization**: Switched from grid to Flexbox layout in the Calculator section to prevent display movement during calculations.
 - **Calculation Management**: Added timestamps to each calculation included in the CSV export/import functionality.
-- **Transaction Deletion**: Implemented the ability to delete individual transactions.
+- **Calculation Deletion**: Implemented the ability to delete individual calculations.
 - **Category Update**: Changed "Textbooks" category to "Subscriptions" to better serve the target audience.
 - **Content Updates**: Revised various tips to better align with the website's audience and goals.
 - **Mobile Sidebar Close Functionality**: Added functionality to close the sidebar on mobile devices when tapping outside the sidebar area, with a backdrop overlay to prevent accidental taps on main content.
+- **Font Declaration Refactor**: Refactored font-family declarations to use html element instead of universal selector for better performance and consistency.
 
 ## Technology Stack
 
