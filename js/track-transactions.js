@@ -197,26 +197,90 @@ function editTransaction(id, type) {
   let list = type === 'expense' ? expenses : incomes;
   let item = list.find(t => t.id === id);
   if (item) {
+    let hasChanges = false;
+
     let newTitle = prompt("Edit title:", item.title);
-    if (newTitle === null) return;
+    if (newTitle === null) {
+      // User cancelled, but we might have previous changes to save
+      if (hasChanges) {
+        renderTransactions();
+        renderTransactionGroups(); // Update transaction groups
+        saveData();
+      }
+      return;
+    }
     newTitle = newTitle.trim();
-    if (newTitle === "") return;
+    if (newTitle === "") {
+      // If we have previous changes, save them
+      if (hasChanges) {
+        renderTransactions();
+        renderTransactionGroups(); // Update transaction groups
+        saveData();
+      }
+      return;
+    }
+    if (newTitle !== item.title) {
+      item.title = newTitle;
+      hasChanges = true;
+    }
 
     let newCategory = prompt("Edit category:", item.category);
-    if (newCategory === null) return;
+    if (newCategory === null) {
+      // User cancelled, but we might have previous changes to save
+      if (hasChanges) {
+        renderTransactions();
+        renderTransactionGroups(); // Update transaction groups
+        saveData();
+      }
+      return;
+    }
     newCategory = newCategory.trim();
-    if (newCategory === "") return;
+    if (newCategory === "") {
+      // If we have previous changes, save them
+      if (hasChanges) {
+        renderTransactions();
+        renderTransactionGroups(); // Update transaction groups
+        saveData();
+      }
+      return;
+    }
+    if (newCategory !== item.category) {
+      item.category = newCategory;
+      hasChanges = true;
+    }
 
     let newAmount = promptNumber("Edit amount (e.g., 80 for $80):");
-    if (newAmount === null) return;
+    if (newAmount === null) {
+      // User cancelled, but we might have previous changes to save
+      if (hasChanges) {
+        renderTransactions();
+        renderTransactionGroups(); // Update transaction groups
+        saveData();
+      }
+      return;
+    }
+    const amountValue = type === 'expense' ? -Math.abs(newAmount) : Math.abs(newAmount);
+    if (amountValue !== item.amount) {
+      item.amount = amountValue;
+      hasChanges = true;
+    }
 
     // Date editing with validation
     let newDate;
+    let dateChanged = false;
     do {
       // Use formatDateForPrompt to correctly format the stored date for display
       const currentDateString = formatDateForPrompt(item.date);
       newDate = prompt("Edit date (MM/DD/YYYY):", currentDateString);
-      if (newDate === null) return; // User cancelled
+      if (newDate === null) {
+        // User cancelled, but we might have previous changes to save
+        if (hasChanges) {
+          renderTransactions();
+          renderTransactionGroups(); // Update transaction groups
+          saveData();
+        }
+        return;
+      }
 
       newDate = newDate.trim();
 
@@ -243,33 +307,34 @@ function editTransaction(id, type) {
       }
 
       // Valid date, break out of loop
+      dateChanged = true;
       break;
 
     } while (true);
 
-    item.title = newTitle;
-    item.category = newCategory;
-    if (type === 'expense') {
-      item.amount = -Math.abs(newAmount);
-    } else {
-      item.amount = Math.abs(newAmount);
-    }
-    item.date = parseLocalDateString(newDate).toISOString().slice(0, 10);  // Store in ISO format
-
-    // Update week if needed
-    const newDateObj = parseLocalDateString(newDate);
-
-    const newWeekStart = getMonday(newDateObj);
-
-    if (newWeekStart.getTime() !== currentWeekStart.getTime()) {
-      currentWeekStart = newWeekStart;
-      localStorage.setItem("currentWeekStart", currentWeekStart.toISOString());
-      updateWeekHeading();
+    // Update date if it changed
+    if (dateChanged && newDate !== item.date) {
+      item.date = parseLocalDateString(newDate).toISOString().slice(0, 10);  // Store in ISO format
+      hasChanges = true;
     }
 
-    renderTransactions();
-    renderTransactionGroups(); // Update transaction groups
-    saveData();
+    // If we have changes, update the UI and save data
+    if (hasChanges) {
+      // Update week if needed
+      const newDateObj = parseLocalDateString(newDate);
+
+      const newWeekStart = getMonday(newDateObj);
+
+      if (newWeekStart.getTime() !== currentWeekStart.getTime()) {
+        currentWeekStart = newWeekStart;
+        localStorage.setItem("currentWeekStart", currentWeekStart.toISOString());
+        updateWeekHeading();
+      }
+
+      renderTransactions();
+      renderTransactionGroups(); // Update transaction groups
+      saveData();
+    }
   }
 }
 
