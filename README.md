@@ -49,7 +49,7 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 ## New Features and Improvements
 
 - **Improved Mobile Spacing**: Increased vertical spacing in Financial Goals cards on mobile devices for better readability and usability.
-- **Partial Save Functionality**: Implemented partial save functionality for goal and category editing, allowing users to save completed prompts even if they cancel subsequent prompts.
+- **Partial Save Functionality**: Implemented partial save functionality for goal, category, and transaction editing, allowing users to save completed prompts even if they cancel subsequent prompts.
 - **UI Consistency**: Fixed font sizing and spacing issues between headings and containers for improved consistency in Goals & Categories and Track Transactions pages.
 - **Transaction Groups Section**: Replaced the meal plan section with a new Transaction Groups feature to group transactions and display budget information.
 - **Notes Section**: Added a new notes section with markdown support via EasyMDE CDN integration.
