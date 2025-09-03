@@ -29,6 +29,27 @@ button {
   position: relative;
 }
 
+/* Sidebar pop-in animation for homepage */
+@media (min-width: 769px) {
+  .sidebar {
+    animation: sidebarPopIn 0.5s ease-out 0.3s forwards;
+    transform-origin: left center;
+    opacity: 0;
+  }
+
+  @keyframes sidebarPopIn {
+    0% {
+      opacity: 0;
+      transform: scaleX(0.9) translateX(-10px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scaleX(1) translateX(0);
+    }
+  }
+}
+
 /* Animated background elements */
 .main-content::before {
   content: "";
