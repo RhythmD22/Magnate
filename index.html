@@ -23,18 +23,19 @@
 <body>
   <div class="container">
     <!-- Hamburger Button for mobile navigation -->
-    <button class="hamburger" id="hamburger">
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
     </button>
     <!-- Sidebar navigation menu -->
-    <div class="sidebar" id="sidebar">
-      <h2 style="display: flex; align-items: center;">
+    <div class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-title"
+        style="display: flex; align-items: center; font-size: 1.8rem; margin-bottom: 1.8rem; color: #FFFFFF;">
         <img src="android-chrome-512x512.png" alt="Magnate Logo"
           style="width:24px; height:24px; margin-right:8px; vertical-align:middle;">
         Magnate
-      </h2>
+      </div>
       <div class="nav-item">
         <a href="Goals%20%26%20Categories.html" class="nav-link">
           <svg viewBox="0 0 24 24" width="24" height="24" preserveAspectRatio="xMidYMid meet">
@@ -119,12 +120,13 @@
       <!-- Swipe Indicator -->
       <div class="swipe-indicator">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
+          stroke-linejoin="round" aria-hidden="true">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
         <span>Swipe to close</span>
       </div>
-      <div class="sidebar-footer" style="color: #A6A6A6; font-size: 0.8rem; text-align: center; margin-top: auto;">
+      <div class="sidebar-footer" style="color: #A6A6A6; font-size: 0.8rem; text-align: center; margin-top: auto;"
+        role="contentinfo">
         <p>Made with ❤️</p>
         <br>
         <p>Images courtesy of Undraw</p>
@@ -132,7 +134,7 @@
     </div>
     <!-- /Sidebar -->
     <!-- Main content area -->
-    <div class="main-content">
+    <div class="main-content" role="main">
       <div class="content-wrapper">
         <!-- TOP SECTION -->
         <div class="top-section">
@@ -155,7 +157,7 @@
                 d="M9.96094 12.4805C11.3574 12.4805 12.4902 11.3574 12.4902 9.95117C12.4902 8.55469 11.3574 7.42188 9.96094 7.42188C8.56445 7.42188 7.43164 8.55469 7.43164 9.95117C7.43164 11.3574 8.56445 12.4805 9.96094 12.4805Z"
                 fill="#508de6" />
             </svg>
-            <h3>Goal Setting</h3>
+            <h2>Goal Setting</h2>
             <p>Set your financial goals with real-time progress indicators.</p>
           </div>
           <div class="card" id="cardExpenseTracking">
@@ -167,7 +169,7 @@
                 d="M10.918 14.541C12.5781 14.541 14.043 13.7793 14.043 12.0996C14.043 10.625 12.8613 10.0586 11.5234 9.74609L10.5957 9.53125C9.74609 9.33594 9.02344 8.97461 9.02344 8.17383C9.02344 7.24609 10.0195 6.83594 10.918 6.83594C11.8945 6.83594 12.5586 7.25586 12.8223 8.06641C12.9199 8.36914 13.1055 8.51562 13.3691 8.51562C13.6133 8.51562 13.8965 8.34961 13.8965 8.00781C13.8965 6.75781 12.2949 5.86914 10.918 5.86914C9.3457 5.86914 7.92969 6.74805 7.92969 8.26172C7.92969 9.7168 9.15039 10.2637 10.3516 10.5566L11.2891 10.7715C12.1582 10.9766 12.959 11.2891 12.959 12.1875C12.959 13.252 11.9336 13.584 10.9473 13.584C9.90234 13.584 9.18945 13.252 8.83789 12.3145C8.7207 12.0117 8.55469 11.8945 8.29102 11.8945C8.00781 11.8945 7.77344 12.0801 7.77344 12.4023C7.77344 12.4902 7.79297 12.5977 7.82227 12.7051C8.20312 13.9941 9.63867 14.541 10.918 14.541ZM10.9082 15.7031C11.084 15.7031 11.2305 15.5566 11.2305 15.3809L11.2305 5.05859C11.2305 4.87305 11.084 4.73633 10.9082 4.73633C10.7324 4.73633 10.5859 4.87305 10.5859 5.05859L10.5859 15.3809C10.5859 15.5566 10.7324 15.7031 10.9082 15.7031Z"
                 fill="#508de6" />
             </svg>
-            <h3>Transaction Tracking</h3>
+            <h2>Transaction Tracking</h2>
             <p>Easily log and categorize your daily activity in one place.</p>
           </div>
           <div class="card" id="cardVisualAnalytics">
@@ -188,7 +190,7 @@
                 d="M0.917969 13.9941C0.917969 14.541 1.26953 14.8633 1.82617 14.8633L4.08203 14.8633C4.64844 14.8633 5 14.541 5 13.9941L5 5.35156C5 4.81445 4.64844 4.48242 4.08203 4.48242L1.82617 4.48242C1.26953 4.48242 0.917969 4.81445 0.917969 5.35156Z"
                 fill="#508de6" />
             </svg>
-            <h3>Visual Analytics</h3>
+            <h2>Visual Analytics</h2>
             <p>View your spending patterns through charts and graphs.</p>
           </div>
         </div>
