@@ -189,6 +189,14 @@ button {
   font-family: 'SF Mono', monospace;
 }
 
+/* Active states for touch devices */
+.calc-btn:active,
+#clearHistoryBtn:active,
+.delete-btn:active {
+  background-color: #3A3D42;
+  opacity: 1;
+}
+
 .history-list div {
   display: flex;
   justify-content: space-between;
@@ -244,38 +252,13 @@ button {
   .history-entry .delete-btn:hover {
     opacity: 1;
   }
-}
 
-/* Mobile: No hover effect on touch devices */
-@media (hover: none) {
-  .history-entry .delete-btn {
-    opacity: 0.7;
-  }
-}
-
-.history-entry.selected {
-  background-color: rgba(79, 70, 229, 0.1);
-  border-radius: 4px;
-}
-
-/* Desktop: Hide delete buttons by default, show on hover */
-@media (hover: hover) {
+  /* Desktop: Hide delete buttons by default, show on hover */
   .history-entry .delete-btn {
     display: none;
   }
 
   .history-entry:hover .delete-btn {
-    display: block;
-  }
-}
-
-/* Mobile: Show delete button when entry is selected */
-@media (hover: none) {
-  .history-entry .delete-btn {
-    display: none;
-  }
-
-  .history-entry.selected .delete-btn {
     display: block;
   }
 }
