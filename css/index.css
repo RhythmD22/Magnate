@@ -300,13 +300,13 @@ button {
   transform: translate(2px, 2px);
 }
 
-.card h3 {
+.card h2 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
   transition: color 0.3s ease;
 }
 
-.card:hover h3 {
+.card:hover h2 {
   color: #3B82F6;
 }
 
@@ -413,7 +413,7 @@ button {
     padding: 1rem;
   }
 
-  .card h3,
+  .card h2,
   .why-card h3 {
     font-size: 1.2rem;
     line-height: 1.4;

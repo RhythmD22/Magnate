@@ -77,7 +77,7 @@ button {
   position: relative;
 }
 
-.goal-info h4 {
+.goal-info h3 {
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
@@ -183,7 +183,7 @@ button {
   justify-content: space-between;
 }
 
-.category-info h4 {
+.category-info h3 {
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
@@ -254,8 +254,8 @@ button {
     padding: 1.1rem;
   }
 
-  .goal-info h4,
-  .category-info h4 {
+  .goal-info h3,
+  .category-info h3 {
     font-size: 1rem;
     line-height: 1.4;
   }

@@ -98,7 +98,7 @@ button {
 .budget-amount {
     font-size: 2rem;
     font-weight: 700;
-    color: #497DEE;
+    color: #3C82F6;
 }
 
 /* PROGRESS CIRCLE CARD */
@@ -129,7 +129,7 @@ button {
     position: absolute;
     font-size: 1.8rem;
     font-weight: 600;
-    color: #497DEE;
+    color: #3C82F6;
     text-align: center;
     left: 0;
     right: 0;

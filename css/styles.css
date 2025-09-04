@@ -24,7 +24,7 @@ body {
   padding: 2rem;
 }
 
-.sidebar h2 {
+.sidebar .sidebar-title {
   margin-bottom: 1.8rem;
   font-size: 1.8rem;
   color: #FFFFFF;
@@ -174,14 +174,14 @@ body {
     left: 0;
   }
 
-  .sidebar h2 {
+  .sidebar .sidebar-title {
     margin-top: 50px;
     margin-bottom: 1.8rem;
     font-size: 1.8rem;
     display: block;
   }
 
-  .sidebar h2 img {
+  .sidebar .sidebar-title img {
     width: 24px;
     height: 24px;
   }
