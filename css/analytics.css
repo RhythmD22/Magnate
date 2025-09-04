@@ -188,6 +188,7 @@ button {
     #toggleCategoryView:hover,
     #toggleMonthlyView:hover {
         color: #508de6 !important;
+        background-color: #3A3D42;
     }
 }
 
@@ -499,6 +500,19 @@ button {
 }
 
 /* Active states for touch devices */
+#toggleCategoryView,
+#toggleMonthlyView {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
 .week-arrow:active {
     background-color: #3A3D42;
 }
