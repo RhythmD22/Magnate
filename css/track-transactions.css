@@ -162,7 +162,7 @@
   gap: 0.25rem;
 }
 
-.transaction-left h4 {
+.transaction-left h3 {
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -549,7 +549,7 @@ svg.icon {
     margin-bottom: 0.75rem;
   }
 
-  .transaction-left h4 {
+  .transaction-left h3 {
     font-size: 1rem;
     line-height: 1.4;
   }
