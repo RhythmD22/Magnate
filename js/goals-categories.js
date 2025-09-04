@@ -133,10 +133,10 @@ document.addEventListener('DOMContentLoaded', function () {
             card.className = 'goal-card';
             const info = document.createElement('div');
             info.className = 'goal-info';
-            const h4 = document.createElement('h4');
-            h4.textContent = goal.title;
-            highlightDollarAmounts(h4);
-            info.appendChild(h4);
+            const h3 = document.createElement('h3');
+            h3.textContent = goal.title;
+            highlightDollarAmounts(h3);
+            info.appendChild(h3);
             const pDesc = document.createElement('p');
             if (goal.description && goal.description.trim() !== "") {
                 pDesc.textContent = goal.description;
@@ -216,9 +216,9 @@ document.addEventListener('DOMContentLoaded', function () {
             info.className = 'category-info';
 
             // Category title
-            const h4 = document.createElement('h4');
-            h4.textContent = cat.name;
-            info.appendChild(h4);
+            const h3 = document.createElement('h3');
+            h3.textContent = cat.name;
+            info.appendChild(h3);
 
             // Build the month navigation and budget display line
             const pBudget = document.createElement('p');
