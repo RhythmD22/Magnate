@@ -1,77 +1,3 @@
-function promptNumber(message) {
-  let input;
-  do {
-    input = prompt(message);
-    if (input === null) return null;
-  } while (isNaN(parseFloat(input)) || input.trim() === "");
-  return parseFloat(input);
-}
-
-function getLocalDateString(d) {
-  const tempDate = new Date(d);
-  tempDate.setMinutes(tempDate.getMinutes() - tempDate.getTimezoneOffset());
-  return tempDate.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-}
-
-// Function to format ISO date string for display in prompts
-function formatDateForPrompt(isoDateString) {
-  // For ISO date strings (YYYY-MM-DD), we want to display them as MM/DD/YYYY
-  if (isoDateString && isoDateString.includes("-")) {
-    const [year, month, day] = isoDateString.split("-");
-    return `${month}/${day}/${year}`;
-  }
-  return isoDateString;
-}
-
-function promptDate(message, defaultDate) {
-  defaultDate = defaultDate || new Date();
-  let defaultString = getLocalDateString(defaultDate);
-  let dateInput;
-
-  do {
-    dateInput = prompt(message + " (MM/DD/YYYY) or leave blank for " + defaultString + ":");
-    if (dateInput === null) return null;
-    dateInput = dateInput.trim();
-
-    if (dateInput === "") {
-      return defaultString;
-    }
-
-    // Validate MM/DD/YYYY format
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateInput)) {
-      alert("Please enter a valid date in MM/DD/YYYY format.");
-      continue;
-    }
-
-    // Parse and validate the date
-    const [month, day, year] = dateInput.split("/");
-    const dateObj = new Date(year, month - 1, day);
-
-    // Check if the date is valid
-    if (dateObj.getFullYear() != year || dateObj.getMonth() != month - 1 || dateObj.getDate() != day) {
-      alert("Please enter a valid date.");
-      continue;
-    }
-
-    return dateInput;
-
-  } while (true);
-}
-
-function generateId() {
-  return Date.now();
-}
-
-function saveData() {
-  localStorage.setItem('expenses', JSON.stringify(expenses));
-  localStorage.setItem('incomes', JSON.stringify(incomes));
-  localStorage.setItem('categories', JSON.stringify(categories));
-}
-
 let storedCategories = localStorage.getItem('categories');
 let categories = storedCategories ? JSON.parse(storedCategories) : [];
 
@@ -84,13 +10,6 @@ let expenses = storedExpenses ? JSON.parse(storedExpenses) : [];
 
 let storedIncomes = localStorage.getItem('incomes');
 let incomes = storedIncomes ? JSON.parse(storedIncomes) : [];
-
-function getMonday(d) {
-  const date = new Date(d);
-  const day = date.getDay();
-  const diff = date.getDate() - (day === 0 ? 6 : day - 1);
-  return new Date(date.setDate(diff));
-}
 
 let currentWeekStart = localStorage.getItem('currentWeekStart')
   ? new Date(localStorage.getItem('currentWeekStart'))
@@ -137,7 +56,7 @@ function createTransactionCard(item, type) {
 
   const leftDiv = document.createElement('div');
   leftDiv.className = 'transaction-left';
-  const title = document.createElement('h4');
+  const title = document.createElement('h3');
   title.textContent = item.title;
 
   const catObj = getCategoryByName(item.category);
@@ -338,16 +257,6 @@ function editTransaction(id, type) {
   }
 }
 
-function parseLocalDateString(dateString) {
-  // Check date format and parse accordingly
-  if (dateString.includes("-")) {
-    const [year, month, day] = dateString.split("-");
-    return new Date(+year, +month - 1, +day);
-  }
-  const [month, day, year] = dateString.split("/");
-  return new Date(+year, +month - 1, +day);
-}
-
 function deleteTransaction(id, type) {
   if (confirm("Are you sure you want to delete this transaction?")) {
     if (type === 'expense') {
@@ -361,7 +270,7 @@ function deleteTransaction(id, type) {
   }
 }
 
-document.getElementById('prevWeekBtn').addEventListener('click', () => {
+document.getElementById('prevWeekBtn')?.addEventListener('click', () => {
   currentWeekStart.setDate(currentWeekStart.getDate() - 7);
   localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
   updateWeekHeading();
@@ -369,7 +278,7 @@ document.getElementById('prevWeekBtn').addEventListener('click', () => {
   renderTransactionGroups(); // Update transaction groups when week changes
 });
 
-document.getElementById('nextWeekBtn').addEventListener('click', () => {
+document.getElementById('nextWeekBtn')?.addEventListener('click', () => {
   currentWeekStart.setDate(currentWeekStart.getDate() + 7);
   localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
   updateWeekHeading();
@@ -380,7 +289,7 @@ document.getElementById('nextWeekBtn').addEventListener('click', () => {
 // Initialize week heading
 updateWeekHeading();
 
-document.getElementById('btnAddExpense').addEventListener('click', () => {
+document.getElementById('btnAddExpense')?.addEventListener('click', () => {
   const title = prompt("Enter expense title:");
   if (!title) return;
   const category = prompt("Enter expense category:");
@@ -407,7 +316,7 @@ document.getElementById('btnAddExpense').addEventListener('click', () => {
   saveData();
 });
 
-document.getElementById('btnAddIncome').addEventListener('click', () => {
+document.getElementById('btnAddIncome')?.addEventListener('click', () => {
   const title = prompt("Enter income title:");
   if (!title) return;
   const category = prompt("Enter income category:");
@@ -589,7 +498,7 @@ function initNotes() {
   easyMDE = new EasyMDE({
     element: document.getElementById("notesTextarea"),
     initialValue: notes,
-    placeholder: "# Markdown Support\n\n## Formatting\n- **Bold** text with double asterisks\n- *Italic* text with single asterisks\n\n## Headers\n- # Header 1\n- ## Header 2\n- ### Header 3\n- #### Header 4\n- ##### Header 5\n- ###### Header 6\n\n## Lists\n- Bullet points with asterisks\n  * First item\n  * Second item\n  * Third item\n- Numbered lists with numbers\n  1. First item\n  2. Second item\n  3. Third item\n\n## Media Elements\n- [Link Text](https://) to create links\n- ![Image](https://) to insert images\n\n\n",
+    placeholder: "# Markdown Support\n\n## Formatting\n- **Bold** text with double asterisks\n- *Italic* text with single asterisks\n\n## Headers\n- # Header 1\n- ## Header 2\n- ### Header 3\n- #### Header 4\n- ##### Header 5\n- ###### Header 6\n\n## Lists\n- Bullet points with asterisks\n  * First item\n  * Second item\n  * Third item\n- Numbered lists with numbers\n  1. First item\n  2. Second item\n  3. Third item\n\n## Media Elements\n- [Link Text](https://) to create links\n- ![Image](https://) to insert images\n \n \n",
     autosave: {
       enabled: true,
       uniqueId: "magnate-notes",

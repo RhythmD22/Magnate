@@ -1,59 +1,5 @@
 /* Utility & Helper Functions */
-function promptNumber(message) {
-    let input;
-    do {
-        input = prompt(message);
-        if (input === null) return null;
-    } while (isNaN(parseFloat(input)) || input.trim() === "");
-    return parseFloat(input);
-}
-
-function promptDate(message) {
-    let dateInput;
-
-    do {
-        dateInput = prompt(message + " (MM/DD/YYYY) or leave blank for today:");
-        if (dateInput === null) return null;
-        dateInput = dateInput.trim();
-
-        // If blank, use today
-        if (dateInput === "") {
-            return new Date().toISOString().slice(0, 10);
-        }
-
-        // Validate MM/DD/YYYY format
-        if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateInput)) {
-            alert("Please enter a valid date in MM/DD/YYYY format.");
-            continue;
-        }
-
-        // Parse and validate the date
-        const [month, day, year] = dateInput.split("/");
-        const dateObj = new Date(year, month - 1, day);
-
-        // Check if the date is valid
-        if (dateObj.getFullYear() != year || dateObj.getMonth() != month - 1 || dateObj.getDate() != day) {
-            alert("Please enter a valid date.");
-            continue;
-        }
-
-        // Convert to ISO format for storage
-        return dateObj.toISOString().slice(0, 10);
-
-    } while (true);
-}
-
-function generateId() {
-    return Date.now();
-}
-
-// Function to get Monday of a given date
-function getMonday(d) {
-    const date = new Date(d);
-    const day = date.getDay();
-    const diff = date.getDate() - (day === 0 ? 6 : day - 1);
-    return new Date(date.setDate(diff));
-}
+// All utility functions have been moved to utils.js
 
 /* Shared Data Storage */
 let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
@@ -72,14 +18,14 @@ let categoryView = 'spending';
 let monthlyCategoryView = 'spending';
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('toggleCategoryView').addEventListener('click', () => {
+    document.getElementById('toggleCategoryView')?.addEventListener('click', () => {
         categoryView = (categoryView === 'spending') ? 'income' : 'spending';
         document.getElementById('categoryCardTitle').textContent =
             (categoryView === 'spending') ? 'Weekly Spending by Category:' : 'Weekly Income by Category:';
         updateCategoryCards();
     });
 
-    document.getElementById('toggleMonthlyView').addEventListener('click', () => {
+    document.getElementById('toggleMonthlyView')?.addEventListener('click', () => {
         monthlyCategoryView = (monthlyCategoryView === 'spending') ? 'income' : 'spending';
         document.getElementById('monthlyCardTitle').textContent =
             (monthlyCategoryView === 'spending') ? 'Monthly Spending by Category:' : 'Monthly Income by Category:';
@@ -101,25 +47,16 @@ function updateWeekLabel() {
 }
 
 // Prev/Next week event listeners
-document.getElementById('btnPrevWeek').addEventListener('click', () => {
+document.getElementById('btnPrevWeek')?.addEventListener('click', () => {
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);
     localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
     updateAnalytics();
 });
-
-document.getElementById('btnNextWeek').addEventListener('click', () => {
+document.getElementById('btnNextWeek')?.addEventListener('click', () => {
     currentWeekStart.setDate(currentWeekStart.getDate() + 7);
     localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
     updateAnalytics();
 });
-
-// Save data to localStorage
-function saveData() {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-    localStorage.setItem('incomes', JSON.stringify(incomes));
-    localStorage.setItem('categories', JSON.stringify(categories));
-    localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
-}
 
 /* Overall Analytics Logic */
 function updateAnalytics() {
@@ -160,9 +97,7 @@ function updateAnalytics() {
 
     renderWeeklyChart();
     updateCategoryCards();
-
     updateMonthlyCategoryCards();
-
     updateWeekLabel();
     saveData();
 }

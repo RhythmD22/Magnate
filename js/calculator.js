@@ -89,7 +89,7 @@ function deleteHistoryEntry(index) {
   }
 }
 
-document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+document.getElementById('clearHistoryBtn')?.addEventListener('click', () => {
   if (confirm("Clear all calculation history?")) {
     calcHistory = [];
     localStorage.removeItem('calcHistory');
