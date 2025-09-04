@@ -263,6 +263,22 @@ button {
   }
 }
 
+/* Mobile: Show delete button when entry is selected */
+@media (hover: none) {
+  .history-entry .delete-btn {
+    display: none;
+  }
+
+  .history-entry.selected .delete-btn {
+    display: block;
+  }
+}
+
+.history-entry.selected {
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: 4px;
+}
+
 /* ILLUSTRATION PANEL */
 .illustration {
   border-radius: 8px;
