@@ -26,20 +26,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Goals and Categories stored in localStorage
     let storedGoals = localStorage.getItem('goals');
+    let defaultGoals = [
+        { id: 1, title: "Emergency Fund", description: "Save $1000 by December 2025", current: 450, target: 1000 }
+    ];
     let goals = storedGoals ? JSON.parse(storedGoals).map(g => ({
         ...g,
         title: sanitizeText(g.title),
         description: g.description ? sanitizeText(g.description) : ""
-    })) : [
-        { id: 1, title: "Emergency Fund", description: "Save $1000 by December 2025", current: 450, target: 1000 }
-    ];
+    })) : defaultGoals;
+
+    // Save default goals to localStorage if they don't exist
+    if (!storedGoals) {
+        localStorage.setItem('goals', JSON.stringify(defaultGoals));
+    }
 
     let storedCategories = localStorage.getItem('categories');
-    let categories = storedCategories ? JSON.parse(storedCategories) : [
+    let defaultCategories = [
         { id: 1, name: "Entertainment", budget: 100 },
         { id: 2, name: "Academic", budget: 150 },
         { id: 3, name: "Food", budget: 300 }
     ];
+    let categories = storedCategories ? JSON.parse(storedCategories) : defaultCategories;
+
+    // Save default categories to localStorage if they don't exist
+    if (!storedCategories) {
+        localStorage.setItem('categories', JSON.stringify(defaultCategories));
+    }
 
     // Total Monthly Budget
     let monthlyBudgets = JSON.parse(localStorage.getItem('monthlyBudgets')) || {};
