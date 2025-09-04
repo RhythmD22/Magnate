@@ -184,6 +184,11 @@ button {
     .week-arrow:hover {
         background-color: #3A3D42;
     }
+
+    #toggleCategoryView:hover,
+    #toggleMonthlyView:hover {
+        color: #508de6 !important;
+    }
 }
 
 .week-label {
@@ -457,14 +462,6 @@ button {
     }
 }
 
-@media (hover: hover) {
-
-    #toggleCategoryView:hover,
-    #toggleMonthlyView:hover {
-        color: #508de6 !important;
-    }
-}
-
 .page-header {
     display: flex;
     align-items: center;
@@ -499,6 +496,15 @@ button {
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s ease;
+}
+
+/* Active states for touch devices */
+.week-arrow:active,
+.export-btn:active,
+#toggleCategoryView:active,
+#toggleMonthlyView:active {
+    color: #508de6;
+    background-color: #3A3D42;
 }
 
 .export-btn:hover {
