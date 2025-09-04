@@ -56,7 +56,7 @@ function createTransactionCard(item, type) {
 
   const leftDiv = document.createElement('div');
   leftDiv.className = 'transaction-left';
-  const title = document.createElement('h4');
+  const title = document.createElement('h3');
   title.textContent = item.title;
 
   const catObj = getCategoryByName(item.category);
