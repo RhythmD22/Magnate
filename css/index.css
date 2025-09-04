@@ -8,8 +8,6 @@
   align-items: center;
   padding: 4rem 2rem 2rem;
   position: relative;
-  z-index: 1;
-  /* Ensure content is above background layer */
 }
 
 /* Allow scrolling on mobile devices */
@@ -41,8 +39,9 @@
 }
 
 /* Animated background elements */
-.background-layer {
-  position: fixed;
+.main-content::before {
+  content: "";
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -52,14 +51,6 @@
   animation: backgroundPulse 15s ease-in-out infinite alternate;
   z-index: -1;
   pointer-events: none;
-}
-
-/* Mobile-specific background elements */
-@media (max-width: 768px) {
-  .background-layer {
-    background: radial-gradient(circle at 20% 80%, rgba(80, 141, 230, 0.1) 0%, transparent 25%),
-      radial-gradient(circle at 80% 20%, rgba(45, 111, 228, 0.1) 0%, transparent 25%);
-  }
 }
 
 @keyframes backgroundPulse {
@@ -381,6 +372,10 @@
 
   .main-content {
     padding: 60px 1rem 1rem;
+  }
+
+  .main-content::before {
+    background: none;
   }
 
   .top-section h1 {
