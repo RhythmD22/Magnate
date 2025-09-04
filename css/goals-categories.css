@@ -1,26 +1,3 @@
-/* RESET & BASE STYLES */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  outline: none;
-  background: none;
-}
-
 .dollar {
   color: #4e80ee;
 }
@@ -239,7 +216,7 @@ button {
   /* Override for specific buttons that need different hover colors */
   .monthly-budget-card button:hover,
   .category-card button:hover {
-    color: #508de6 !important;
+    color: #508de6;
   }
 }
 
