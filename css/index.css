@@ -1,12 +1,22 @@
 /* MAIN CONTENT */
 .main-content {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: hidden;
+  /* Prevent vertical scrolling on desktop */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 4rem 2rem 2rem;
   position: relative;
+  z-index: 1;
+  /* Ensure content is above background layer */
+}
+
+/* Allow scrolling on mobile devices */
+@media (max-width: 768px) {
+  .main-content {
+    overflow-y: auto;
+  }
 }
 
 /* Sidebar pop-in animation for homepage */
@@ -31,9 +41,8 @@
 }
 
 /* Animated background elements */
-.main-content::before {
-  content: "";
-  position: absolute;
+.background-layer {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -43,6 +52,14 @@
   animation: backgroundPulse 15s ease-in-out infinite alternate;
   z-index: -1;
   pointer-events: none;
+}
+
+/* Mobile-specific background elements */
+@media (max-width: 768px) {
+  .background-layer {
+    background: radial-gradient(circle at 20% 80%, rgba(80, 141, 230, 0.1) 0%, transparent 25%),
+      radial-gradient(circle at 80% 20%, rgba(45, 111, 228, 0.1) 0%, transparent 25%);
+  }
 }
 
 @keyframes backgroundPulse {
