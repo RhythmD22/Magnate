@@ -71,12 +71,6 @@ button {
   transition: border-color 0.2s ease;
 }
 
-@media (hover: hover) {
-  .action-card:hover {
-    border-color: #3B82F6;
-  }
-}
-
 .action-left {
   display: flex;
   align-items: center;
@@ -135,8 +129,21 @@ button {
 }
 
 @media (hover: hover) {
+  .action-card:hover {
+    border-color: #3B82F6;
+  }
+
   .arrow-btn:hover {
     color: #3B82F6;
+  }
+
+  .icon-btn:hover {
+    color: #FFFFFF;
+    background-color: #3A3D42;
+  }
+
+  .btn-transaction:hover {
+    background-color: #1043B1;
   }
 }
 
@@ -226,19 +233,22 @@ button {
   vertical-align: middle;
 }
 
-@media (hover: hover) {
-  .icon-btn:hover {
-    color: #FFFFFF;
-    background-color: #3A3D42;
-  }
-}
-
 .icon-btn svg {
   width: 18px;
   height: 18px;
   display: inline-block;
   margin: 0;
   vertical-align: middle;
+}
+
+/* Active states for touch devices */
+.icon-btn:active,
+.arrow-btn:active,
+.action-card:active,
+.btn-transaction:active {
+  color: #508de6;
+  background-color: #3A3D42;
+  border-color: #3B82F6;
 }
 
 .transaction-actions {
@@ -334,12 +344,6 @@ button {
   border-radius: 6px;
   transition: background 0.2s ease;
   margin-top: 0.5rem;
-}
-
-@media (hover: hover) {
-  .btn-transaction:hover {
-    background-color: #1043B1;
-  }
 }
 
 /* NOTES SECTION */
@@ -471,10 +475,6 @@ button {
 .CodeMirror-fullscreen {
   background-color: #181A1E !important;
   border: none !important;
-}
-
-.editor-preview-side {
-  background-color: #181A1E;
 }
 
 .CodeMirror-gutter,
