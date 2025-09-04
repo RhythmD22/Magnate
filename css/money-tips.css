@@ -227,7 +227,7 @@ button {
 
 .category-button[data-category="subscriptions"]:hover,
 .category-button.active[data-category="subscriptions"] {
-  border-color: #5C6BC0;
+  border-color: #F44336;
 }
 
 .category-button[data-category="food"]:hover,
