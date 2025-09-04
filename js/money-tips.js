@@ -1,5 +1,5 @@
 const categoryColors = {
-  "subscriptions": "#5C6BC0",
+  "subscriptions": "#F44336",
   "food": "#FF9800",
   "shopping-smart": "#4CAF50",
   "finance": "#f1bd41",
@@ -256,12 +256,12 @@ document.querySelectorAll('.category-button').forEach(button => {
 
 // Initialize default category on page load.
 window.addEventListener('DOMContentLoaded', () => {
-  updateTips('subscriptions');
-  const defaultBtn = document.querySelector('.category-button[data-category="subscriptions"]');
+  updateTips('finance');
+  const defaultBtn = document.querySelector('.category-button[data-category="finance"]');
   defaultBtn.classList.add('active');
-  defaultBtn.style.color = categoryColors["subscriptions"];
+  defaultBtn.style.color = categoryColors["finance"];
   defaultBtn.querySelectorAll('svg path').forEach(path => {
-    path.setAttribute('fill', categoryColors["subscriptions"]);
+    path.setAttribute('fill', categoryColors["finance"]);
   });
 });
 
