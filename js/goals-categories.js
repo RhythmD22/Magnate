@@ -1,15 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Prompt helper
-    function promptNumber(message) {
-        let input;
-        do {
-            input = prompt(message);
-            if (input === null) return null;
-        } while (isNaN(parseFloat(input)) || input.trim() === "");
-        return parseFloat(input);
-    }
-
     // Highlight dollar amounts within an element's text
     function highlightDollarAmounts(element) {
         const text = element.textContent;
@@ -31,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function sanitizeText(text) {
         return text.replace(/<[^>]*>/g, '');
     }
+
+
 
     // Goals and Categories stored in localStorage
     let storedGoals = localStorage.getItem('goals');
@@ -69,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let key = getMonthKey(selectedMonth);
         return monthlyBudgets[key] || 1000;
     }
+
     function updateMonthlyBudgetDisplay() {
         let key = getMonthKey(selectedMonth);
         let monthYearStr = selectedMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -82,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('prevMonth')?.addEventListener('click', () => changeMonth(-1));
         document.getElementById('nextMonth')?.addEventListener('click', () => changeMonth(1));
     }
+
     function changeMonth(offset) {
         let newMonth = selectedMonth.getMonth() + offset;
         selectedMonth = new Date(selectedMonth.getFullYear(), newMonth, 1);
@@ -97,30 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (typeof updateAnalytics === 'function') {
             updateAnalytics();
         }
-    }
-    document.getElementById('btnEditBudget')?.addEventListener('click', () => {
-        let key = getMonthKey(selectedMonth);
-        let newBudget = promptNumber("Enter new Total Monthly Budget:");
-        if (newBudget !== null) {
-            monthlyBudgets[key] = newBudget;
-            localStorage.setItem('monthlyBudgets', JSON.stringify(monthlyBudgets));
-            updateMonthlyBudgetDisplay();
-            if (typeof updateAnalytics === 'function') {
-                updateAnalytics();
-            }
-        }
-    });
-    updateMonthlyBudgetDisplay(); // Initial call
-
-    // Save data for goals, categories, and categoryBudgets
-    function saveData() {
-        localStorage.setItem('goals', JSON.stringify(goals));
-        localStorage.setItem('categories', JSON.stringify(categories));
-        localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
-    }
-
-    function updateAnalytics() {
-        saveData();
     }
 
     // Render Goals
@@ -350,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // If we have changes, render and update
             if (hasChanges) {
+                localStorage.setItem('goals', JSON.stringify(goals));
                 renderGoals();
                 updateAnalytics();
             }
@@ -359,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function deleteGoal(id) {
         if (confirm("Are you sure you want to delete this goal?")) {
             goals = goals.filter(g => g.id !== id);
+            localStorage.setItem('goals', JSON.stringify(goals));
             renderGoals();
             updateAnalytics();
         }
@@ -394,6 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (newBudget === null) {
                 // User cancelled budget edit, but save name change if it happened
                 if (hasChanges) {
+                    localStorage.setItem('categories', JSON.stringify(categories));
                     renderCategories();
                     updateAnalytics();
                 }
@@ -408,6 +381,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // If we have changes, render and update
             if (hasChanges) {
+                localStorage.setItem('categories', JSON.stringify(categories));
                 renderCategories();
                 updateAnalytics();
             }
@@ -417,14 +391,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function deleteCategory(id) {
         if (confirm("Are you sure you want to delete this category?")) {
             categories = categories.filter(c => c.id !== id);
+            localStorage.setItem('categories', JSON.stringify(categories));
             renderCategories();
             updateAnalytics();
         }
     }
 
-    function generateId() {
-        return Date.now();
-    }
+
 
     // New Category Add: also initialize its monthly budget for the current month
     document.getElementById('btnAddCategory')?.addEventListener('click', () => {
@@ -441,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
             categoryBudgets[monthKey] = {};
         }
         categoryBudgets[monthKey][String(newCat.id)] = budget;
+        localStorage.setItem('categories', JSON.stringify(categories));
         localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
 
         renderCategories();
@@ -453,7 +427,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!title) return;
         const description = prompt("Enter goal description:");
         const current = promptNumber("Enter current saved amount:");
+        if (current === null) return;
         const target = promptNumber("Enter goal target amount:");
+        if (target === null) return;
         if (target <= 0) {
             alert("Target must be greater than 0.");
             return;
@@ -466,12 +442,32 @@ document.addEventListener('DOMContentLoaded', function () {
             target: target
         };
         goals.push(newGoal);
+        localStorage.setItem('goals', JSON.stringify(goals));
         renderGoals();
         updateAnalytics();
+    });
+
+    // Edit Total Monthly Budget
+    document.getElementById('btnEditBudget')?.addEventListener('click', () => {
+        let key = getMonthKey(selectedMonth);
+        let newBudget = promptNumber("Enter new Total Monthly Budget:");
+        if (newBudget !== null) {
+            monthlyBudgets[key] = newBudget;
+            localStorage.setItem('monthlyBudgets', JSON.stringify(monthlyBudgets));
+            updateMonthlyBudgetDisplay();
+            if (typeof updateAnalytics === 'function') {
+                updateAnalytics();
+            }
+        }
     });
 
     // Initial rendering
     renderGoals();
     renderCategories();
-    updateAnalytics();
+    updateMonthlyBudgetDisplay();
+
+    // Update analytics if the function exists
+    if (typeof updateAnalytics === 'function') {
+        updateAnalytics();
+    }
 });
