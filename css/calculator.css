@@ -115,19 +115,19 @@ button {
 }
 
 .btn-ac {
-  background-color: #EF4444;
-}
-
-.btn-ac:hover {
   background-color: #dc2626;
 }
 
+.btn-ac:hover {
+  background-color: #EF4444;
+}
+
 .btn-equals {
-  background-color: #3B82F6;
+  background-color: #2D6FE4;
 }
 
 .btn-equals:hover {
-  background-color: #2D6FE4;
+  background-color: #3B82F6;
 }
 
 /* HISTORY PANEL */
@@ -153,29 +153,32 @@ button {
   margin-bottom: 0.75rem;
 }
 
-.history-header h3 {
-  font-size: 1rem;
+.history-header h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
 }
 
 #clearHistoryBtn {
-  background-color: #EF4444;
+  background-color: #dc2626;
   color: #FFFFFF;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: background 0.2s ease;
   font-family: 'SF Mono', monospace;
+  font-weight: 500;
 }
 
 #clearHistoryBtn:hover {
-  background-color: #dc2626;
+  background-color: #EF4444;
 }
 
 /* Disable hover effects on touch devices */
 @media (hover: none) {
   #clearHistoryBtn:hover {
-    background-color: #EF4444;
+    background-color: #dc2626;
   }
 }
 
@@ -184,6 +187,14 @@ button {
   line-height: 1.4;
   width: 100%;
   font-family: 'SF Mono', monospace;
+}
+
+/* Active states for touch devices */
+.calc-btn:active,
+#clearHistoryBtn:active,
+.delete-btn:active {
+  background-color: #3A3D42;
+  opacity: 1;
 }
 
 .history-list div {
@@ -241,22 +252,8 @@ button {
   .history-entry .delete-btn:hover {
     opacity: 1;
   }
-}
 
-/* Mobile: No hover effect on touch devices */
-@media (hover: none) {
-  .history-entry .delete-btn {
-    opacity: 0.7;
-  }
-}
-
-.history-entry.selected {
-  background-color: rgba(79, 70, 229, 0.1);
-  border-radius: 4px;
-}
-
-/* Desktop: Hide delete buttons by default, show on hover */
-@media (hover: hover) {
+  /* Desktop: Hide delete buttons by default, show on hover */
   .history-entry .delete-btn {
     display: none;
   }
@@ -275,6 +272,11 @@ button {
   .history-entry.selected .delete-btn {
     display: block;
   }
+}
+
+.history-entry.selected {
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: 4px;
 }
 
 /* ILLUSTRATION PANEL */
@@ -387,14 +389,14 @@ button {
     padding: 0.75rem;
   }
 
-  .history-header h3 {
-    font-size: 1rem;
+  .history-header h2 {
+    font-size: 1.1rem;
     line-height: 1.4;
   }
 
   #clearHistoryBtn {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.7rem;
   }
 
   .history-list {

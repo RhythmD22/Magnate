@@ -24,18 +24,19 @@
 <body>
     <div class="container">
         <!-- Hamburger Button for mobile navigation -->
-        <button class="hamburger" id="hamburger">
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
             <span class="hamburger-line"></span>
         </button>
         <!-- Sidebar navigation menu -->
-        <div class="sidebar" id="sidebar">
-            <h2 style="display: flex; align-items: center;">
+        <div class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+            <div class="sidebar-title"
+                style="display: flex; align-items: center; font-size: 1.8rem; margin-bottom: 1.8rem; color: #FFFFFF;">
                 <img src="android-chrome-512x512.png" alt="Magnate Logo"
                     style="width:24px; height:24px; margin-right:8px; vertical-align:middle;">
                 Magnate
-            </h2>
+            </div>
             <div class="nav-item">
                 <a href="Goals%20%26%20Categories.html" class="nav-link">
                     <svg viewBox="0 0 24 24" width="24" height="24" preserveAspectRatio="xMidYMid meet">
@@ -120,12 +121,13 @@
             <!-- Swipe Indicator -->
             <div class="swipe-indicator">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
+                    stroke-linejoin="round" aria-hidden="true">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
                 <span>Swipe to close</span>
             </div>
-            <div class="sidebar-footer" style="color: gray; font-size: 0.8rem; text-align: center; margin-top: auto;">
+            <div class="sidebar-footer" style="color: #A6A6A6; font-size: 0.8rem; text-align: center; margin-top: auto;"
+                role="contentinfo">
                 <p>Made with ❤️</p>
                 <br>
                 <p>Images courtesy of Undraw</p>
@@ -133,7 +135,7 @@
         </div>
         <!-- /Sidebar -->
         <!-- Main content area for analytics -->
-        <div class="main-content">
+        <div class="main-content" role="main">
             <div class="content-wrapper">
                 <!-- PAGE TITLE -->
                 <div class="page-header">

@@ -98,7 +98,7 @@ button {
 .budget-amount {
     font-size: 2rem;
     font-weight: 700;
-    color: #1043B1;
+    color: #3C82F6;
 }
 
 /* PROGRESS CIRCLE CARD */
@@ -129,7 +129,7 @@ button {
     position: absolute;
     font-size: 1.8rem;
     font-weight: 600;
-    color: #1043B1;
+    color: #3C82F6;
     text-align: center;
     left: 0;
     right: 0;
@@ -182,6 +182,12 @@ button {
 
 @media (hover: hover) {
     .week-arrow:hover {
+        background-color: #3A3D42;
+    }
+
+    #toggleCategoryView:hover,
+    #toggleMonthlyView:hover {
+        color: #508de6 !important;
         background-color: #3A3D42;
     }
 }
@@ -457,14 +463,6 @@ button {
     }
 }
 
-@media (hover: hover) {
-
-    #toggleCategoryView:hover,
-    #toggleMonthlyView:hover {
-        color: #508de6 !important;
-    }
-}
-
 .page-header {
     display: flex;
     align-items: center;
@@ -499,6 +497,31 @@ button {
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s ease;
+}
+
+/* Active states for touch devices */
+#toggleCategoryView,
+#toggleMonthlyView {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.week-arrow:active {
+    background-color: #3A3D42;
+}
+
+.export-btn:active,
+#toggleCategoryView:active,
+#toggleMonthlyView:active {
+    color: #508de6 !important;
+    background-color: #3A3D42;
 }
 
 .export-btn:hover {

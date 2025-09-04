@@ -77,7 +77,7 @@ button {
   position: relative;
 }
 
-.goal-info h4 {
+.goal-info h3 {
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
@@ -183,7 +183,7 @@ button {
   justify-content: space-between;
 }
 
-.category-info h4 {
+.category-info h3 {
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
@@ -214,19 +214,33 @@ button {
   vertical-align: middle;
 }
 
-@media (hover: hover) {
-  .icon-btn:hover {
-    color: #FFFFFF;
-    background-color: #3A3D42;
-  }
-}
-
 .icon-btn svg {
   width: 18px;
   height: 18px;
   display: inline-block;
   margin: 0;
   vertical-align: middle;
+}
+
+/* Active states for touch devices */
+.icon-btn:active,
+.monthly-budget-card button:active,
+.category-card button:active {
+  color: #508de6;
+  background-color: #3A3D42;
+}
+
+@media (hover: hover) {
+  .icon-btn:hover {
+    color: #FFFFFF;
+    background-color: #3A3D42;
+  }
+
+  /* Override for specific buttons that need different hover colors */
+  .monthly-budget-card button:hover,
+  .category-card button:hover {
+    color: #508de6 !important;
+  }
 }
 
 /* RESPONSIVE */
@@ -254,8 +268,8 @@ button {
     padding: 1.1rem;
   }
 
-  .goal-info h4,
-  .category-info h4 {
+  .goal-info h3,
+  .category-info h3 {
     font-size: 1rem;
     line-height: 1.4;
   }
@@ -288,17 +302,5 @@ button {
 
   .progress-bar-bg {
     height: 6px;
-  }
-}
-
-@media (hover: hover) {
-  .monthly-budget-card button:hover {
-    color: #508de6 !important;
-  }
-}
-
-@media (hover: hover) {
-  .category-card button:hover {
-    color: #508de6 !important;
   }
 }
