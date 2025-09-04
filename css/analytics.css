@@ -499,11 +499,14 @@ button {
 }
 
 /* Active states for touch devices */
-.week-arrow:active,
+.week-arrow:active {
+    background-color: #3A3D42;
+}
+
 .export-btn:active,
 #toggleCategoryView:active,
 #toggleMonthlyView:active {
-    color: #508de6;
+    color: #508de6 !important;
     background-color: #3A3D42;
 }
 
