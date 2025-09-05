@@ -76,7 +76,7 @@
 .budget-amount {
     font-size: 2rem;
     font-weight: 700;
-    color: #3C82F6;
+    color: #4f80ed;
 }
 
 /* PROGRESS CIRCLE CARD */
@@ -107,7 +107,7 @@
     position: absolute;
     font-size: 1.8rem;
     font-weight: 600;
-    color: #3C82F6;
+    color: #4f80ed;
     text-align: center;
     left: 0;
     right: 0;
@@ -157,8 +157,6 @@
     min-width: 30px;
     min-height: 30px;
 }
-
-
 
 .week-label {
     font-size: 0.9rem;
@@ -272,8 +270,6 @@
     width: 100%;
 }
 
-
-
 .page-header {
     display: flex;
     align-items: center;
@@ -285,8 +281,6 @@
     display: flex;
     gap: 0.5rem;
 }
-
-
 
 .export-btn {
     padding: 0.75rem 1.5rem;
