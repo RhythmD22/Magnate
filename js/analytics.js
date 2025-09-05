@@ -275,7 +275,7 @@ function updateCategoryCards() {
             if (totalAmount > budget) {
                 let exceededLabel = document.createElement('div');
                 exceededLabel.textContent = '(Exceeded)';
-                exceededLabel.style.color = '#dd524c';
+                exceededLabel.style.color = '#F8969E';
                 exceededLabel.style.fontSize = '0.9rem';
                 card.appendChild(exceededLabel);
             }
@@ -416,7 +416,7 @@ function updateMonthlyCategoryCards() {
             if (totalAmount > budget) {
                 let exceededLabel = document.createElement('div');
                 exceededLabel.textContent = '(Exceeded)';
-                exceededLabel.style.color = '#dd524c';
+                exceededLabel.style.color = '#F8969E';
                 exceededLabel.style.fontSize = '0.9rem';
                 card.appendChild(exceededLabel);
             }
