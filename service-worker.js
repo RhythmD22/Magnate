@@ -26,6 +26,7 @@ const urlsToCache = [
   '/Magnate/js/money-tips.js',
   '/Magnate/js/navigation.js',
   '/Magnate/js/utils.js',
+  '/Magnate/js/data-manager.js',
   '/Magnate/favicon.ico',
   '/Magnate/apple-touch-icon.png',
   '/Magnate/android-chrome-192x192.png',
