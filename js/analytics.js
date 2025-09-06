@@ -211,7 +211,12 @@ function renderWeeklyChart() {
                         }
                     }
                 },
-                legend: { display: true }
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#9E9E9E'
+                    }
+                }
             }
         }
     });
