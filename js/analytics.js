@@ -1,65 +1,86 @@
 /* Utility & Helper Functions */
 // All utility functions have been moved to utils.js
 
-/* Shared Data Storage */
-let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-let incomes = JSON.parse(localStorage.getItem('incomes')) || [];
-// Predefined categories for budgets. These are used only as a reference for budget values.
-let categories = JSON.parse(localStorage.getItem('categories')) || [
-    { id: 1, name: "Entertainment", budget: 100 },
-    { id: 2, name: "Academic", budget: 150 },
-    { id: 3, name: "Food", budget: 300 }
-];
-// Retrieve the month-specific category budgets
-let categoryBudgets = JSON.parse(localStorage.getItem('categoryBudgets')) || {};
-
 // For toggling weekly and monthly category views
 let categoryView = 'spending';
 let monthlyCategoryView = 'spending';
 
+/**
+ * Initialize event listeners when DOM is loaded
+ */
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('toggleCategoryView')?.addEventListener('click', () => {
-        categoryView = (categoryView === 'spending') ? 'income' : 'spending';
-        document.getElementById('categoryCardTitle').textContent =
-            (categoryView === 'spending') ? 'Weekly Spending by Category:' : 'Weekly Income by Category:';
-        updateCategoryCards();
-    });
+    const toggleCategoryViewBtn = document.getElementById('toggleCategoryView');
+    if (toggleCategoryViewBtn) {
+        toggleCategoryViewBtn.addEventListener('click', () => {
+            categoryView = (categoryView === 'spending') ? 'income' : 'spending';
+            const categoryCardTitle = document.getElementById('categoryCardTitle');
+            if (categoryCardTitle) {
+                categoryCardTitle.textContent =
+                    (categoryView === 'spending') ? 'Weekly Spending by Category:' : 'Weekly Income by Category:';
+            }
+            updateCategoryCards();
+        });
+    }
 
-    document.getElementById('toggleMonthlyView')?.addEventListener('click', () => {
-        monthlyCategoryView = (monthlyCategoryView === 'spending') ? 'income' : 'spending';
-        document.getElementById('monthlyCardTitle').textContent =
-            (monthlyCategoryView === 'spending') ? 'Monthly Spending by Category:' : 'Monthly Income by Category:';
-        updateMonthlyCategoryCards();
-    });
+    const toggleMonthlyViewBtn = document.getElementById('toggleMonthlyView');
+    if (toggleMonthlyViewBtn) {
+        toggleMonthlyViewBtn.addEventListener('click', () => {
+            monthlyCategoryView = (monthlyCategoryView === 'spending') ? 'income' : 'spending';
+            const monthlyCardTitle = document.getElementById('monthlyCardTitle');
+            if (monthlyCardTitle) {
+                monthlyCardTitle.textContent =
+                    (monthlyCategoryView === 'spending') ? 'Monthly Spending by Category:' : 'Monthly Income by Category:';
+            }
+            updateMonthlyCategoryCards();
+        });
+    }
 });
 
 /* Week Navigation */
-// Initialize currentWeekStart from localStorage or set to Monday of today
-let currentWeekStart = localStorage.getItem('currentWeekStart')
-    ? new Date(localStorage.getItem('currentWeekStart'))
-    : getMonday(new Date());
+// Use centralized data management
+let currentWeekStart = MagnateData.currentWeekStart;
 
+/**
+ * Update the week label display
+ */
 function updateWeekLabel() {
     // Format as "Week of Month Day, Year" to match the original format
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('weekLabel').textContent =
-        'Week of ' + currentWeekStart.toLocaleDateString('en-US', options);
+    const weekLabel = document.getElementById('weekLabel');
+    if (weekLabel && currentWeekStart) {
+        weekLabel.textContent =
+            'Week of ' + currentWeekStart.toLocaleDateString('en-US', options);
+    }
 }
 
 // Prev/Next week event listeners
-document.getElementById('btnPrevWeek')?.addEventListener('click', () => {
-    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-    localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
-    updateAnalytics();
-});
-document.getElementById('btnNextWeek')?.addEventListener('click', () => {
-    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-    localStorage.setItem('currentWeekStart', currentWeekStart.toISOString());
-    updateAnalytics();
-});
+const prevWeekBtn = document.getElementById('btnPrevWeek');
+if (prevWeekBtn) {
+    prevWeekBtn.addEventListener('click', () => {
+        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+        MagnateData.currentWeekStart = currentWeekStart;
+        MagnateData.saveData();
+        updateAnalytics();
+    });
+}
+
+const nextWeekBtn = document.getElementById('btnNextWeek');
+if (nextWeekBtn) {
+    nextWeekBtn.addEventListener('click', () => {
+        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+        MagnateData.currentWeekStart = currentWeekStart;
+        MagnateData.saveData();
+        updateAnalytics();
+    });
+}
 
 /* Overall Analytics Logic */
+/**
+ * Update all analytics displays
+ */
 function updateAnalytics() {
+    if (!currentWeekStart) return;
+
     let year = currentWeekStart.getFullYear();
     let month = currentWeekStart.getMonth();
     let firstDay = new Date(year, month, 1);
@@ -67,17 +88,22 @@ function updateAnalytics() {
     let startStrMonth = firstDay.toISOString().slice(0, 10);
     let endStrMonth = nextMonth.toISOString().slice(0, 10);
 
-    let monthlyExpenses = expenses.filter(exp =>
-        exp.date.slice(0, 10) >= startStrMonth && exp.date.slice(0, 10) < endStrMonth
-    );
+    let monthlyExpenses = [];
+    if (Array.isArray(MagnateData.expenses)) {
+        monthlyExpenses = MagnateData.expenses.filter(exp => {
+            if (!exp.date) return false;
+            return MagnateUtils.isDateBetween(exp.date, startStrMonth, endStrMonth) &&
+                MagnateUtils.normalizeDateFormat(exp.date) < endStrMonth; // Exclude end date
+        });
+    }
     let totalMonthlyExpenses = monthlyExpenses.reduce(
         (sum, exp) => sum + Math.abs(exp.amount),
         0
     );
 
-    let monthlyBudgets = JSON.parse(localStorage.getItem('monthlyBudgets')) || {};
+    // Use MagnateData instead of direct localStorage access
     let key = year + '-' + ("0" + (month + 1)).slice(-2);
-    let totalBudget = monthlyBudgets[key] || 1000;
+    let totalBudget = MagnateData.monthlyBudgets[key] || 1000;
 
     // Update budget amounts
     document.getElementById('totalBudget').textContent = '$' + totalBudget;
@@ -99,12 +125,17 @@ function updateAnalytics() {
     updateCategoryCards();
     updateMonthlyCategoryCards();
     updateWeekLabel();
-    saveData();
+    MagnateData.saveData();
 }
 
 /* Weekly Chart */
 let weeklyChart;
+/**
+ * Render the weekly chart using Chart.js
+ */
 function renderWeeklyChart() {
+    if (!currentWeekStart) return;
+
     let mondayStr = currentWeekStart.toISOString().slice(0, 10);
     let weekEnd = new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
     let weekEndStr = weekEnd.toISOString().slice(0, 10);
@@ -126,11 +157,15 @@ function renderWeeklyChart() {
 
     weekDates.forEach(d => {
         let dayStr = d.toISOString().slice(0, 10);
-        let expenseSum = expenses
-            .filter(e => e.date.slice(0, 10) === dayStr)
+        let expenseSum = MagnateData.expenses
+            .filter(e => {
+                return MagnateUtils.compareDateStrings(e.date, dayStr);
+            })
             .reduce((sum, e) => sum + Math.abs(e.amount), 0);
-        let incomeSum = incomes
-            .filter(i => i.date.slice(0, 10) === dayStr)
+        let incomeSum = MagnateData.incomes
+            .filter(i => {
+                return MagnateUtils.compareDateStrings(i.date, dayStr);
+            })
             .reduce((sum, i) => sum + Math.abs(i.amount), 0);
 
         expenseData.push(expenseSum);
@@ -143,10 +178,12 @@ function renderWeeklyChart() {
     let globalMax = remainder !== 0 ? maxCombined + (10 - remainder) : maxCombined;
     if (globalMax === 0) globalMax = 10;
 
-    const ctx = document.getElementById('weeklyChart').getContext('2d');
+    const ctx = document.getElementById('weeklyChart');
+    if (!ctx) return;
+    const chartCtx = ctx.getContext('2d');
     if (weeklyChart) weeklyChart.destroy();
 
-    weeklyChart = new Chart(ctx, {
+    weeklyChart = new Chart(chartCtx, {
         type: 'bar',
         data: {
             labels,
@@ -223,9 +260,15 @@ function renderWeeklyChart() {
 }
 
 /* Weekly Category Cards */
+/**
+ * Update the weekly category cards display
+ */
 function updateCategoryCards() {
     const container = document.getElementById('categoriesCards');
+    if (!container) return;
     container.innerHTML = '';
+
+    if (!currentWeekStart) return;
 
     let mondayStr = currentWeekStart.toISOString().slice(0, 10);
     let weekEnd = new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
@@ -239,133 +282,151 @@ function updateCategoryCards() {
     if (categoryView === 'spending') {
         let expenseGroups = {};
 
-        expenses
-            .filter(e => e.date.slice(0, 10) >= mondayStr && e.date.slice(0, 10) <= weekEndStr)
-            .forEach(e => {
-                let catName = (e.category || "Uncategorized").trim();
-                let key = catName.toLowerCase();
-                let catObj = categories.find(c => c.name.trim().toLowerCase() === key);
-                let catBudget = 0;
-                if (catObj) {
-                    const catIdStr = String(catObj.id);
-                    if (categoryBudgets[monthKey] && categoryBudgets[monthKey][catIdStr] !== undefined) {
-                        catBudget = categoryBudgets[monthKey][catIdStr];
-                    } else {
-                        catBudget = catObj.budget;
+        if (Array.isArray(MagnateData.expenses)) {
+            MagnateData.expenses
+                .filter(e => {
+                    if (!e.date) return false;
+                    return MagnateUtils.isDateBetween(e.date, mondayStr, weekEndStr);
+                })
+                .forEach(e => {
+                    let catName = (e.category || "Uncategorized").trim();
+                    let key = catName.toLowerCase();
+                    let catObj = null;
+                    if (Array.isArray(MagnateData.categories)) {
+                        catObj = MagnateData.categories.find(c => c.name && c.name.trim().toLowerCase() === key);
                     }
+                    let catBudget = 0;
+                    if (catObj) {
+                        const catIdStr = String(catObj.id);
+                        // Check if MagnateData.categoryBudgets[monthKey] exists before accessing it
+                        if (MagnateData.categoryBudgets && MagnateData.categoryBudgets[monthKey] && MagnateData.categoryBudgets[monthKey][catIdStr] !== undefined) {
+                            catBudget = MagnateData.categoryBudgets[monthKey][catIdStr];
+                        } else {
+                            catBudget = catObj.budget || 0;
+                        }
+                    }
+                    if (!expenseGroups[key]) {
+                        expenseGroups[key] = { name: catName, total: 0, budget: catBudget };
+                    }
+                    expenseGroups[key].total += Math.abs(e.amount);
+                });
+
+            // Render the grouped expense categories
+            for (let key in expenseGroups) {
+                let group = expenseGroups[key];
+                let totalAmount = group.total;
+                let budget = group.budget;
+                let percentage = (budget > 0) ? (totalAmount / budget) * 100 : 0;
+                percentage = Math.min(100, percentage);
+                let color = '#e77975';
+
+                let card = document.createElement('div');
+                card.className = 'expense-category-card';
+
+                let title = document.createElement('div');
+                title.className = 'expense-category-title';
+                title.textContent = group.name;
+                title.style.color = color;
+                card.appendChild(title);
+                if (totalAmount > budget) {
+                    let exceededLabel = document.createElement('div');
+                    exceededLabel.textContent = '(Exceeded)';
+                    exceededLabel.style.color = '#F8969E';
+                    exceededLabel.style.fontSize = '0.9rem';
+                    card.appendChild(exceededLabel);
                 }
-                if (!expenseGroups[key]) {
-                    expenseGroups[key] = { name: catName, total: 0, budget: catBudget };
-                }
-                expenseGroups[key].total += Math.abs(e.amount);
-            });
 
-        // Render the grouped expense categories
-        for (let key in expenseGroups) {
-            let group = expenseGroups[key];
-            let totalAmount = group.total;
-            let budget = group.budget;
-            let percentage = (budget > 0) ? (totalAmount / budget) * 100 : 0;
-            percentage = Math.min(100, percentage);
-            let color = '#e77975';
-
-            let card = document.createElement('div');
-            card.className = 'expense-category-card';
-
-            let title = document.createElement('div');
-            title.className = 'expense-category-title';
-            title.textContent = group.name;
-            title.style.color = color;
-            card.appendChild(title);
-            if (totalAmount > budget) {
-                let exceededLabel = document.createElement('div');
-                exceededLabel.textContent = '(Exceeded)';
-                exceededLabel.style.color = '#F8969E';
-                exceededLabel.style.fontSize = '0.9rem';
-                card.appendChild(exceededLabel);
-            }
-
-            let breakdown = document.createElement('div');
-            breakdown.className = 'expense-category-breakdown';
-            breakdown.innerHTML = `
+                let breakdown = document.createElement('div');
+                breakdown.className = 'expense-category-breakdown';
+                breakdown.innerHTML = `
          <span class="percentage" style="color: ${color};">
            ${Math.round(percentage)}%
          </span>
-         ($${totalAmount.toFixed(2)}/$${budget})
+         (${totalAmount.toFixed(2)}/${budget})
        `;
-            card.appendChild(breakdown);
+                card.appendChild(breakdown);
 
-            let progressBar = document.createElement('div');
-            progressBar.className = 'category-progress-bar';
+                let progressBar = document.createElement('div');
+                progressBar.className = 'category-progress-bar';
 
-            let progressFill = document.createElement('div');
-            progressFill.className = 'category-progress-fill';
-            progressFill.style.width = percentage + '%';
-            progressFill.style.backgroundColor = color;
+                let progressFill = document.createElement('div');
+                progressFill.className = 'category-progress-fill';
+                progressFill.style.width = percentage + '%';
+                progressFill.style.backgroundColor = color;
 
-            progressBar.appendChild(progressFill);
-            card.appendChild(progressBar);
-            container.appendChild(card);
+                progressBar.appendChild(progressFill);
+                card.appendChild(progressBar);
+                container.appendChild(card);
+            }
         }
     } else {
         // Weekly Income by Category
         let incomeGroups = {};
-        incomes
-            .filter(i => i.date.slice(0, 10) >= mondayStr && i.date.slice(0, 10) <= weekEndStr)
-            .forEach(i => {
-                let catName = (i.category || "Uncategorized").trim();
-                let key = catName.toLowerCase();
-                if (!incomeGroups[key]) {
-                    incomeGroups[key] = { name: catName, total: 0 };
-                }
-                incomeGroups[key].total += Math.abs(i.amount);
-            });
+        if (Array.isArray(MagnateData.incomes)) {
+            MagnateData.incomes
+                .filter(i => {
+                    if (!i.date) return false;
+                    return MagnateUtils.isDateBetween(i.date, mondayStr, weekEndStr);
+                })
+                .forEach(i => {
+                    let catName = (i.category || "Uncategorized").trim();
+                    let key = catName.toLowerCase();
+                    if (!incomeGroups[key]) {
+                        incomeGroups[key] = { name: catName, total: 0 };
+                    }
+                    incomeGroups[key].total += Math.abs(i.amount);
+                });
 
-        for (let key in incomeGroups) {
-            let group = incomeGroups[key];
-            let budget = group.total;
-            let percentage = (budget > 0) ? (group.total / budget) * 100 : 0;
-            percentage = Math.min(100, percentage);
-            let color = '#69cd9b';
+            for (let key in incomeGroups) {
+                let group = incomeGroups[key];
+                let percentage = 100; // For income, we'll show 100% as it's the total
+                let color = '#69cd9b';
 
-            let card = document.createElement('div');
-            card.className = 'expense-category-card';
+                let card = document.createElement('div');
+                card.className = 'expense-category-card';
 
-            let title = document.createElement('div');
-            title.className = 'expense-category-title';
-            title.textContent = group.name;
-            title.style.color = color;
-            card.appendChild(title);
+                let title = document.createElement('div');
+                title.className = 'expense-category-title';
+                title.textContent = group.name;
+                title.style.color = color;
+                card.appendChild(title);
 
-            let breakdown = document.createElement('div');
-            breakdown.className = 'expense-category-breakdown';
-            breakdown.innerHTML = `
+                let breakdown = document.createElement('div');
+                breakdown.className = 'expense-category-breakdown';
+                breakdown.innerHTML = `
          <span class="percentage" style="color: ${color};">
            ${Math.round(percentage)}%
          </span>
-         ($${group.total.toFixed(2)}/$${budget})
+         (${group.total.toFixed(2)})
        `;
-            card.appendChild(breakdown);
+                card.appendChild(breakdown);
 
-            let progressBar = document.createElement('div');
-            progressBar.className = 'category-progress-bar';
+                let progressBar = document.createElement('div');
+                progressBar.className = 'category-progress-bar';
 
-            let progressFill = document.createElement('div');
-            progressFill.className = 'category-progress-fill';
-            progressFill.style.width = percentage + '%';
-            progressFill.style.backgroundColor = color;
+                let progressFill = document.createElement('div');
+                progressFill.className = 'category-progress-fill';
+                progressFill.style.width = percentage + '%';
+                progressFill.style.backgroundColor = color;
 
-            progressBar.appendChild(progressFill);
-            card.appendChild(progressBar);
-            container.appendChild(card);
+                progressBar.appendChild(progressFill);
+                card.appendChild(progressBar);
+                container.appendChild(card);
+            }
         }
     }
 }
 
 /* Monthly Category Cards */
+/**
+ * Update the monthly category cards display
+ */
 function updateMonthlyCategoryCards() {
     const container = document.getElementById('monthlyCategoryCards');
+    if (!container) return;
     container.innerHTML = '';
+
+    if (!currentWeekStart) return;
 
     // Determine the monthly range using currentWeekStart
     let year = currentWeekStart.getFullYear();
@@ -381,125 +442,141 @@ function updateMonthlyCategoryCards() {
     if (monthlyCategoryView === 'spending') {
         let expenseGroups = {};
 
-        expenses
-            .filter(e => e.date.slice(0, 10) >= startDate && e.date.slice(0, 10) < endDate)
-            .forEach(e => {
-                let catName = (e.category || "Uncategorized").trim();
-                let key = catName.toLowerCase();
-                let catObj = categories.find(c => c.name.trim().toLowerCase() === key);
-                let catBudget = 0;
-                if (catObj) {
-                    const catIdStr = String(catObj.id);
-                    if (categoryBudgets[monthKey] && categoryBudgets[monthKey][catIdStr] !== undefined) {
-                        catBudget = categoryBudgets[monthKey][catIdStr];
-                    } else {
-                        catBudget = catObj.budget;
+        if (Array.isArray(MagnateData.expenses)) {
+            MagnateData.expenses
+                .filter(e => {
+                    if (!e.date) return false;
+                    return MagnateUtils.isDateBetween(e.date, startDate, endDate) &&
+                        MagnateUtils.normalizeDateFormat(e.date) < endDate; // Exclude end date
+                })
+                .forEach(e => {
+                    let catName = (e.category || "Uncategorized").trim();
+                    let key = catName.toLowerCase();
+                    let catObj = null;
+                    if (Array.isArray(MagnateData.categories)) {
+                        catObj = MagnateData.categories.find(c => c.name && c.name.trim().toLowerCase() === key);
                     }
+                    let catBudget = 0;
+                    if (catObj) {
+                        const catIdStr = String(catObj.id);
+                        // Check if categoryBudgets[monthKey] exists before accessing it
+                        if (MagnateData.categoryBudgets && MagnateData.categoryBudgets[monthKey] && MagnateData.categoryBudgets[monthKey][catIdStr] !== undefined) {
+                            catBudget = MagnateData.categoryBudgets[monthKey][catIdStr];
+                        } else {
+                            catBudget = catObj.budget || 0;
+                        }
+                    }
+                    if (!expenseGroups[key]) {
+                        expenseGroups[key] = { name: catName, total: 0, budget: catBudget };
+                    }
+                    expenseGroups[key].total += Math.abs(e.amount);
+                });
+
+            for (let key in expenseGroups) {
+                let group = expenseGroups[key];
+                let totalAmount = group.total;
+                let budget = group.budget;
+                let percentage = (budget > 0) ? (totalAmount / budget) * 100 : 0;
+                percentage = Math.min(100, percentage);
+                let color = '#e77975';
+
+                let card = document.createElement('div');
+                card.className = 'expense-category-card';
+
+                let title = document.createElement('div');
+                title.className = 'expense-category-title';
+                title.textContent = group.name;
+                title.style.color = color;
+                card.appendChild(title);
+                if (totalAmount > budget) {
+                    let exceededLabel = document.createElement('div');
+                    exceededLabel.textContent = '(Exceeded)';
+                    exceededLabel.style.color = '#F8969E';
+                    exceededLabel.style.fontSize = '0.9rem';
+                    card.appendChild(exceededLabel);
                 }
-                if (!expenseGroups[key]) {
-                    expenseGroups[key] = { name: catName, total: 0, budget: catBudget };
-                }
-                expenseGroups[key].total += Math.abs(e.amount);
-            });
 
-        for (let key in expenseGroups) {
-            let group = expenseGroups[key];
-            let totalAmount = group.total;
-            let budget = group.budget;
-            let percentage = (budget > 0) ? (totalAmount / budget) * 100 : 0;
-            percentage = Math.min(100, percentage);
-            let color = '#e77975';
-
-            let card = document.createElement('div');
-            card.className = 'expense-category-card';
-
-            let title = document.createElement('div');
-            title.className = 'expense-category-title';
-            title.textContent = group.name;
-            title.style.color = color;
-            card.appendChild(title);
-            if (totalAmount > budget) {
-                let exceededLabel = document.createElement('div');
-                exceededLabel.textContent = '(Exceeded)';
-                exceededLabel.style.color = '#F8969E';
-                exceededLabel.style.fontSize = '0.9rem';
-                card.appendChild(exceededLabel);
-            }
-
-            let breakdown = document.createElement('div');
-            breakdown.className = 'expense-category-breakdown';
-            breakdown.innerHTML = `
+                let breakdown = document.createElement('div');
+                breakdown.className = 'expense-category-breakdown';
+                breakdown.innerHTML = `
          <span class="percentage" style="color: ${color};">
            ${Math.round(percentage)}%
          </span>
-         ($${totalAmount.toFixed(2)}/$${budget})
+         (${totalAmount.toFixed(2)}/${budget})
        `;
-            card.appendChild(breakdown);
+                card.appendChild(breakdown);
 
-            let progressBar = document.createElement('div');
-            progressBar.className = 'category-progress-bar';
+                let progressBar = document.createElement('div');
+                progressBar.className = 'category-progress-bar';
 
-            let progressFill = document.createElement('div');
-            progressFill.className = 'category-progress-fill';
-            progressFill.style.width = percentage + '%';
-            progressFill.style.backgroundColor = color;
+                let progressFill = document.createElement('div');
+                progressFill.className = 'category-progress-fill';
+                progressFill.style.width = percentage + '%';
+                progressFill.style.backgroundColor = color;
 
-            progressBar.appendChild(progressFill);
-            card.appendChild(progressBar);
-            container.appendChild(card);
+                progressBar.appendChild(progressFill);
+                card.appendChild(progressBar);
+                container.appendChild(card);
+            }
         }
     } else {
         // Monthly Income by Category
         let incomeGroups = {};
-        incomes
-            .filter(i => i.date.slice(0, 10) >= startDate && i.date.slice(0, 10) < endDate)
-            .forEach(i => {
-                let catName = (i.category || "Uncategorized").trim();
-                let key = catName.toLowerCase();
-                if (!incomeGroups[key]) {
-                    incomeGroups[key] = { name: catName, total: 0 };
-                }
-                incomeGroups[key].total += Math.abs(i.amount);
-            });
-        for (let key in incomeGroups) {
-            let group = incomeGroups[key];
-            let budget = group.total;
-            let percentage = (budget > 0) ? (group.total / budget) * 100 : 0;
-            percentage = Math.min(100, percentage);
-            let color = '#6ad09d';
+        if (Array.isArray(MagnateData.incomes)) {
+            MagnateData.incomes
+                .filter(i => {
+                    if (!i.date) return false;
+                    return MagnateUtils.isDateBetween(i.date, startDate, endDate) &&
+                        MagnateUtils.normalizeDateFormat(i.date) < endDate; // Exclude end date
+                })
+                .forEach(i => {
+                    let catName = (i.category || "Uncategorized").trim();
+                    let key = catName.toLowerCase();
+                    if (!incomeGroups[key]) {
+                        incomeGroups[key] = { name: catName, total: 0 };
+                    }
+                    incomeGroups[key].total += Math.abs(i.amount);
+                });
+            for (let key in incomeGroups) {
+                let group = incomeGroups[key];
+                let percentage = 100; // For income, we'll show 100% as it's the total
+                let color = '#6ad09d';
 
-            let card = document.createElement('div');
-            card.className = 'expense-category-card';
+                let card = document.createElement('div');
+                card.className = 'expense-category-card';
 
-            let title = document.createElement('div');
-            title.className = 'expense-category-title';
-            title.textContent = group.name;
-            title.style.color = color;
-            card.appendChild(title);
+                let title = document.createElement('div');
+                title.className = 'expense-category-title';
+                title.textContent = group.name;
+                title.style.color = color;
+                card.appendChild(title);
 
-            let breakdown = document.createElement('div');
-            breakdown.className = 'expense-category-breakdown';
-            breakdown.innerHTML = `
+                let breakdown = document.createElement('div');
+                breakdown.className = 'expense-category-breakdown';
+                breakdown.innerHTML = `
          <span class="percentage" style="color: ${color};">
            ${Math.round(percentage)}%
          </span>
-         ($${group.total.toFixed(2)}/$${budget})
+         (${group.total.toFixed(2)})
        `;
-            card.appendChild(breakdown);
+                card.appendChild(breakdown);
 
-            let progressBar = document.createElement('div');
-            progressBar.className = 'category-progress-bar';
+                let progressBar = document.createElement('div');
+                progressBar.className = 'category-progress-bar';
 
-            let progressFill = document.createElement('div');
-            progressFill.className = 'category-progress-fill';
-            progressFill.style.width = percentage + '%';
-            progressFill.style.backgroundColor = color;
+                let progressFill = document.createElement('div');
+                progressFill.className = 'category-progress-fill';
+                progressFill.style.width = percentage + '%';
+                progressFill.style.backgroundColor = color;
 
-            progressBar.appendChild(progressFill);
-            card.appendChild(progressBar);
-            container.appendChild(card);
+                progressBar.appendChild(progressFill);
+                card.appendChild(progressBar);
+                container.appendChild(card);
+            }
         }
     }
 }
 
-updateAnalytics();
+if (currentWeekStart) {
+    updateAnalytics();
+}

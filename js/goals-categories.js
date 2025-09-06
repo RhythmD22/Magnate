@@ -17,56 +17,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Strip any HTML tags from user-provided text
-    function sanitizeText(text) {
-        return text.replace(/<[^>]*>/g, '');
-    }
+    // Ensure data is loaded before using it
+    MagnateData.loadData();
 
-
-
-    // Goals and Categories stored in localStorage
-    let storedGoals = localStorage.getItem('goals');
-    let defaultGoals = [
-        { id: 1, title: "Emergency Fund", description: "Save $1000 by December 2025", current: 450, target: 1000 }
-    ];
-    let goals = storedGoals ? JSON.parse(storedGoals).map(g => ({
-        ...g,
-        title: sanitizeText(g.title),
-        description: g.description ? sanitizeText(g.description) : ""
-    })) : defaultGoals;
-
-    // Save default goals to localStorage if they don't exist
-    if (!storedGoals) {
-        localStorage.setItem('goals', JSON.stringify(defaultGoals));
-    }
-
-    let storedCategories = localStorage.getItem('categories');
-    let defaultCategories = [
-        { id: 1, name: "Entertainment", budget: 100 },
-        { id: 2, name: "Academic", budget: 150 },
-        { id: 3, name: "Food", budget: 300 }
-    ];
-    let categories = storedCategories ? JSON.parse(storedCategories) : defaultCategories;
-
-    // Save default categories to localStorage if they don't exist
-    if (!storedCategories) {
-        localStorage.setItem('categories', JSON.stringify(defaultCategories));
-    }
-
-    // Total Monthly Budget
-    let monthlyBudgets = JSON.parse(localStorage.getItem('monthlyBudgets')) || {};
-
-    // Category-specific monthly budgets (keyed by "YYYY-MM" then category id)
-    let storedCategoryBudgets = localStorage.getItem('categoryBudgets');
-    let categoryBudgets = storedCategoryBudgets ? JSON.parse(storedCategoryBudgets) : {};
-
-    // Global selectedMonth shared by total budget and category budgets
-    let selectedMonth = new Date();
-    selectedMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
+    // Use centralized data management
+    let goals = MagnateData.goals;
+    let categories = MagnateData.categories;
+    let monthlyBudgets = MagnateData.monthlyBudgets;
+    let categoryBudgets = MagnateData.categoryBudgets;
 
     function getMonthKey(date) {
         return date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2);
     }
+
+    // Global selectedMonth shared by total budget and category budgets
+    let selectedMonth = new Date();
+    selectedMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
 
     // Total monthly budget getters and renderers
     function getMonthlyBudget() {
@@ -93,9 +59,9 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedMonth = new Date(selectedMonth.getFullYear(), newMonth, 1);
         let key = getMonthKey(selectedMonth);
         if (monthlyBudgets[key] === undefined) {
-            let newBudget = promptNumber("Enter new Total Monthly Budget:");
+            let newBudget = MagnateUtils.promptNumber("Enter new Total Monthly Budget:");
             monthlyBudgets[key] = newBudget === null ? 1000 : newBudget;
-            localStorage.setItem('monthlyBudgets', JSON.stringify(monthlyBudgets));
+            MagnateData.saveData();
         }
         updateMonthlyBudgetDisplay();
         // Re-render categories so that each category's month shows the new value
@@ -247,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function () {
             card.appendChild(actions);
             container.appendChild(card);
         });
-        // Save updated categoryBudgets to localStorage
-        localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
+        // Save updated categoryBudgets using centralized data management
+        MagnateData.saveData();
     }
 
     // Goal editing and deletion functions
@@ -263,12 +229,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (newTitle === null) {
                 // User cancelled, but we might have previous changes to save
                 if (hasChanges) {
+                    MagnateData.saveData();
                     renderGoals();
-                    updateAnalytics();
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                 }
                 return;
             }
-            newTitle = sanitizeText(newTitle.trim());
+            newTitle = newTitle.trim();
             if (newTitle === "") newTitle = goal.title;
             if (newTitle !== goal.title) {
                 goal.title = newTitle;
@@ -280,24 +249,32 @@ document.addEventListener('DOMContentLoaded', function () {
             if (newDesc === null) {
                 // User cancelled, but we might have previous changes to save
                 if (hasChanges) {
+                    MagnateData.saveData();
                     renderGoals();
-                    updateAnalytics();
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                 }
                 return;
             }
-            newDesc = sanitizeText(newDesc.trim());
+            newDesc = newDesc.trim();
             if (newDesc !== goal.description) {
                 goal.description = newDesc;
                 hasChanges = true;
             }
 
             // Current amount prompt
-            let newCurrent = promptNumber("Edit current saved amount (current: " + goal.current + "):");
+            let newCurrent = MagnateUtils.promptNumber("Edit current saved amount (current: " + goal.current + "):");
             if (newCurrent === null) {
                 // User cancelled, but we might have previous changes to save
                 if (hasChanges) {
+                    // Ensure the goal is marked as sanitized
+                    goal.sanitized = true;
+                    MagnateData.saveData();
                     renderGoals();
-                    updateAnalytics();
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                 }
                 return;
             }
@@ -307,12 +284,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Target amount prompt
-            let newTarget = promptNumber("Edit goal target amount (current: " + goal.target + "):");
+            let newTarget = MagnateUtils.promptNumber("Edit goal target amount (current: " + goal.target + "):");
             if (newTarget === null) {
                 // User cancelled, but we might have previous changes to save
                 if (hasChanges) {
+                    // Ensure the goal is marked as sanitized
+                    goal.sanitized = true;
+                    MagnateData.saveData();
                     renderGoals();
-                    updateAnalytics();
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                 }
                 return;
             }
@@ -320,8 +302,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert("Target must be greater than 0.");
                 // Even if there was an error, save any previous valid changes
                 if (hasChanges) {
+                    // Ensure the goal is marked as sanitized
+                    goal.sanitized = true;
+                    MagnateData.saveData();
                     renderGoals();
-                    updateAnalytics();
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                 }
                 return;
             }
@@ -332,19 +319,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // If we have changes, render and update
             if (hasChanges) {
-                localStorage.setItem('goals', JSON.stringify(goals));
+                MagnateData.saveData();
                 renderGoals();
-                updateAnalytics();
+                if (typeof updateAnalytics === 'function') {
+                    updateAnalytics();
+                }
             }
         }
     }
 
     function deleteGoal(id) {
         if (confirm("Are you sure you want to delete this goal?")) {
-            goals = goals.filter(g => g.id !== id);
-            localStorage.setItem('goals', JSON.stringify(goals));
+            MagnateData.goals = MagnateData.goals.filter(g => g.id !== id);
+            MagnateData.saveData();
+            goals = MagnateData.goals;
             renderGoals();
-            updateAnalytics();
+            if (typeof updateAnalytics === 'function') {
+                updateAnalytics();
+            }
         }
     }
 
@@ -374,38 +366,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const catIdStr = String(cat.id);
             let currentBudget = categoryBudgets[monthKey][catIdStr] !== undefined ? categoryBudgets[monthKey][catIdStr] : cat.budget;
-            let newBudget = promptNumber("Edit monthly budget for " + cat.name + " (current: " + currentBudget + "):");
+            let newBudget = MagnateUtils.promptNumber("Edit monthly budget for " + cat.name + " (current: " + currentBudget + "):");
             if (newBudget === null) {
                 // User cancelled budget edit, but save name change if it happened
                 if (hasChanges) {
-                    localStorage.setItem('categories', JSON.stringify(categories));
+                    MagnateData.saveData();
                     renderCategories();
-                    updateAnalytics();
+                    if (typeof updateAnalytics === 'function') {
+                        updateAnalytics();
+                    }
                 }
                 return;
             }
             if (newBudget !== currentBudget) {
                 // Update the budget in the categoryBudgets for the current month
                 categoryBudgets[monthKey][catIdStr] = newBudget;
-                localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
+                MagnateData.saveData();
                 hasChanges = true;
             }
 
             // If we have changes, render and update
             if (hasChanges) {
-                localStorage.setItem('categories', JSON.stringify(categories));
+                MagnateData.saveData();
                 renderCategories();
-                updateAnalytics();
+                if (typeof updateAnalytics === 'function') {
+                    updateAnalytics();
+                }
             }
         }
     }
 
     function deleteCategory(id) {
         if (confirm("Are you sure you want to delete this category?")) {
-            categories = categories.filter(c => c.id !== id);
-            localStorage.setItem('categories', JSON.stringify(categories));
+            MagnateData.categories = MagnateData.categories.filter(c => c.id !== id);
+            MagnateData.saveData();
+            categories = MagnateData.categories;
             renderCategories();
-            updateAnalytics();
+            if (typeof updateAnalytics === 'function') {
+                updateAnalytics();
+            }
         }
     }
 
@@ -415,10 +414,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btnAddCategory')?.addEventListener('click', () => {
         const name = prompt("Enter category name:");
         if (!name) return;
-        const budget = promptNumber("Enter monthly budget for this category:");
+        const budget = MagnateUtils.promptNumber("Enter monthly budget for this category:");
         if (budget === null) return;
 
-        const newCat = { id: generateId(), name: name.trim(), budget: budget };
+        const newCat = { id: MagnateUtils.generateId(), name: name.trim(), budget: budget };
         categories.push(newCat);
 
         let monthKey = getMonthKey(selectedMonth);
@@ -426,8 +425,7 @@ document.addEventListener('DOMContentLoaded', function () {
             categoryBudgets[monthKey] = {};
         }
         categoryBudgets[monthKey][String(newCat.id)] = budget;
-        localStorage.setItem('categories', JSON.stringify(categories));
-        localStorage.setItem('categoryBudgets', JSON.stringify(categoryBudgets));
+        MagnateData.saveData();
 
         renderCategories();
         updateAnalytics();
@@ -438,23 +436,23 @@ document.addEventListener('DOMContentLoaded', function () {
         const title = prompt("Enter goal title:");
         if (!title) return;
         const description = prompt("Enter goal description:");
-        const current = promptNumber("Enter current saved amount:");
+        const current = MagnateUtils.promptNumber("Enter current saved amount:");
         if (current === null) return;
-        const target = promptNumber("Enter goal target amount:");
+        const target = MagnateUtils.promptNumber("Enter goal target amount:");
         if (target === null) return;
         if (target <= 0) {
             alert("Target must be greater than 0.");
             return;
         }
         const newGoal = {
-            id: generateId(),
-            title: sanitizeText(title.trim()),
-            description: description ? sanitizeText(description.trim()) : "",
+            id: MagnateUtils.generateId(),
+            title: title.trim(),
+            description: description ? description.trim() : "",
             current: current,
             target: target
         };
         goals.push(newGoal);
-        localStorage.setItem('goals', JSON.stringify(goals));
+        MagnateData.saveData();
         renderGoals();
         updateAnalytics();
     });
@@ -462,10 +460,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Edit Total Monthly Budget
     document.getElementById('btnEditBudget')?.addEventListener('click', () => {
         let key = getMonthKey(selectedMonth);
-        let newBudget = promptNumber("Enter new Total Monthly Budget:");
+        let newBudget = MagnateUtils.promptNumber("Enter new Total Monthly Budget:");
         if (newBudget !== null) {
             monthlyBudgets[key] = newBudget;
-            localStorage.setItem('monthlyBudgets', JSON.stringify(monthlyBudgets));
+            MagnateData.saveData();
             updateMonthlyBudgetDisplay();
             if (typeof updateAnalytics === 'function') {
                 updateAnalytics();

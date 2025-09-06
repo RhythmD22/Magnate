@@ -1,5 +1,5 @@
 const calcHistoryElement = document.getElementById('calcHistory');
-let calcHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
+let calcHistory = MagnateData.calcHistory;
 
 let needsSave = false;
 for (let i = 0; i < calcHistory.length; i++) {
@@ -14,7 +14,8 @@ for (let i = 0; i < calcHistory.length; i++) {
 
 // Save updated format back to localStorage if needed
 if (needsSave) {
-  localStorage.setItem('calcHistory', JSON.stringify(calcHistory));
+  MagnateData.calcHistory = calcHistory;
+  MagnateData.saveData();
 }
 
 function loadCalcHistory() {
@@ -77,14 +78,16 @@ function addHistoryEntry(entryText) {
   };
 
   calcHistory.unshift(historyEntry);
-  localStorage.setItem('calcHistory', JSON.stringify(calcHistory));
+  MagnateData.calcHistory = calcHistory;
+  MagnateData.saveData();
   loadCalcHistory();
 }
 
 function deleteHistoryEntry(index) {
   if (confirm("Are you sure you want to delete this calculation?")) {
     calcHistory.splice(index, 1);
-    localStorage.setItem('calcHistory', JSON.stringify(calcHistory));
+    MagnateData.calcHistory = calcHistory;
+    MagnateData.saveData();
     loadCalcHistory();
   }
 }
@@ -92,7 +95,8 @@ function deleteHistoryEntry(index) {
 document.getElementById('clearHistoryBtn')?.addEventListener('click', () => {
   if (confirm("Clear all calculation history?")) {
     calcHistory = [];
-    localStorage.removeItem('calcHistory');
+    MagnateData.calcHistory = calcHistory;
+    MagnateData.saveData();
     loadCalcHistory();
   }
 });
