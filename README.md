@@ -61,18 +61,18 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 - **Calculation Deletion**: Implemented the ability to delete individual calculations.
 - **Category Update**: Changed "Textbooks" category to "Subscriptions" to better serve the target audience.
 - **Content Updates**: Revised various tips to better align with the website's audience and goals.
-- **Mobile Sidebar Close Functionality**: Added functionality to close the sidebar on mobile devices when tapping outside the sidebar area, with a backdrop overlay to prevent accidental taps on main content.
+- **Mobile Sidebar Open/Close Functionality**: Added functionality to open and close the sidebar on mobile devices by swiping. The sidebar now closes when tapping outside the sidebar area, with a backdrop overlay to prevent accidental taps on main content.
 - **Font Declaration Refactor**: Refactored font-family declarations to use html element instead of universal selector for better performance and consistency.
 
 ## Technology Stack
 
 - **Core Technologies**: HTML5, CSS3, JavaScript (ES6+)
-- **Data Storage**: `localStorage` for client-side data persistence
-- **UI Framework**: Custom CSS with responsive design for mobile and desktop
+- **Data Storage**: `localStorage` for client-side data persistence.
+- **UI Framework**: Custom CSS with responsive design for mobile and desktop.
 - **External Libraries**: 
-  - EasyMDE (loaded via CDN) for markdown-enabled notes editing in the Track Transactions section
-  - Chart.js (loaded via CDN) for data visualization in the Analytics section
-- **PWA Support**: Includes a service worker for offline functionality and installability
+  - EasyMDE (loaded via CDN) for markdown-enabled notes editing in the Track Transactions section.
+  - Chart.js (loaded via CDN) for data visualization in the Analytics section.
+- **PWA Support**: Includes a service worker for offline functionality and installability.
 
 ## License
 
