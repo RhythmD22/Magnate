@@ -31,8 +31,8 @@ const urlsToCache = [
   '/Magnate/apple-touch-icon.png',
   '/Magnate/android-chrome-192x192.png',
   '/Magnate/android-chrome-512x512.png',
-  '/Magnate/Images/undraw_calculator.png',
-  '/Magnate/Images/undraw_online-calendar.png'
+  '/Magnate/images/undraw_calculator.png',
+  '/Magnate/images/undraw_online-calendar.png'
 ];
 
 // Install event - cache all static assets
