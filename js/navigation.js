@@ -64,6 +64,11 @@ function handleSwipe() {
 const container = document.querySelector('.container');
 
 container.addEventListener('touchstart', (e) => {
+  // Prevent swipe feedback if touch starts on the hamburger menu
+  if (e.target.closest('#hamburger')) {
+    return;
+  }
+
   touchStartX = e.changedTouches[0].screenX;
   touchStartY = e.changedTouches[0].screenY;
 
@@ -74,6 +79,11 @@ container.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 container.addEventListener('touchmove', (e) => {
+  // Prevent swipe feedback if touch starts on the hamburger menu
+  if (e.target.closest('#hamburger')) {
+    return;
+  }
+
   // Update swipe feedback position during swipe
   if (touchStartX <= 50 && !sidebar.classList.contains('active')) {
     const currentX = e.changedTouches[0].screenX;
@@ -87,6 +97,11 @@ container.addEventListener('touchmove', (e) => {
 }, { passive: true });
 
 container.addEventListener('touchend', (e) => {
+  // Prevent swipe feedback if touch starts on the hamburger menu
+  if (e.target.closest('#hamburger')) {
+    return;
+  }
+
   touchEndX = e.changedTouches[0].screenX;
   touchEndY = e.changedTouches[0].screenY;
   handleSwipe();
@@ -98,11 +113,21 @@ container.addEventListener('touchend', (e) => {
 
 // Also add swipe detection to the sidebar for closing
 sidebar.addEventListener('touchstart', (e) => {
+  // Prevent swipe detection if touch starts on interactive elements
+  if (e.target.closest('a, button')) {
+    return;
+  }
+
   touchStartX = e.changedTouches[0].screenX;
   touchStartY = e.changedTouches[0].screenY;
 }, { passive: true });
 
 sidebar.addEventListener('touchend', (e) => {
+  // Prevent swipe detection if touch ends on interactive elements
+  if (e.target.closest('a, button')) {
+    return;
+  }
+
   touchEndX = e.changedTouches[0].screenX;
   touchEndY = e.changedTouches[0].screenY;
   handleSwipe();
