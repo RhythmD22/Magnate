@@ -17,7 +17,20 @@
   }
 }
 
-/* Sidebar pop-in animation for homepage */
+/* On desktop, hide sidebar and make main content full width on index page only */
+@media (min-width: 769px) {
+  body.index-page .sidebar {
+    display: none;
+  }
+
+  body.index-page .main-content {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Sidebar pop-in animation for homepage - commented out for index page */
+/*
 @media (min-width: 769px) {
   .sidebar {
     animation: sidebarPopIn 0.5s ease-out 0.3s forwards;
@@ -37,6 +50,7 @@
     }
   }
 }
+*/
 
 /* Animated background elements */
 .main-content::before {
