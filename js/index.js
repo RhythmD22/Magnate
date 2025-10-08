@@ -18,6 +18,20 @@ document.addEventListener('DOMContentLoaded', function () {
     window.location.replace('/Financier/');
   }
 
+  // Hide loading splash screen
+  const loadingSplash = document.getElementById('loadingSplash');
+  if (loadingSplash) {
+    // Add fade-out class to create transition effect
+    loadingSplash.classList.add('fade-out');
+
+    // Remove the splash screen from DOM after transition completes
+    setTimeout(() => {
+      if (loadingSplash && loadingSplash.parentNode) {
+        loadingSplash.parentNode.removeChild(loadingSplash);
+      }
+    }, 300); // 300ms matches the CSS transition time
+  }
+
   // Get Started button animation and navigation
   const getStartedBtn = document.getElementById('getStartedBtn');
   if (getStartedBtn) {
