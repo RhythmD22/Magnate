@@ -1,6 +1,6 @@
 // Service Worker for Magnate PWA (Static Site)
 
-const CACHE_NAME = 'magnate-v1.0.0';
+const CACHE_NAME = 'magnate-v1.0.1'; // Updated version to force refresh
 const urlsToCache = [
   '/Magnate/',
   '/Magnate/manifest.json',
