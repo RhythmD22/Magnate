@@ -4,6 +4,10 @@
 
 Magnate is a lightweight web application designed for anyone who wants to take control of their finances. Magnate is a spinoff of the Financier project, building upon its foundation to create a more mature and developed version with enhanced features. The app runs entirely in the browser using `localStorage` for data persistence, requiring no server setup. It also includes Progressive Web App (PWA) support for mobile installation.
 
+## Google Analytics
+
+This application includes Google Analytics tracking to monitor basic usage metrics and improve user experience. Please note that no personal or financial data is shared with Google Analytics - only general page usage and navigation metrics are collected.
+
 ## Getting Started
 
 1. Clone this repository.
