@@ -1,6 +1,5 @@
 // Service Worker for Magnate PWA (Static Site)
-
-const CACHE_NAME = 'magnate-v1.0.1'; // Updated version to force refresh
+const CACHE_NAME = 'magnate-v1.0'; // Updated version to force refresh
 const urlsToCache = [
   '/Magnate/',
   '/Magnate/manifest.json',
@@ -35,12 +34,11 @@ const urlsToCache = [
   '/Magnate/images/undraw_online-calendar.png'
 ];
 
-// Install event - cache all static assets
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('Caches opened');
         return cache.addAll(urlsToCache);
       })
       .catch(err => {
@@ -49,13 +47,34 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch event - serve cached content when offline
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request).catch(() => {
+        // Return cached version if available
+        if (response) {
+          return response;
+        }
+
+        // Otherwise, fetch from network
+        return fetch(event.request).then(
+          response => {
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response to store in cache
+            const responseToCache = response.clone();
+
+            return caches.open(CACHE_NAME)
+              .then(cache => {
+                return cache.put(event.request, responseToCache);
+              })
+              .then(() => response);
+          }
+        ).catch(() => {
+          // Serve cached index.html for navigation requests when offline
           if (event.request.mode === 'navigate') {
             return caches.match('/Magnate/index.html');
           }
@@ -64,7 +83,6 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -76,9 +94,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-
-  // Claim clients to ensure that the SW takes control immediately
-  return self.clients.claim();
 });
