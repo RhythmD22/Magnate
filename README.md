@@ -27,19 +27,6 @@ Magnate can be installed as a Progressive Web App on mobile devices:
 3. Select "Add to Home Screen".
 4. The app will now appear on your home screen and launch in full-screen mode.
 
-## Application Pages
-
-The web app consists of several static HTML pages, each serving a specific function:
-
-- `index.html`: The main landing page with quick links to other sections.
-- `Goals & Categories.html`: Configure custom categories and set financial goals.
-- `Track Transactions.html`: Record income and expenses for each category.
-- `Analytics.html`: View charts summarizing weekly and monthly spending trends.
-- `Calculator.html`: Perform calculations without leaving the app.
-- `Money Tips.html`: Browse practical budgeting advice.
-
-All data is saved in your browser via `localStorage` and can be exported as CSV.
-
 ## Key Features
 
 - **Goal Setting:** Define and track financial goals with customizable categories.
@@ -72,7 +59,6 @@ All data is saved in your browser via `localStorage` and can be exported as CSV.
 
 - **Core Technologies**: HTML5, CSS3, JavaScript (ES6+)
 - **Data Storage**: `localStorage` for client-side data persistence.
-- **UI Framework**: Custom CSS with responsive design for mobile and desktop.
 - **External Libraries**: 
   - EasyMDE (loaded via CDN) for markdown-enabled notes editing in the Track Transactions section.
   - Chart.js (loaded via CDN) for data visualization in the Analytics section.
