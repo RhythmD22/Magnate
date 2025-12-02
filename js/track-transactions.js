@@ -4,6 +4,13 @@ let expenses = MagnateData.expenses;
 let incomes = MagnateData.incomes;
 let currentWeekStart = MagnateData.currentWeekStart;
 
+// Ensure currentWeekStart is properly initialized from MagnateData
+if (!currentWeekStart) {
+  currentWeekStart = MagnateData.currentWeekStart = new Date();
+  // Ensure the date is at the start of the day to avoid timezone issues
+  currentWeekStart.setHours(0, 0, 0, 0);
+}
+
 function updateWeekHeading() {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   document.getElementById('weekHeading').textContent = "Week of " + currentWeekStart.toLocaleDateString('en-US', options);
@@ -385,13 +392,29 @@ function renderTransactionGroups() {
     // Check if there's a budget for this category
     let budgetDiv = null;
     const categoryObj = MagnateData.getCategoryByName(group.category);
-    if (categoryObj && categoryObj.budget > 0) {
-      budgetDiv = document.createElement('div');
-      budgetDiv.className = 'transaction-group-budget';
-      budgetDiv.textContent = `Budget: $${categoryObj.budget.toFixed(2)}`;
-      budgetDiv.style.fontSize = '0.9rem';
-      budgetDiv.style.color = '#A3A3A3';
-      budgetDiv.style.fontWeight = '500';
+    if (categoryObj) {
+      // Get the current month key to check for monthly budget
+      const monthKey = currentWeekStart.getFullYear() + '-' + ("0" + (currentWeekStart.getMonth() + 1)).slice(-2);
+      let budgetAmount = 0;
+
+      // Check if there's a specific budget set for this month and category
+      if (MagnateData.categoryBudgets &&
+        MagnateData.categoryBudgets[monthKey] &&
+        MagnateData.categoryBudgets[monthKey][String(categoryObj.id)] !== undefined) {
+        budgetAmount = MagnateData.categoryBudgets[monthKey][String(categoryObj.id)];
+      } else {
+        // Fall back to the default budget from the category object
+        budgetAmount = categoryObj.budget || 0;
+      }
+
+      if (budgetAmount > 0) {
+        budgetDiv = document.createElement('div');
+        budgetDiv.className = 'transaction-group-budget';
+        budgetDiv.textContent = `Budget: $${budgetAmount.toFixed(2)}`;
+        budgetDiv.style.fontSize = '0.9rem';
+        budgetDiv.style.color = '#A3A3A3';
+        budgetDiv.style.fontWeight = '500';
+      }
     }
 
     headerDiv.appendChild(titleDiv);
@@ -502,6 +525,8 @@ document.addEventListener('visibilitychange', function () {
   if (!document.hidden) {
     // Refresh data to ensure consistency before rendering transaction groups
     MagnateData.loadData();
+    // Update currentWeekStart to ensure it's in sync with MagnateData
+    currentWeekStart = MagnateData.currentWeekStart;
     renderTransactionGroups();
   }
 });

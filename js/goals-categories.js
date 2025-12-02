@@ -405,6 +405,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (newBudget !== currentBudget) {
                 // Update the budget in the categoryBudgets for the current month
                 categoryBudgets[monthKey][catIdStr] = newBudget;
+
+                // Also update the main category object's budget for consistency across the app
+                cat.budget = newBudget;
+
                 MagnateData.saveData();
                 hasChanges = true;
             }
