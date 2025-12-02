@@ -1,3 +1,14 @@
+// Store references to event listeners for potential cleanup
+const eventListeners = [];
+
+// Helper function to add event listener and store reference for cleanup
+function addListener(element, event, handler) {
+  if (element) {
+    element.addEventListener(event, handler);
+    eventListeners.push({ element, event, handler });
+  }
+}
+
 const calcHistoryElement = document.getElementById('calcHistory');
 let calcHistory = MagnateData.calcHistory;
 
@@ -18,16 +29,39 @@ if (needsSave) {
   MagnateData.saveData();
 }
 
+// Optimized calculation function to avoid duplication
+function performCalculation(op, val1, val2) {
+  switch (op) {
+    case '+':
+      return val1 + val2;
+    case '-':
+      return val1 - val2;
+    case '*':
+      return val1 * val2;
+    case '/':
+      if (val2 === 0) {
+        alert('Cannot divide by zero');
+        clearAll();
+        return null;
+      }
+      return val1 / val2;
+    default:
+      return val2; // If operation is invalid, return second value
+  }
+}
+
 function loadCalcHistory() {
-  calcHistoryElement.innerHTML = '';
+  // Use a document fragment to improve performance when adding multiple elements
+  const fragment = document.createDocumentFragment();
+
   calcHistory.forEach((entry, index) => {
-    const div = document.createElement('div');
     if (typeof entry === 'object' && entry.calculation && entry.timestamp) {
       // Format the ISO timestamp for display
       const dateObj = new Date(entry.timestamp);
       const displayTimestamp = dateObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
         dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
+      const div = document.createElement('div');
       div.className = 'history-entry';
       div.innerHTML = `
         <span class="calculation">${entry.calculation}</span>
@@ -39,14 +73,16 @@ function loadCalcHistory() {
         </button>
       `;
 
+      // Use event delegation for delete buttons to improve efficiency
       const deleteBtn = div.querySelector('.delete-btn');
-      deleteBtn.addEventListener('click', (e) => {
+      const deleteHandler = (e) => {
         e.stopPropagation();
         const index = parseInt(deleteBtn.getAttribute('data-index'));
         deleteHistoryEntry(index);
-      });
+      };
+      addListener(deleteBtn, 'click', deleteHandler);
 
-      div.addEventListener('click', function (e) {
+      const touchHandler = function (e) {
         if (('ontouchstart' in window || navigator.maxTouchPoints) && e.target !== deleteBtn) {
           e.preventDefault();
 
@@ -60,13 +96,18 @@ function loadCalcHistory() {
             this.classList.add('selected');
           }
         }
-      });
+      };
+      addListener(div, 'click', touchHandler);
 
-      calcHistoryElement.prepend(div);
+      fragment.appendChild(div);
     } else {
       console.warn('Unexpected history entry format:', entry);
     }
   });
+
+  // Clear and append in one operation for better performance
+  calcHistoryElement.innerHTML = '';
+  calcHistoryElement.appendChild(fragment);
 }
 
 function addHistoryEntry(entryText) {
@@ -92,14 +133,16 @@ function deleteHistoryEntry(index) {
   }
 }
 
-document.getElementById('clearHistoryBtn')?.addEventListener('click', () => {
+const clearHistoryHandler = () => {
   if (confirm("Clear all calculation history?")) {
     calcHistory = [];
     MagnateData.calcHistory = calcHistory;
     MagnateData.saveData();
     loadCalcHistory();
   }
-});
+};
+
+addListener(document.getElementById('clearHistoryBtn'), 'click', clearHistoryHandler);
 
 const calcDisplay = document.getElementById('calcDisplay');
 let currentValue = '0';
@@ -146,36 +189,17 @@ function handleOperator(nextOperator) {
     previousValue = inputValue;
   } else if (currentOperation) {
     const currentValueFloat = parseFloat(currentValue);
-    let result = 0;
+    const result = performCalculation(currentOperation, previousValue, currentValueFloat);
 
-    switch (currentOperation) {
-      case '+':
-        result = previousValue + currentValueFloat;
-        break;
-      case '-':
-        result = previousValue - currentValueFloat;
-        break;
-      case '*':
-        result = previousValue * currentValueFloat;
-        break;
-      case '/':
-        if (currentValueFloat === 0) {
-          alert('Cannot divide by zero');
-          clearAll();
-          return;
-        }
-        result = previousValue / currentValueFloat;
-        break;
+    if (result !== null) { // Only proceed if calculation was successful (not division by zero)
+      previousValue = parseFloat(result.toPrecision(12));
+      currentValue = `${previousValue}`;
+      updateDisplay(currentValue);
+
+      // Add to history
+      const entry = `${previousValue} ${currentOperation} ${currentValueFloat} = ${previousValue}`;
+      addHistoryEntry(entry);
     }
-
-    result = parseFloat(result.toPrecision(12));
-    currentValue = `${result}`;
-    updateDisplay(currentValue);
-    previousValue = result;
-
-    // Add to history
-    const entry = `${previousValue} ${currentOperation} ${currentValueFloat} = ${result}`;
-    addHistoryEntry(entry);
   }
 
   waitingForOperand = true;
@@ -185,41 +209,23 @@ function handleOperator(nextOperator) {
 function handleEquals() {
   if (currentOperation && previousValue !== null) {
     const inputValue = parseFloat(currentValue);
-    let result = 0;
+    const result = performCalculation(currentOperation, previousValue, inputValue);
 
-    switch (currentOperation) {
-      case '+':
-        result = previousValue + inputValue;
-        break;
-      case '-':
-        result = previousValue - inputValue;
-        break;
-      case '*':
-        result = previousValue * inputValue;
-        break;
-      case '/':
-        if (inputValue === 0) {
-          alert('Cannot divide by zero');
-          clearAll();
-          return;
-        }
-        result = previousValue / inputValue;
-        break;
+    if (result !== null) { // Only proceed if calculation was successful (not division by zero)
+      const finalResult = parseFloat(result.toPrecision(12));
+
+      // Add to history
+      const entry = `${previousValue} ${currentOperation} ${inputValue} = ${finalResult}`;
+      addHistoryEntry(entry);
+
+      currentValue = `${finalResult}`;
+      updateDisplay(currentValue);
+
+      // Reset for next calculation
+      previousValue = null;
+      currentOperation = null;
+      waitingForOperand = true;
     }
-
-    result = parseFloat(result.toPrecision(12));
-
-    // Add to history
-    const entry = `${previousValue} ${currentOperation} ${inputValue} = ${result}`;
-    addHistoryEntry(entry);
-
-    currentValue = `${result}`;
-    updateDisplay(currentValue);
-
-    // Reset for next calculation
-    previousValue = null;
-    currentOperation = null;
-    waitingForOperand = true;
   }
 }
 
@@ -233,47 +239,59 @@ function handlePercent() {
   updateDisplay(currentValue);
 }
 
-document.querySelectorAll('.calc-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const num = btn.getAttribute('data-num');
-    const action = btn.getAttribute('data-action');
+// Use event delegation for calculator buttons to improve efficiency
+const calcContainer = document.querySelector('.calculator-container') || document; // Fallback if container doesn't exist
+const calcBtnHandler = (e) => {
+  const btn = e.target.closest('.calc-btn');
+  if (!btn) return;
 
-    if (num !== null) {
-      if (num === '.') {
-        inputDecimal();
-      } else {
-        inputDigit(num);
-      }
-    } else if (action !== null) {
-      switch (action) {
-        case 'clear':
-          clearAll();
-          break;
-        case 'sign':
-          handleSign();
-          break;
-        case 'percent':
-          handlePercent();
-          break;
-        case 'divide':
-          handleOperator('/');
-          break;
-        case 'multiply':
-          handleOperator('*');
-          break;
-        case 'subtract':
-          handleOperator('-');
-          break;
-        case 'add':
-          handleOperator('+');
-          break;
-        case 'equals':
-          handleEquals();
-          break;
-      }
+  const num = btn.getAttribute('data-num');
+  const action = btn.getAttribute('data-action');
+
+  if (num !== null) {
+    if (num === '.') {
+      inputDecimal();
+    } else {
+      inputDigit(num);
     }
-  });
-});
+  } else if (action !== null) {
+    switch (action) {
+      case 'clear':
+        clearAll();
+        break;
+      case 'sign':
+        handleSign();
+        break;
+      case 'percent':
+        handlePercent();
+        break;
+      case 'divide':
+        handleOperator('/');
+        break;
+      case 'multiply':
+        handleOperator('*');
+        break;
+      case 'subtract':
+        handleOperator('-');
+        break;
+      case 'add':
+        handleOperator('+');
+        break;
+      case 'equals':
+        handleEquals();
+        break;
+    }
+  }
+};
+
+addListener(calcContainer, 'click', calcBtnHandler);
 
 loadCalcHistory();
 clearAll();
+
+// Cleanup function to remove event listeners when page unloads
+window.addEventListener('beforeunload', () => {
+  eventListeners.forEach(({ element, event, handler }) => {
+    element.removeEventListener(event, handler);
+  });
+});

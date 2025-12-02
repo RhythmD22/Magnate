@@ -1,3 +1,14 @@
+// Store references to event listeners for potential cleanup
+const eventListeners = [];
+
+// Helper function to add event listener and store reference for cleanup
+function addListener(element, event, handler) {
+  if (element) {
+    element.addEventListener(event, handler);
+    eventListeners.push({ element, event, handler });
+  }
+}
+
 const categoryColors = {
   "subscriptions": "#F44336",
   "food": "#FF9800",
@@ -190,10 +201,8 @@ const tipsBank = {
 
 // Utility: shuffle an array in place.
 const shuffle = (array) => {
-  let currentIndex = array.length, randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
+  for (let currentIndex = array.length - 1; currentIndex > 0; currentIndex--) {
+    const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
     [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
   }
   return array;
@@ -208,37 +217,48 @@ const generateCardsHTML = (tips) => {
   return cardsHTML + cardsHTML;
 };
 
-// Update tip rows with randomized tips for the chosen category.
-const updateTips = (category) => {
-  const selectedTips = tipsBank[category];
-  document.querySelectorAll('.tips-row-inner').forEach(inner => {
-    const randomizedTips = shuffle([...selectedTips]);
-    inner.innerHTML = generateCardsHTML(randomizedTips);
-  });
-};
+// Helper function to update button styles
+function updateButtonStyles(button, isActive, category) {
+  const selectedColor = categoryColors[category] || "#4e80ee";
 
-// Event listener for category button clicks.
-document.querySelectorAll('.category-button').forEach(button => {
-  button.addEventListener('click', () => {
-    // Reset all buttons
-    document.querySelectorAll('.category-button').forEach(b => {
-      b.classList.remove('active');
-      b.style.color = "#FFFFFF";
-      b.querySelectorAll('svg path').forEach(path => {
-        path.setAttribute('fill', '#508de6');
-      });
-    });
-    // Set active state for the clicked button.
+  if (isActive) {
     button.classList.add('active');
-    const category = button.getAttribute('data-category');
-    const selectedColor = categoryColors[category] || "#4e80ee";
     button.style.color = selectedColor;
     button.querySelectorAll('svg path').forEach(path => {
       path.setAttribute('fill', selectedColor);
     });
-    // Update arrow-line color.
-    const arrowLine = document.querySelector('.arrow-line');
-    arrowLine.style.backgroundColor = selectedColor;
+  } else {
+    button.classList.remove('active');
+    button.style.color = "#FFFFFF";
+    button.querySelectorAll('svg path').forEach(path => {
+      path.setAttribute('fill', '#508de6');
+    });
+  }
+}
+
+// Update tip rows with randomized tips for the chosen category.
+const updateTips = (category) => {
+  // Verify category exists in tipsBank
+  if (!tipsBank[category]) {
+    console.warn(`Category "${category}" not found in tipsBank`);
+    return;
+  }
+
+  const selectedTips = tipsBank[category];
+  document.querySelectorAll('.tips-row-inner').forEach(inner => {
+    if (inner) {
+      const randomizedTips = shuffle([...selectedTips]);
+      inner.innerHTML = generateCardsHTML(randomizedTips);
+    }
+  });
+};
+
+// Update arrow line color
+function updateArrowColor(color) {
+  const arrowLine = document.querySelector('.arrow-line');
+  if (arrowLine) {
+    arrowLine.style.backgroundColor = color;
+
     let styleEl = document.getElementById('arrow-after-style');
     if (!styleEl) {
       styleEl = document.createElement('style');
@@ -247,31 +267,86 @@ document.querySelectorAll('.category-button').forEach(button => {
     }
     styleEl.textContent = `
       .arrow-line::after {
-        border-left: 10px solid ${selectedColor};
+        border-left: 10px solid ${color};
       }
     `;
-    updateTips(category);
+  }
+}
+
+// Event listener for category button clicks using event delegation
+function setupCategoryButtons() {
+  const container = document.querySelector('.categories-container'); // Assuming there's a container for category buttons
+  if (!container) {
+    // Fallback: attach to document if no container exists
+    document.addEventListener('click', function (e) {
+      const button = e.target.closest('.category-button');
+      if (button) {
+        handleCategoryButtonClick(button);
+      }
+    });
+    return;
+  }
+
+  addListener(container, 'click', function (e) {
+    const button = e.target.closest('.category-button');
+    if (button) {
+      handleCategoryButtonClick(button);
+    }
   });
-});
+}
+
+function handleCategoryButtonClick(button) {
+  const category = button.getAttribute('data-category');
+  if (!category) return;
+
+  // Reset all buttons
+  document.querySelectorAll('.category-button').forEach(b => {
+    updateButtonStyles(b, false, null);
+  });
+
+  // Set active state for the clicked button.
+  updateButtonStyles(button, true, category);
+
+  // Update arrow-line color.
+  const selectedColor = categoryColors[category] || "#4e80ee";
+  updateArrowColor(selectedColor);
+
+  updateTips(category);
+}
 
 // Initialize default category on page load.
 window.addEventListener('DOMContentLoaded', () => {
-  updateTips('finance');
+  // Verify that required elements exist
   const defaultBtn = document.querySelector('.category-button[data-category="finance"]');
-  defaultBtn.classList.add('active');
-  defaultBtn.style.color = categoryColors["finance"];
-  defaultBtn.querySelectorAll('svg path').forEach(path => {
-    path.setAttribute('fill', categoryColors["finance"]);
-  });
+  if (defaultBtn) {
+    updateButtonStyles(defaultBtn, true, "finance");
+    updateTips('finance');
+    updateArrowColor(categoryColors["finance"]);
+  }
 });
 
 window.addEventListener('load', () => {
   setTimeout(() => {
     document.querySelectorAll('.tips-row').forEach(row => {
-      row.classList.add('scroll-animate');
+      if (row) {
+        row.classList.add('scroll-animate');
+      }
     });
     // restart tips to ensure animations apply
-    const activeCategory = document.querySelector('.category-button.active').getAttribute('data-category');
-    updateTips(activeCategory);
+    const activeBtn = document.querySelector('.category-button.active');
+    if (activeBtn) {
+      const activeCategory = activeBtn.getAttribute('data-category');
+      updateTips(activeCategory);
+    }
   }, 50);
 });
+
+// Cleanup function to remove event listeners when page unloads
+window.addEventListener('beforeunload', () => {
+  eventListeners.forEach(({ element, event, handler }) => {
+    element.removeEventListener(event, handler);
+  });
+});
+
+// Setup category buttons after DOM is loaded
+setupCategoryButtons();

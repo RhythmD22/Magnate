@@ -181,112 +181,168 @@ function renderWeeklyChart() {
     const ctx = document.getElementById('weeklyChart');
     if (!ctx) return;
     const chartCtx = ctx.getContext('2d');
-    if (weeklyChart) weeklyChart.destroy();
 
-    weeklyChart = new Chart(chartCtx, {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Expenses',
-                    data: expenseData,
-                    backgroundColor: '#dd524c',
-                    borderColor: '#dd524c',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Income',
-                    data: incomeData,
-                    backgroundColor: '#5ec269',
-                    borderColor: '#5ec269',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: globalMax,
-                    stacked: true,
-                    ticks: {
-                        stepSize: 10,
-                        color: '#A3A3A3'
+    if (weeklyChart) {
+        // Update the chart data instead of recreating it
+        weeklyChart.data.datasets[0].data = expenseData;
+        weeklyChart.data.datasets[1].data = incomeData;
+        weeklyChart.options.scales.y.max = globalMax;
+        weeklyChart.update();
+    } else {
+        weeklyChart = new Chart(chartCtx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Expenses',
+                        data: expenseData,
+                        backgroundColor: '#dd524c',
+                        borderColor: '#dd524c',
+                        borderWidth: 1
                     },
-                    grid: {
-                        color: '#3A3D42'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Amount ($)',
-                        color: '#FFFFFF',
-                        font: { size: 14 }
+                    {
+                        label: 'Income',
+                        data: incomeData,
+                        backgroundColor: '#5ec269',
+                        borderColor: '#5ec269',
+                        borderWidth: 1
                     }
-                },
-                x: {
-                    stacked: true,
-                    grid: { color: '#3A3D42' },
-                    ticks: { color: '#A3A3A3' },
-                    title: {
-                        display: true,
-                        text: 'Days of the Week',
-                        color: '#FFFFFF',
-                        font: { size: 14 }
-                    }
-                }
+                ]
             },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const label = context.dataset.label ? context.dataset.label + ': ' : '';
-                            return label + '$' + context.parsed.y;
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: globalMax,
+                        stacked: true,
+                        ticks: {
+                            stepSize: 10,
+                            color: '#A3A3A3'
+                        },
+                        grid: {
+                            color: '#3A3D42'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Amount ($)',
+                            color: '#FFFFFF',
+                            font: { size: 14 }
+                        }
+                    },
+                    x: {
+                        stacked: true,
+                        grid: { color: '#3A3D42' },
+                        ticks: { color: '#A3A3A3' },
+                        title: {
+                            display: true,
+                            text: 'Days of the Week',
+                            color: '#FFFFFF',
+                            font: { size: 14 }
                         }
                     }
                 },
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#9E9E9E'
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.dataset.label ? context.dataset.label + ': ' : '';
+                                return label + '$' + context.parsed.y;
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#9E9E9E'
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 }
 
-/* Weekly Category Cards */
+/* Unified Category Card Rendering */
 /**
- * Update the weekly category cards display
+ * Create a category card element
+ * @param {string} name - Category name
+ * @param {number} total - Total amount
+ * @param {number} budget - Budget amount (optional)
+ * @param {string} color - Color for the card
+ * @param {boolean} isIncome - Whether this is for income or expense
+ * @returns {HTMLElement} The created card element
  */
-function updateCategoryCards() {
-    const container = document.getElementById('categoriesCards');
-    if (!container) return;
-    container.innerHTML = '';
+function createCategoryCard(name, total, budget = 0, color, isIncome = false) {
+    let percentage = isIncome ? 100 : (budget > 0) ? (total / budget) * 100 : 0;
+    percentage = Math.min(100, percentage);
 
-    if (!currentWeekStart) return;
+    const card = document.createElement('div');
+    card.className = 'expense-category-card';
 
-    let mondayStr = currentWeekStart.toISOString().slice(0, 10);
-    let weekEnd = new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
-    let weekEndStr = weekEnd.toISOString().slice(0, 10);
+    const title = document.createElement('div');
+    title.className = 'expense-category-title';
+    title.textContent = name;
+    title.style.color = color;
+    card.appendChild(title);
 
-    // Determine the current month key based on currentWeekStart
-    let year = currentWeekStart.getFullYear();
-    let month = currentWeekStart.getMonth();
+    if (!isIncome && total > budget) {
+        const exceededLabel = document.createElement('div');
+        exceededLabel.textContent = '(Exceeded)';
+        exceededLabel.style.color = '#F8969E';
+        exceededLabel.style.fontSize = '0.9rem';
+        card.appendChild(exceededLabel);
+    }
+
+    const breakdown = document.createElement('div');
+    breakdown.className = 'expense-category-breakdown';
+    breakdown.innerHTML = `
+        <span class="percentage" style="color: ${color};">
+            ${Math.round(percentage)}%
+        </span>
+        (${total.toFixed(2)}${!isIncome ? '/' + budget : ''})
+    `;
+    card.appendChild(breakdown);
+
+    const progressBar = document.createElement('div');
+    progressBar.className = 'category-progress-bar';
+
+    const progressFill = document.createElement('div');
+    progressFill.className = 'category-progress-fill';
+    progressFill.style.width = percentage + '%';
+    progressFill.style.backgroundColor = color;
+
+    progressBar.appendChild(progressFill);
+    card.appendChild(progressBar);
+
+    return card;
+}
+
+/**
+ * Get transactions by date range and category view
+ * @param {string} startDate - Start date in YYYY-MM-DD format
+ * @param {string} endDate - End date in YYYY-MM-DD format
+ * @param {string} view - The category view ('spending' or 'income')
+ * @returns {object} Object containing grouped transactions
+ */
+function getTransactionsByDateRangeAndCategory(startDate, endDate, view) {
+    // Determine the month key based on start date
+    const start = new Date(startDate);
+    let year = start.getFullYear();
+    let month = start.getMonth();
     let monthKey = year + '-' + ('0' + (month + 1)).slice(-2);
 
-    if (categoryView === 'spending') {
+    if (view === 'spending') {
         let expenseGroups = {};
 
         if (Array.isArray(MagnateData.expenses)) {
             MagnateData.expenses
                 .filter(e => {
                     if (!e.date) return false;
-                    return MagnateUtils.isDateBetween(e.date, mondayStr, weekEndStr);
+                    return MagnateUtils.isDateBetween(e.date, startDate, endDate);
                 })
                 .forEach(e => {
                     let catName = (e.category || "Uncategorized").trim();
@@ -310,63 +366,17 @@ function updateCategoryCards() {
                     }
                     expenseGroups[key].total += Math.abs(e.amount);
                 });
-
-            // Render the grouped expense categories
-            for (let key in expenseGroups) {
-                let group = expenseGroups[key];
-                let totalAmount = group.total;
-                let budget = group.budget;
-                let percentage = (budget > 0) ? (totalAmount / budget) * 100 : 0;
-                percentage = Math.min(100, percentage);
-                let color = '#e77975';
-
-                let card = document.createElement('div');
-                card.className = 'expense-category-card';
-
-                let title = document.createElement('div');
-                title.className = 'expense-category-title';
-                title.textContent = group.name;
-                title.style.color = color;
-                card.appendChild(title);
-                if (totalAmount > budget) {
-                    let exceededLabel = document.createElement('div');
-                    exceededLabel.textContent = '(Exceeded)';
-                    exceededLabel.style.color = '#F8969E';
-                    exceededLabel.style.fontSize = '0.9rem';
-                    card.appendChild(exceededLabel);
-                }
-
-                let breakdown = document.createElement('div');
-                breakdown.className = 'expense-category-breakdown';
-                breakdown.innerHTML = `
-         <span class="percentage" style="color: ${color};">
-           ${Math.round(percentage)}%
-         </span>
-         (${totalAmount.toFixed(2)}/${budget})
-       `;
-                card.appendChild(breakdown);
-
-                let progressBar = document.createElement('div');
-                progressBar.className = 'category-progress-bar';
-
-                let progressFill = document.createElement('div');
-                progressFill.className = 'category-progress-fill';
-                progressFill.style.width = percentage + '%';
-                progressFill.style.backgroundColor = color;
-
-                progressBar.appendChild(progressFill);
-                card.appendChild(progressBar);
-                container.appendChild(card);
-            }
         }
+
+        return expenseGroups;
     } else {
-        // Weekly Income by Category
+        // Income category
         let incomeGroups = {};
         if (Array.isArray(MagnateData.incomes)) {
             MagnateData.incomes
                 .filter(i => {
                     if (!i.date) return false;
-                    return MagnateUtils.isDateBetween(i.date, mondayStr, weekEndStr);
+                    return MagnateUtils.isDateBetween(i.date, startDate, endDate);
                 })
                 .forEach(i => {
                     let catName = (i.category || "Uncategorized").trim();
@@ -376,44 +386,39 @@ function updateCategoryCards() {
                     }
                     incomeGroups[key].total += Math.abs(i.amount);
                 });
-
-            for (let key in incomeGroups) {
-                let group = incomeGroups[key];
-                let percentage = 100; // For income, we'll show 100% as it's the total
-                let color = '#69cd9b';
-
-                let card = document.createElement('div');
-                card.className = 'expense-category-card';
-
-                let title = document.createElement('div');
-                title.className = 'expense-category-title';
-                title.textContent = group.name;
-                title.style.color = color;
-                card.appendChild(title);
-
-                let breakdown = document.createElement('div');
-                breakdown.className = 'expense-category-breakdown';
-                breakdown.innerHTML = `
-         <span class="percentage" style="color: ${color};">
-           ${Math.round(percentage)}%
-         </span>
-         (${group.total.toFixed(2)})
-       `;
-                card.appendChild(breakdown);
-
-                let progressBar = document.createElement('div');
-                progressBar.className = 'category-progress-bar';
-
-                let progressFill = document.createElement('div');
-                progressFill.className = 'category-progress-fill';
-                progressFill.style.width = percentage + '%';
-                progressFill.style.backgroundColor = color;
-
-                progressBar.appendChild(progressFill);
-                card.appendChild(progressBar);
-                container.appendChild(card);
-            }
         }
+
+        return incomeGroups;
+    }
+}
+
+/* Weekly Category Cards */
+/**
+ * Update the weekly category cards display
+ */
+function updateCategoryCards() {
+    const container = document.getElementById('categoriesCards');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!currentWeekStart) return;
+
+    let mondayStr = currentWeekStart.toISOString().slice(0, 10);
+    let weekEnd = new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+    let weekEndStr = weekEnd.toISOString().slice(0, 10);
+
+    // Use the unified function to get transactions
+    const groupedTransactions = getTransactionsByDateRangeAndCategory(mondayStr, weekEndStr, categoryView);
+
+    // Determine color based on view
+    const color = categoryView === 'spending' ? '#e77975' : '#69cd9b';
+    const isIncome = categoryView === 'income';
+
+    // Render the grouped transactions
+    for (let key in groupedTransactions) {
+        let group = groupedTransactions[key];
+        const card = createCategoryCard(group.name, group.total, group.budget || 0, color, isIncome);
+        container.appendChild(card);
     }
 }
 
@@ -436,146 +441,28 @@ function updateMonthlyCategoryCards() {
     let startDate = firstDay.toISOString().slice(0, 10);
     let endDate = nextMonth.toISOString().slice(0, 10);
 
-    // Compute the month key
-    let monthKey = year + '-' + ('0' + (month + 1)).slice(-2);
+    // Use the unified function to get transactions
+    const groupedTransactions = getTransactionsByDateRangeAndCategory(startDate, endDate, monthlyCategoryView);
 
-    if (monthlyCategoryView === 'spending') {
-        let expenseGroups = {};
+    // Determine color based on view
+    const color = monthlyCategoryView === 'spending' ? '#e77975' : '#6ad09d';
+    const isIncome = monthlyCategoryView === 'income';
 
-        if (Array.isArray(MagnateData.expenses)) {
-            MagnateData.expenses
-                .filter(e => {
-                    if (!e.date) return false;
-                    return MagnateUtils.isDateBetween(e.date, startDate, endDate) &&
-                        MagnateUtils.normalizeDateFormat(e.date) < endDate; // Exclude end date
-                })
-                .forEach(e => {
-                    let catName = (e.category || "Uncategorized").trim();
-                    let key = catName.toLowerCase();
-                    let catObj = null;
-                    if (Array.isArray(MagnateData.categories)) {
-                        catObj = MagnateData.categories.find(c => c.name && c.name.trim().toLowerCase() === key);
-                    }
-                    let catBudget = 0;
-                    if (catObj) {
-                        const catIdStr = String(catObj.id);
-                        // Check if categoryBudgets[monthKey] exists before accessing it
-                        if (MagnateData.categoryBudgets && MagnateData.categoryBudgets[monthKey] && MagnateData.categoryBudgets[monthKey][catIdStr] !== undefined) {
-                            catBudget = MagnateData.categoryBudgets[monthKey][catIdStr];
-                        } else {
-                            catBudget = catObj.budget || 0;
-                        }
-                    }
-                    if (!expenseGroups[key]) {
-                        expenseGroups[key] = { name: catName, total: 0, budget: catBudget };
-                    }
-                    expenseGroups[key].total += Math.abs(e.amount);
-                });
-
-            for (let key in expenseGroups) {
-                let group = expenseGroups[key];
-                let totalAmount = group.total;
-                let budget = group.budget;
-                let percentage = (budget > 0) ? (totalAmount / budget) * 100 : 0;
-                percentage = Math.min(100, percentage);
-                let color = '#e77975';
-
-                let card = document.createElement('div');
-                card.className = 'expense-category-card';
-
-                let title = document.createElement('div');
-                title.className = 'expense-category-title';
-                title.textContent = group.name;
-                title.style.color = color;
-                card.appendChild(title);
-                if (totalAmount > budget) {
-                    let exceededLabel = document.createElement('div');
-                    exceededLabel.textContent = '(Exceeded)';
-                    exceededLabel.style.color = '#F8969E';
-                    exceededLabel.style.fontSize = '0.9rem';
-                    card.appendChild(exceededLabel);
-                }
-
-                let breakdown = document.createElement('div');
-                breakdown.className = 'expense-category-breakdown';
-                breakdown.innerHTML = `
-         <span class="percentage" style="color: ${color};">
-           ${Math.round(percentage)}%
-         </span>
-         (${totalAmount.toFixed(2)}/${budget})
-       `;
-                card.appendChild(breakdown);
-
-                let progressBar = document.createElement('div');
-                progressBar.className = 'category-progress-bar';
-
-                let progressFill = document.createElement('div');
-                progressFill.className = 'category-progress-fill';
-                progressFill.style.width = percentage + '%';
-                progressFill.style.backgroundColor = color;
-
-                progressBar.appendChild(progressFill);
-                card.appendChild(progressBar);
-                container.appendChild(card);
-            }
-        }
-    } else {
-        // Monthly Income by Category
-        let incomeGroups = {};
-        if (Array.isArray(MagnateData.incomes)) {
-            MagnateData.incomes
-                .filter(i => {
-                    if (!i.date) return false;
-                    return MagnateUtils.isDateBetween(i.date, startDate, endDate) &&
-                        MagnateUtils.normalizeDateFormat(i.date) < endDate; // Exclude end date
-                })
-                .forEach(i => {
-                    let catName = (i.category || "Uncategorized").trim();
-                    let key = catName.toLowerCase();
-                    if (!incomeGroups[key]) {
-                        incomeGroups[key] = { name: catName, total: 0 };
-                    }
-                    incomeGroups[key].total += Math.abs(i.amount);
-                });
-            for (let key in incomeGroups) {
-                let group = incomeGroups[key];
-                let percentage = 100; // For income, we'll show 100% as it's the total
-                let color = '#6ad09d';
-
-                let card = document.createElement('div');
-                card.className = 'expense-category-card';
-
-                let title = document.createElement('div');
-                title.className = 'expense-category-title';
-                title.textContent = group.name;
-                title.style.color = color;
-                card.appendChild(title);
-
-                let breakdown = document.createElement('div');
-                breakdown.className = 'expense-category-breakdown';
-                breakdown.innerHTML = `
-         <span class="percentage" style="color: ${color};">
-           ${Math.round(percentage)}%
-         </span>
-         (${group.total.toFixed(2)})
-       `;
-                card.appendChild(breakdown);
-
-                let progressBar = document.createElement('div');
-                progressBar.className = 'category-progress-bar';
-
-                let progressFill = document.createElement('div');
-                progressFill.className = 'category-progress-fill';
-                progressFill.style.width = percentage + '%';
-                progressFill.style.backgroundColor = color;
-
-                progressBar.appendChild(progressFill);
-                card.appendChild(progressBar);
-                container.appendChild(card);
-            }
-        }
+    // Render the grouped transactions
+    for (let key in groupedTransactions) {
+        let group = groupedTransactions[key];
+        const card = createCategoryCard(group.name, group.total, group.budget || 0, color, isIncome);
+        container.appendChild(card);
     }
 }
+
+// Cleanup function to properly dispose of chart when page is unloaded
+window.addEventListener('beforeunload', () => {
+    if (weeklyChart) {
+        weeklyChart.destroy();
+        weeklyChart = null;
+    }
+});
 
 if (currentWeekStart) {
     updateAnalytics();

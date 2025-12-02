@@ -1,5 +1,8 @@
-// Data Manager for Magnate application
-// Centralized management of all application data
+/**
+ * MagnateData namespace
+ * @namespace MagnateData
+ * @description Centralized management of all application data
+ */
 
 window.MagnateData = window.MagnateData || {};
 
@@ -26,76 +29,109 @@ MagnateData.notes = "";
 MagnateData.currentWeekStart = null;
 
 /**
+ * Helper function to safely load JSON data from localStorage
+ * @param {string} key - The localStorage key to retrieve
+ * @param {any} defaultValue - The default value to return if parsing fails
+ * @returns {any} - The parsed data or default value
+ */
+function loadJSONData(key, defaultValue) {
+  try {
+    const storedData = localStorage.getItem(key);
+    return storedData ? JSON.parse(storedData) : defaultValue;
+  } catch (e) {
+    console.error(`Error parsing ${key} from localStorage:`, e);
+    return defaultValue;
+  }
+}
+
+/**
  * Load all data from localStorage
  */
 MagnateData.loadData = function () {
-  try {
-    MagnateData.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-  } catch (e) {
-    console.error('Error parsing expenses from localStorage:', e);
-    MagnateData.expenses = [];
-  }
+  MagnateData.expenses = loadJSONData('expenses', []);
+  MagnateData.incomes = loadJSONData('incomes', []);
 
-  try {
-    MagnateData.incomes = JSON.parse(localStorage.getItem('incomes')) || [];
-  } catch (e) {
-    console.error('Error parsing incomes from localStorage:', e);
-    MagnateData.incomes = [];
-  }
+  const storedCategories = loadJSONData('categories', null);
+  MagnateData.categories = storedCategories && storedCategories.length > 0 ?
+    storedCategories : [...MagnateData.defaultCategories];
 
-  try {
-    const storedCategories = JSON.parse(localStorage.getItem('categories'));
-    MagnateData.categories = storedCategories && storedCategories.length > 0 ?
-      storedCategories : [...MagnateData.defaultCategories];
-  } catch (e) {
-    console.error('Error parsing categories from localStorage:', e);
-    MagnateData.categories = [...MagnateData.defaultCategories];
-  }
+  let storedGoals = loadJSONData('goals', null);
+  MagnateData.goals = storedGoals && storedGoals.length > 0 ?
+    storedGoals : [...MagnateData.defaultGoals];
+  // Ensure all goals have the sanitized flag
+  MagnateData.goals.forEach(goal => {
+    if (goal.sanitized === undefined) {
+      goal.sanitized = true;
+    }
+  });
 
-  try {
-    const storedGoals = JSON.parse(localStorage.getItem('goals'));
-    MagnateData.goals = storedGoals && storedGoals.length > 0 ?
-      storedGoals : [...MagnateData.defaultGoals];
-    // Ensure all goals have the sanitized flag
-    MagnateData.goals.forEach(goal => {
-      if (goal.sanitized === undefined) {
-        goal.sanitized = true;
-      }
-    });
-  } catch (e) {
-    console.error('Error parsing goals from localStorage:', e);
-    MagnateData.goals = [...MagnateData.defaultGoals];
-  }
-
-  try {
-    MagnateData.monthlyBudgets = JSON.parse(localStorage.getItem('monthlyBudgets')) || {};
-  } catch (e) {
-    console.error('Error parsing monthlyBudgets from localStorage:', e);
-    MagnateData.monthlyBudgets = {};
-  }
-
-  try {
-    MagnateData.categoryBudgets = JSON.parse(localStorage.getItem('categoryBudgets')) || {};
-  } catch (e) {
-    console.error('Error parsing categoryBudgets from localStorage:', e);
-    MagnateData.categoryBudgets = {};
-  }
-
-  try {
-    MagnateData.calcHistory = JSON.parse(localStorage.getItem('calcHistory')) || [];
-  } catch (e) {
-    console.error('Error parsing calcHistory from localStorage:', e);
-    MagnateData.calcHistory = [];
-  }
+  MagnateData.monthlyBudgets = loadJSONData('monthlyBudgets', {});
+  MagnateData.categoryBudgets = loadJSONData('categoryBudgets', {});
+  MagnateData.calcHistory = loadJSONData('calcHistory', []);
 
   MagnateData.notes = localStorage.getItem('notes') || '';
 
   try {
-    MagnateData.currentWeekStart = localStorage.getItem('currentWeekStart') ?
+    let savedDate = localStorage.getItem('currentWeekStart') ?
       new Date(localStorage.getItem('currentWeekStart')) : MagnateUtils.getMonday(new Date());
+
+    // Ensure the date is at the start of the day to avoid timezone issues
+    savedDate.setHours(0, 0, 0, 0);
+    MagnateData.currentWeekStart = savedDate;
   } catch (e) {
     console.error('Error parsing currentWeekStart from localStorage:', e);
-    MagnateData.currentWeekStart = MagnateUtils.getMonday(new Date());
+    let date = MagnateUtils.getMonday(new Date());
+    date.setHours(0, 0, 0, 0);  // Ensure at start of day
+    MagnateData.currentWeekStart = date;
+  }
+};
+
+/**
+ * Validate data before saving to prevent corrupt data
+ * @private
+ */
+MagnateData._validateData = function () {
+  // Validate that arrays are actually arrays
+  if (!Array.isArray(MagnateData.expenses)) {
+    console.warn('Expenses is not an array, resetting to empty array');
+    MagnateData.expenses = [];
+  }
+
+  if (!Array.isArray(MagnateData.incomes)) {
+    console.warn('Incomes is not an array, resetting to empty array');
+    MagnateData.incomes = [];
+  }
+
+  if (!Array.isArray(MagnateData.categories)) {
+    console.warn('Categories is not an array, resetting to empty array');
+    MagnateData.categories = [];
+  }
+
+  if (!Array.isArray(MagnateData.goals)) {
+    console.warn('Goals is not an array, resetting to empty array');
+    MagnateData.goals = [];
+  }
+
+  if (!Array.isArray(MagnateData.calcHistory)) {
+    console.warn('CalcHistory is not an array, resetting to empty array');
+    MagnateData.calcHistory = [];
+  }
+
+  // Validate that objects are actually objects
+  if (typeof MagnateData.monthlyBudgets !== 'object' || MagnateData.monthlyBudgets === null) {
+    console.warn('Monthly budgets is not an object, resetting to empty object');
+    MagnateData.monthlyBudgets = {};
+  }
+
+  if (typeof MagnateData.categoryBudgets !== 'object' || MagnateData.categoryBudgets === null) {
+    console.warn('Category budgets is not an object, resetting to empty object');
+    MagnateData.categoryBudgets = {};
+  }
+
+  // Validate that notes is a string
+  if (typeof MagnateData.notes !== 'string') {
+    console.warn('Notes is not a string, resetting to empty string');
+    MagnateData.notes = '';
   }
 };
 
@@ -104,6 +140,9 @@ MagnateData.loadData = function () {
  */
 MagnateData.saveData = function () {
   try {
+    // Validate data before saving
+    MagnateData._validateData();
+
     localStorage.setItem('expenses', JSON.stringify(MagnateData.expenses));
     localStorage.setItem('incomes', JSON.stringify(MagnateData.incomes));
     localStorage.setItem('categories', JSON.stringify(MagnateData.categories));
@@ -127,8 +166,30 @@ MagnateData.saveData = function () {
  */
 MagnateData.getCategoryByName = function (name) {
   if (!name) return null;
+  // Find category with case insensitive comparison
   return MagnateData.categories.find(cat =>
-    cat.name.toLowerCase() === name.toLowerCase());
+    cat.name.toLowerCase() === name.toLowerCase()) || null;
+};
+
+/**
+ * Filter transactions by date range
+ * @private
+ * @param {Array} transactions - Array of transactions to filter
+ * @param {string} startDate - Start date in YYYY-MM-DD format
+ * @param {string} endDate - End date in YYYY-MM-DD format
+ * @returns {Array} - Filtered transactions
+ */
+MagnateData._filterTransactionsByDate = function (transactions, startDate, endDate) {
+  return transactions.filter(item => {
+    try {
+      const normalizedItemDate = MagnateUtils.normalizeDateFormat(item.date);
+      const isWithinRange = normalizedItemDate >= startDate && normalizedItemDate <= endDate;
+      return isWithinRange;
+    } catch (e) {
+      console.warn('Invalid date in transaction item:', item.date, item);
+      return false;
+    }
+  });
 };
 
 /**
@@ -144,30 +205,13 @@ MagnateData.getTransactionGroups = function (weekStart) {
   weekEndDate.setDate(weekEndDate.getDate() + 6);
   let endStr = MagnateUtils.getLocalDateString(weekEndDate);
 
-  // Filter transactions for the current week
-  let weekExpenses = MagnateData.expenses.filter(item => {
-    try {
-      let itemDateObj = MagnateUtils.parseLocalDateString(item.date);
-      let startDateObj = MagnateUtils.parseLocalDateString(startStr);
-      let endDateObj = MagnateUtils.parseLocalDateString(endStr);
-      return itemDateObj >= startDateObj && itemDateObj <= endDateObj;
-    } catch (e) {
-      console.warn('Invalid date in expense item:', item.date, item);
-      return false;
-    }
-  });
+  // Normalize all date strings to YYYY-MM-DD format for consistent comparison
+  const normalizedStart = MagnateUtils.normalizeDateFormat(startStr);
+  const normalizedEnd = MagnateUtils.normalizeDateFormat(endStr);
 
-  let weekIncomes = MagnateData.incomes.filter(item => {
-    try {
-      let itemDateObj = MagnateUtils.parseLocalDateString(item.date);
-      let startDateObj = MagnateUtils.parseLocalDateString(startStr);
-      let endDateObj = MagnateUtils.parseLocalDateString(endStr);
-      return itemDateObj >= startDateObj && itemDateObj <= endDateObj;
-    } catch (e) {
-      console.warn('Invalid date in income item:', item.date, item);
-      return false;
-    }
-  });
+  // Filter transactions using the helper function
+  const weekExpenses = MagnateData._filterTransactionsByDate(MagnateData.expenses, normalizedStart, normalizedEnd);
+  const weekIncomes = MagnateData._filterTransactionsByDate(MagnateData.incomes, normalizedStart, normalizedEnd);
 
   // Get all unique categories from both expenses and incomes for the current week
   const allTransactions = [...weekExpenses, ...weekIncomes];

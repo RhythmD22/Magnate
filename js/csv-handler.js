@@ -1,3 +1,19 @@
+// Utility functions for validation
+function isValidDateFormat(dateString) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(dateString) ||
+        /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString) ||
+        !isNaN(Date.parse(dateString));
+}
+
+function isValidMonthFormat(monthString) {
+    return /^\d{4}-\d{2}$/.test(monthString);
+}
+
+function isValidNumber(value) {
+    const num = parseFloat(value);
+    return !isNaN(num);
+}
+
 // Helper function to escape CSV fields
 function escapeCSVField(field) {
     if (field === null || field === undefined) field = '';
@@ -40,19 +56,41 @@ function parseCSVLine(line) {
     return result;
 }
 
+// Generate unique IDs more reliably
+function generateUniqueId() {
+    return Date.now() + Math.floor(Math.random() * 10000);
+}
+
+// Format timestamp for export
+function formatTimestampForExport(timestamp) {
+    const dateObj = new Date(timestamp);
+    return dateObj.toLocaleDateString([], {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }) + ' ' + dateObj.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+}
+
+// Export function to generate and download CSV
 function exportCSV() {
     // Use centralized data management
     MagnateData.loadData(); // Ensure we have the latest data
 
-    let expenses = MagnateData.expenses;
-    let incomes = MagnateData.incomes;
-    let monthlyBudgets = MagnateData.monthlyBudgets;
-    let categories = MagnateData.categories;
-    let categoryBudgets = MagnateData.categoryBudgets;
-    let goals = MagnateData.goals;
-    let calculatorHistory = MagnateData.calcHistory;
-    let notes = MagnateData.notes || '';
-    let currentWeekStart = MagnateData.currentWeekStart ? MagnateData.currentWeekStart.toISOString() : '';
+    const {
+        expenses,
+        incomes,
+        monthlyBudgets,
+        categories,
+        categoryBudgets,
+        goals,
+        calcHistory: calculatorHistory,
+        notes = '',
+        currentWeekStart
+    } = MagnateData;
 
     let csvContent = '';
 
@@ -68,9 +106,9 @@ function exportCSV() {
 
     // Monthly Budgets Section
     csvContent += 'Month,Total Budget\n';
-    for (let key in monthlyBudgets) {
-        csvContent += `${key},${monthlyBudgets[key]}\n`;
-    }
+    Object.entries(monthlyBudgets).forEach(([key, value]) => {
+        csvContent += `${key},${value}\n`;
+    });
     csvContent += '\n';
 
     // Expense Categories (Default Budgets) Section
@@ -82,14 +120,13 @@ function exportCSV() {
 
     // Category Budgets per Month
     csvContent += 'Month,Category,Monthly Budget\n';
-    for (let monthKey in categoryBudgets) {
-        let budgets = categoryBudgets[monthKey];
-        for (let catId in budgets) {
-            let catObj = categories.find(c => String(c.id) === catId);
-            let catName = catObj ? catObj.name : 'Unknown';
-            csvContent += `${monthKey},${escapeCSVField(catName)},${budgets[catId]}\n`;
-        }
-    }
+    Object.entries(categoryBudgets).forEach(([monthKey, budgets]) => {
+        Object.entries(budgets).forEach(([catId, budget]) => {
+            const catObj = categories.find(c => String(c.id) === catId);
+            const catName = catObj ? catObj.name : 'Unknown';
+            csvContent += `${monthKey},${escapeCSVField(catName)},${budget}\n`;
+        });
+    });
     csvContent += '\n';
 
     // Financial Goals Section
@@ -102,11 +139,7 @@ function exportCSV() {
     // Calculator History Section
     csvContent += 'Calculation,Timestamp\n';
     calculatorHistory.forEach(entry => {
-        // Format the ISO timestamp for export
-        const dateObj = new Date(entry.timestamp);
-        // Export format: MM/DD/YYYY HH:MM
-        const displayTimestamp = dateObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
-            dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        const displayTimestamp = formatTimestampForExport(entry.timestamp);
         csvContent += `${escapeCSVField(entry.calculation)},${escapeCSVField(displayTimestamp)}\n`;
     });
     csvContent += '\n';
@@ -117,13 +150,13 @@ function exportCSV() {
     csvContent += '\n';
 
     // Additional Information
-    csvContent += `Current Week Start,${currentWeekStart}\n`;
+    csvContent += `Current Week Start,${currentWeekStart ? currentWeekStart.toISOString() : ''}\n`;
     csvContent += `Exported On,${new Date().toISOString()}\n`;
 
     // Create a blob and trigger download
-    let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    let url = URL.createObjectURL(blob);
-    let link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
     link.setAttribute('href', url);
     link.setAttribute('download', 'magnate_data_export.csv');
     document.body.appendChild(link);
@@ -152,18 +185,22 @@ function importCSV() {
 function parseCSVData(csvData) {
     // Load existing data using centralized data management
     MagnateData.loadData();
-    let existingCategories = MagnateData.categories;
+    const existingCategories = MagnateData.categories;
 
     // Initialize data objects
-    let newExpenses = [];
-    let newIncomes = [];
-    let newMonthlyBudgets = {};
-    let newCategories = [...existingCategories]; // Start with existing categories
-    let newCategoryBudgets = {};
-    let newGoals = []; // New array for goals
-    let newCalculatorHistory = []; // New array for calculator history
-    let newNotes = ''; // New variable for notes
+    const newExpenses = [];
+    const newIncomes = [];
+    const newMonthlyBudgets = {};
+    const newCategories = [...existingCategories]; // Start with existing categories
+    const newCategoryBudgets = {};
+    const newGoals = [];
+    const newCalculatorHistory = [];
+    let newNotes = '';
     let newCurrentWeekStart = '';
+
+    // Create a category lookup map for performance
+    const categoryMap = new Map();
+    newCategories.forEach(cat => categoryMap.set(cat.name, cat));
 
     // Split CSV into lines
     const lines = csvData.split('\n');
@@ -210,26 +247,22 @@ function parseCSVData(csvData) {
                 if (values.length >= 5) {
                     const [date, type, title, amount, category] = values;
 
-                    // Validate date format - accept both YYYY-MM-DD and MM/DD/YYYY formats
-                    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) && !/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(date)) {
-                        // Try to parse the date to see if it's valid
-                        try {
-                            MagnateUtils.dateStringToDateObject(date);
-                        } catch (e) {
-                            console.warn('Invalid date format in transaction:', date);
-                            break;
-                        }
+                    // Validate date format
+                    if (!isValidDateFormat(date)) {
+                        console.warn('Invalid date format in transaction:', date);
+                        break;
                     }
 
                     // Validate amount is a number
-                    const amountNum = parseFloat(amount);
-                    if (isNaN(amountNum)) {
+                    if (!isValidNumber(amount)) {
                         console.warn('Invalid amount in transaction:', amount);
                         break;
                     }
 
+                    const amountNum = parseFloat(amount);
+
                     // Generate a new ID for each transaction
-                    const newId = Date.now() + Math.floor(Math.random() * 10000);
+                    const newId = generateUniqueId();
                     if (type === 'Expense') {
                         newExpenses.push({
                             id: newId,
@@ -257,19 +290,18 @@ function parseCSVData(csvData) {
                     const [month, budget] = values;
 
                     // Validate month format (YYYY-MM)
-                    if (!/^\d{4}-\d{2}$/.test(month)) {
+                    if (!isValidMonthFormat(month)) {
                         console.warn('Invalid month format:', month);
                         break;
                     }
 
                     // Validate budget is a number
-                    const budgetNum = parseFloat(budget);
-                    if (isNaN(budgetNum)) {
+                    if (!isValidNumber(budget)) {
                         console.warn('Invalid budget amount:', budget);
                         break;
                     }
 
-                    newMonthlyBudgets[month] = budgetNum;
+                    newMonthlyBudgets[month] = parseFloat(budget);
                 }
                 break;
 
@@ -278,24 +310,27 @@ function parseCSVData(csvData) {
                     const [name, budget] = values;
 
                     // Validate budget is a number
-                    const budgetNum = parseFloat(budget);
-                    if (isNaN(budgetNum)) {
+                    if (!isValidNumber(budget)) {
                         console.warn('Invalid budget amount for category:', name, budget);
                         break;
                     }
 
-                    // Check if category already exists
-                    let existingCategory = newCategories.find(cat => cat.name === name);
+                    const budgetNum = parseFloat(budget);
+
+                    // Check if category already exists using the map
+                    let existingCategory = categoryMap.get(name);
                     if (existingCategory) {
                         // Update existing category budget
                         existingCategory.budget = budgetNum;
                     } else {
                         // Add new category with new ID
-                        newCategories.push({
-                            id: Date.now() + Math.floor(Math.random() * 10000),
+                        const newCategory = {
+                            id: generateUniqueId(),
                             name: name,
                             budget: budgetNum
-                        });
+                        };
+                        newCategories.push(newCategory);
+                        categoryMap.set(name, newCategory); // Add to map as well
                     }
                 }
                 break;
@@ -305,14 +340,13 @@ function parseCSVData(csvData) {
                     const [month, category, budget] = values;
 
                     // Validate month format (YYYY-MM)
-                    if (!/^\d{4}-\d{2}$/.test(month)) {
+                    if (!isValidMonthFormat(month)) {
                         console.warn('Invalid month format:', month);
                         break;
                     }
 
                     // Validate budget is a number
-                    const budgetNum = parseFloat(budget);
-                    if (isNaN(budgetNum)) {
+                    if (!isValidNumber(budget)) {
                         console.warn('Invalid budget amount:', budget);
                         break;
                     }
@@ -320,25 +354,27 @@ function parseCSVData(csvData) {
                     if (!newCategoryBudgets[month]) {
                         newCategoryBudgets[month] = {};
                     }
-                    // Find category ID
+
+                    // Find category ID using the map
                     let categoryId = null;
-                    for (let cat of newCategories) {
-                        if (cat.name === category) {
-                            categoryId = cat.id;
-                            break;
-                        }
-                    }
-                    // If category doesn't exist, create it
-                    if (!categoryId) {
-                        categoryId = Date.now() + Math.floor(Math.random() * 10000);
-                        newCategories.push({
+                    const categoryObj = categoryMap.get(category);
+
+                    if (categoryObj) {
+                        categoryId = categoryObj.id;
+                    } else {
+                        // If category doesn't exist, create it
+                        categoryId = generateUniqueId();
+                        const newCategory = {
                             id: categoryId,
                             name: category,
                             budget: 0 // Default budget
-                        });
+                        };
+                        newCategories.push(newCategory);
+                        categoryMap.set(category, newCategory); // Add to map as well
                     }
+
                     const categoryIdStr = String(categoryId);
-                    newCategoryBudgets[month][categoryIdStr] = budgetNum;
+                    newCategoryBudgets[month][categoryIdStr] = parseFloat(budget);
                 }
                 break;
 
@@ -347,13 +383,13 @@ function parseCSVData(csvData) {
                     const [id, title, description, current, target] = values;
 
                     // Validate current and target are numbers
-                    const currentNum = parseFloat(current);
-                    const targetNum = parseFloat(target);
-
-                    if (isNaN(currentNum) || isNaN(targetNum)) {
+                    if (!isValidNumber(current) || !isValidNumber(target)) {
                         console.warn('Invalid goal values:', current, target);
                         break;
                     }
+
+                    const currentNum = parseFloat(current);
+                    const targetNum = parseFloat(target);
 
                     if (targetNum <= 0) {
                         console.warn('Goal target must be greater than 0:', target);
@@ -361,7 +397,7 @@ function parseCSVData(csvData) {
                     }
 
                     newGoals.push({
-                        id: parseInt(id) || Date.now() + Math.floor(Math.random() * 10000),
+                        id: parseInt(id) || generateUniqueId(),
                         title: title || '',
                         description: description || '',
                         current: currentNum,
@@ -375,6 +411,7 @@ function parseCSVData(csvData) {
                     const [calculation, timestamp] = values;
                     // Parse the display timestamp back to ISO format
                     let isoTimestamp = timestamp;
+
                     // If it looks like a display timestamp (MM/DD/YYYY HH:MM), convert it to ISO
                     if (/^\d{1,2}\/\d{1,2}\/\d{4} \d{2}:\d{2}$/.test(timestamp)) {
                         const [datePart, timePart] = timestamp.split(' ');
@@ -393,7 +430,7 @@ function parseCSVData(csvData) {
 
             case 'notes':
                 // Collect all lines until we reach the next section
-                let notesLines = [];
+                const notesLines = [];
 
                 // Add the current line if it's not a metadata line
                 if (line !== 'Current Week Start,' && !line.startsWith('Current Week Start,')) {
@@ -459,19 +496,7 @@ function parseCSVData(csvData) {
                 if (values[0] === 'Current Week Start') {
                     // Validate date format - accept both YYYY-MM-DD and MM/DD/YYYY formats
                     if (values[1]) {
-                        let isValidFormat = /^\d{4}-\d{2}-\d{2}$/.test(values[1]) || /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(values[1]);
-
-                        // If format is not immediately valid, try to parse it
-                        if (!isValidFormat) {
-                            try {
-                                MagnateUtils.dateStringToDateObject(values[1]);
-                                isValidFormat = true;
-                            } catch (e) {
-                                isValidFormat = false;
-                            }
-                        }
-
-                        if (!isValidFormat) {
+                        if (!isValidDateFormat(values[1])) {
                             console.warn('Invalid date format for current week start:', values[1]);
                             break;
                         }

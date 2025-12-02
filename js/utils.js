@@ -9,6 +9,18 @@
 window.MagnateUtils = window.MagnateUtils || {};
 
 /**
+ * Helper function to pad a number with leading zeros
+ * @param {number} num - Number to pad
+ * @param {number} size - Size of the resulting string
+ * @returns {string} - Padded string
+ */
+MagnateUtils._padNumber = function (num, size) {
+  let s = num + '';
+  while (s.length < size) s = '0' + s;
+  return s;
+};
+
+/**
  * Prompt user for a number with validation
  * @param {string} message - The prompt message to display
  * @returns {number|null} - The parsed number or null if cancelled
@@ -43,15 +55,12 @@ MagnateUtils.generateId = function () {
 };
 
 /**
- * Parse a local date string in either MM/DD/YYYY or YYYY-MM-DD format
- * @param {string} dateString - The date string to parse
- * * @returns {Date} - The parsed Date object
+ * Validate if a date string is a valid date
+ * @param {string} dateString - Date string to validate
+ * @returns {boolean} - Whether the date is valid
  */
-MagnateUtils.parseLocalDateString = function (dateString) {
-  // Handle null or undefined input
-  if (!dateString) {
-    return new Date();
-  }
+MagnateUtils.isValidDateString = function (dateString) {
+  if (!dateString) return false;
 
   // Check date format and parse accordingly
   if (dateString.includes("-")) {
@@ -59,28 +68,58 @@ MagnateUtils.parseLocalDateString = function (dateString) {
     const [year, month, day] = dateString.split("-");
     // Validate that we have all components
     if (year && month && day) {
-      // For ISO format, we need to parse it as UTC date to avoid timezone issues
-      const date = new Date(Date.UTC(+year, +month - 1, +day));
+      // Create date to check validity
+      const date = new Date(+year, +month - 1, +day);
       // Check if the date is valid
-      if (date.getUTCFullYear() == year && date.getUTCMonth() == month - 1 && date.getUTCDate() == day) {
-        return date;
-      }
+      return date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day;
     }
   } else {
     // Handle US date format (MM/DD/YYYY)
     const [month, day, year] = dateString.split("/");
     // Validate that we have all components
     if (month && day && year) {
+      // Create date to check validity
       const date = new Date(+year, +month - 1, +day);
       // Check if the date is valid
-      if (date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day) {
-        return date;
-      }
+      return date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate() == day;
     }
   }
 
-  // If we can't parse the date, throw an error to alert the calling function
-  throw new Error('Invalid date string: ' + dateString);
+  return false;
+};
+
+/**
+ * Parse a local date string in either MM/DD/YYYY or YYYY-MM-DD format
+ * @param {string} dateString - The date string to parse
+ * @returns {Date} - The parsed Date object
+ */
+MagnateUtils.parseLocalDateString = function (dateString) {
+  // Handle null or undefined input
+  if (!dateString) {
+    return new Date();
+  }
+
+  // Validate the date string first
+  if (!MagnateUtils.isValidDateString(dateString)) {
+    throw new Error('Invalid date string: ' + dateString);
+  }
+
+  // Check date format and parse accordingly
+  if (dateString.includes("-")) {
+    // Handle ISO date format (YYYY-MM-DD)
+    const [year, month, day] = dateString.split("-");
+    // Create date at start of day to avoid timezone issues
+    const date = new Date(+year, +month - 1, +day);
+    date.setHours(0, 0, 0, 0); // Set to start of day
+    return date;
+  } else {
+    // Handle US date format (MM/DD/YYYY)
+    const [month, day, year] = dateString.split("/");
+    // Create date at start of day to avoid timezone issues
+    const date = new Date(+year, +month - 1, +day);
+    date.setHours(0, 0, 0, 0); // Set to start of day
+    return date;
+  }
 };
 
 /**
@@ -89,13 +128,11 @@ MagnateUtils.parseLocalDateString = function (dateString) {
  * @returns {string} - Formatted date string
  */
 MagnateUtils.getLocalDateString = function (d) {
-  const tempDate = new Date(d);
-  tempDate.setMinutes(tempDate.getMinutes() - tempDate.getTimezoneOffset());
-  return tempDate.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
+  // Create date without timezone modifications to ensure consistency
+  const year = d.getFullYear();
+  const month = MagnateUtils._padNumber(d.getMonth() + 1, 2);
+  const day = MagnateUtils._padNumber(d.getDate(), 2);
+  return `${month}/${day}/${year}`;
 };
 
 /**
@@ -172,7 +209,7 @@ MagnateUtils.convertToISOFormat = function (dateString) {
   // Convert MM/DD/YYYY to YYYY-MM-DD
   if (dateString.includes('/')) {
     const [month, day, year] = dateString.split('/');
-    return `${year}-${month.padStart ? month.padStart(2, '0') : ('0' + month).slice(-2)}-${day.padStart ? day.padStart(2, '0') : ('0' + day).slice(-2)}`;
+    return `${year}-${MagnateUtils._padNumber(parseInt(month), 2)}-${MagnateUtils._padNumber(parseInt(day), 2)}`;
   }
   return dateString;
 };
@@ -191,7 +228,7 @@ MagnateUtils.convertToUSFormat = function (dateString) {
   // Convert YYYY-MM-DD to MM/DD/YYYY
   if (dateString.includes('-')) {
     const [year, month, day] = dateString.split('-');
-    return `${month.padStart ? month.padStart(2, '0') : ('0' + month).slice(-2)}/${day.padStart ? day.padStart(2, '0') : ('0' + day).slice(-2)}/${year}`;
+    return `${MagnateUtils._padNumber(parseInt(month), 2)}/${MagnateUtils._padNumber(parseInt(day), 2)}/${year}`;
   }
   return dateString;
 };
@@ -205,17 +242,16 @@ MagnateUtils.normalizeDateFormat = function (dateString) {
   if (!dateString) return '';
 
   // Handle both MM/DD/YYYY and YYYY-MM-DD formats
-  let normalizedDate = dateString;
   if (dateString.includes('/')) {
     // Convert MM/DD/YYYY to YYYY-MM-DD for comparison
     const [month, day, year] = dateString.split('/');
-    normalizedDate = `${year}-${month.padStart ? month.padStart(2, '0') : ('0' + month).slice(-2)}-${day.padStart ? day.padStart(2, '0') : ('0' + day).slice(-2)}`;
+    return `${year}-${MagnateUtils._padNumber(parseInt(month), 2)}-${MagnateUtils._padNumber(parseInt(day), 2)}`;
   } else if (dateString.includes('-')) {
     // Already in YYYY-MM-DD format, take just the date part
-    normalizedDate = dateString.slice(0, 10);
+    return dateString.slice(0, 10);
   }
 
-  return normalizedDate;
+  return dateString;
 };
 
 /**

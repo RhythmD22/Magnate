@@ -9,41 +9,44 @@ function updateWeekHeading() {
   document.getElementById('weekHeading').textContent = "Week of " + currentWeekStart.toLocaleDateString('en-US', options);
 }
 
+function getWeekTransactions(date) {
+  let startStr = MagnateUtils.getLocalDateString(date);
+  let weekEndDate = new Date(date);
+  weekEndDate.setDate(weekEndDate.getDate() + 6);
+  let endStr = MagnateUtils.getLocalDateString(weekEndDate);
+
+  // Helper function to filter transactions by date range
+  const filterForWeek = (transactionList) => {
+    return transactionList.filter(item => {
+      try {
+        let itemDateLocal = MagnateUtils.getLocalDateString(MagnateUtils.parseLocalDateString(item.date));
+        return itemDateLocal >= startStr && itemDateLocal <= endStr;
+      } catch (e) {
+        console.warn('Invalid date in transaction item:', item.date, item);
+        return false;
+      }
+    });
+  };
+
+  return {
+    expenses: filterForWeek(expenses),
+    incomes: filterForWeek(incomes)
+  };
+}
+
 function renderTransactions() {
   const expensesColumn = document.getElementById('expensesColumn');
   const incomeColumn = document.getElementById('incomeColumn');
   expensesColumn.innerHTML = '<h2>Expenses</h2>';
   incomeColumn.innerHTML = '<h2>Income</h2>';
 
-  let startStr = MagnateUtils.getLocalDateString(currentWeekStart);
-  let weekEndDate = new Date(currentWeekStart);
-  weekEndDate.setDate(weekEndDate.getDate() + 6);
-  let endStr = MagnateUtils.getLocalDateString(weekEndDate);
+  const weekTransactions = getWeekTransactions(currentWeekStart);
 
-  let weekExpenses = expenses.filter(item => {
-    try {
-      let itemDateLocal = MagnateUtils.getLocalDateString(MagnateUtils.parseLocalDateString(item.date));
-      return itemDateLocal >= startStr && itemDateLocal <= endStr;
-    } catch (e) {
-      console.warn('Invalid date in expense item:', item.date, item);
-      return false;
-    }
-  });
-  let weekIncomes = incomes.filter(item => {
-    try {
-      let itemDateLocal = MagnateUtils.getLocalDateString(MagnateUtils.parseLocalDateString(item.date));
-      return itemDateLocal >= startStr && itemDateLocal <= endStr;
-    } catch (e) {
-      console.warn('Invalid date in income item:', item.date, item);
-      return false;
-    }
-  });
-
-  weekExpenses.forEach(item => {
+  weekTransactions.expenses.forEach(item => {
     const card = createTransactionCard(item, 'expense');
     expensesColumn.appendChild(card);
   });
-  weekIncomes.forEach(item => {
+  weekTransactions.incomes.forEach(item => {
     const card = createTransactionCard(item, 'income');
     incomeColumn.appendChild(card);
   });
@@ -121,9 +124,7 @@ function editTransaction(id, type) {
     if (newTitle === null) {
       // User cancelled, but we might have previous changes to save
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -132,9 +133,7 @@ function editTransaction(id, type) {
       alert("Title cannot be empty.");
       // If we have previous changes, save them
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -147,9 +146,7 @@ function editTransaction(id, type) {
     if (newCategory === null) {
       // User cancelled, but we might have previous changes to save
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -158,9 +155,7 @@ function editTransaction(id, type) {
       alert("Category cannot be empty.");
       // If we have previous changes, save them
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -173,9 +168,7 @@ function editTransaction(id, type) {
     if (newAmount === null) {
       // User cancelled, but we might have previous changes to save
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -184,9 +177,7 @@ function editTransaction(id, type) {
       alert("Amount must be greater than zero.");
       // Even if there was an error, save any previous valid changes
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -212,9 +203,7 @@ function editTransaction(id, type) {
     if (newDateStr === null) {
       // User cancelled, but we might have previous changes to save
       if (hasChanges) {
-        renderTransactions();
-        renderTransactionGroups(); // Update transaction groups
-        MagnateData.saveData();
+        saveAndRefresh();
       }
       return;
     }
@@ -223,10 +212,7 @@ function editTransaction(id, type) {
     if (newDateStr !== item.date) {
       item.date = newDateStr;  // Store the original date string format
       hasChanges = true;
-    }
 
-    // If we have changes, update the UI and save data
-    if (hasChanges) {
       // Update week if needed
       let newDateObj;
       try {
@@ -236,17 +222,12 @@ function editTransaction(id, type) {
         alert('Invalid date format in this transaction.');
         return;
       }
-      const newWeekStart = MagnateUtils.getMonday(newDateObj);
+      updateWeekAndUI(newDateObj);
+    }
 
-      if (newWeekStart.getTime() !== currentWeekStart.getTime()) {
-        currentWeekStart = newWeekStart;
-        MagnateData.saveData();
-        updateWeekHeading();
-      }
-
-      renderTransactions();
-      renderTransactionGroups(); // Update transaction groups
-      MagnateData.saveData();
+    // If we have changes, update the UI and save data
+    if (hasChanges) {
+      saveAndRefresh();
     }
   }
 }
@@ -260,27 +241,47 @@ function deleteTransaction(id, type) {
       MagnateData.incomes = MagnateData.incomes.filter(t => t.id !== id);
       incomes = MagnateData.incomes;
     }
-    renderTransactions();
-    renderTransactionGroups(); // Update transaction groups
-    MagnateData.saveData();
+    saveAndRefresh();
   }
 }
 
 document.getElementById('prevWeekBtn')?.addEventListener('click', () => {
   currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-  MagnateData.saveData();
+  // Ensure the date is at the start of the day to avoid timezone issues
+  currentWeekStart.setHours(0, 0, 0, 0);
+  MagnateData.currentWeekStart = currentWeekStart; // Ensure global state is updated
   updateWeekHeading();
-  renderTransactions();
-  renderTransactionGroups(); // Update transaction groups when week changes
+  saveAndRefresh();
 });
 
 document.getElementById('nextWeekBtn')?.addEventListener('click', () => {
   currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-  MagnateData.saveData();
+  // Ensure the date is at the start of the day to avoid timezone issues
+  currentWeekStart.setHours(0, 0, 0, 0);
+  MagnateData.currentWeekStart = currentWeekStart; // Ensure global state is updated
   updateWeekHeading();
-  renderTransactions();
-  renderTransactionGroups(); // Update transaction groups when week changes
+  saveAndRefresh();
 });
+
+// Helper function to handle the update of week and UI
+function updateWeekAndUI(newDateObj) {
+  const newWeekStart = MagnateUtils.getMonday(newDateObj);
+  if (newWeekStart.getTime() !== currentWeekStart.getTime()) {
+    // Ensure the date is at the start of the day to avoid timezone issues
+    newWeekStart.setHours(0, 0, 0, 0);
+    currentWeekStart = newWeekStart;
+    MagnateData.currentWeekStart = currentWeekStart;
+    updateWeekHeading();
+  }
+}
+
+// Helper function to handle the saving and rendering operations
+function saveAndRefresh() {
+  // Save data before rendering to ensure consistency
+  MagnateData.saveData();
+  renderTransactions();
+  renderTransactionGroups(); // Update transaction groups
+}
 
 // Initialize week heading
 updateWeekHeading();
@@ -292,6 +293,18 @@ document.getElementById('btnAddExpense')?.addEventListener('click', () => {
   let amount = MagnateUtils.promptNumber("Enter expense amount (e.g., 80 for $80):");
   if (amount === null) return;
   const date = MagnateUtils.promptDate("Enter expense date", new Date());
+
+  let newDateObj;
+  try {
+    newDateObj = MagnateUtils.parseLocalDateString(date);
+  } catch (e) {
+    console.warn('Invalid date in new expense:', date);
+    alert('Invalid date format in the new expense.');
+    return;
+  }
+
+  updateWeekAndUI(newDateObj);
+
   const newExpense = {
     id: MagnateUtils.generateId(),
     title: title.trim(),
@@ -301,24 +314,8 @@ document.getElementById('btnAddExpense')?.addEventListener('click', () => {
   };
   MagnateData.expenses.push(newExpense);
   expenses = MagnateData.expenses;
-  let newDateObj;
-  try {
-    newDateObj = MagnateUtils.parseLocalDateString(date);
-  } catch (e) {
-    console.warn('Invalid date in new expense:', date);
-    alert('Invalid date format in the new expense.');
-    return;
-  }
-  const newWeekStart = MagnateUtils.getMonday(newDateObj);
-  if (newWeekStart.getTime() !== currentWeekStart.getTime()) {
-    currentWeekStart = newWeekStart;
-    MagnateData.currentWeekStart = currentWeekStart;
-    MagnateData.saveData();
-    updateWeekHeading();
-  }
-  renderTransactions();
-  renderTransactionGroups(); // Update transaction groups
-  MagnateData.saveData();
+
+  saveAndRefresh();
 });
 
 document.getElementById('btnAddIncome')?.addEventListener('click', () => {
@@ -328,6 +325,18 @@ document.getElementById('btnAddIncome')?.addEventListener('click', () => {
   let amount = MagnateUtils.promptNumber("Enter income amount (e.g., 100 for $100):");
   if (amount === null) return;
   const date = MagnateUtils.promptDate("Enter income date", new Date());
+
+  let newDateObj;
+  try {
+    newDateObj = MagnateUtils.parseLocalDateString(date);
+  } catch (e) {
+    console.warn('Invalid date in new income:', date);
+    alert('Invalid date format in the new income.');
+    return;
+  }
+
+  updateWeekAndUI(newDateObj);
+
   const newIncome = {
     id: MagnateUtils.generateId(),
     title: title.trim(),
@@ -337,29 +346,17 @@ document.getElementById('btnAddIncome')?.addEventListener('click', () => {
   };
   MagnateData.incomes.push(newIncome);
   incomes = MagnateData.incomes;
-  let newDateObj;
-  try {
-    newDateObj = MagnateUtils.parseLocalDateString(date);
-  } catch (e) {
-    console.warn('Invalid date in new income:', date);
-    alert('Invalid date format in the new income.');
-    return;
-  }
-  const newWeekStart = MagnateUtils.getMonday(newDateObj);
-  if (newWeekStart.getTime() !== currentWeekStart.getTime()) {
-    currentWeekStart = newWeekStart;
-    MagnateData.currentWeekStart = currentWeekStart;
-    MagnateData.saveData();
-    updateWeekHeading();
-  }
-  renderTransactions();
-  renderTransactionGroups(); // Update transaction groups
-  MagnateData.saveData();
+
+  saveAndRefresh();
 });
 
 function renderTransactionGroups() {
   const container = document.getElementById('transactionGroupsContainer');
   container.innerHTML = "";
+
+  // Refresh the local references to ensure we have the latest data
+  expenses = MagnateData.expenses;
+  incomes = MagnateData.incomes;
 
   // Use the centralized version from MagnateData
   const groups = MagnateData.getTransactionGroups();
@@ -495,9 +492,7 @@ function initNotes() {
 }
 
 // Initial transactions section
-renderTransactions();
-renderTransactionGroups();
-MagnateData.saveData();
+saveAndRefresh();
 
 // Initialize notes section
 initNotes();
@@ -505,6 +500,8 @@ initNotes();
 // Refresh data when page becomes visible (e.g., after import in Analytics.html)
 document.addEventListener('visibilitychange', function () {
   if (!document.hidden) {
+    // Refresh data to ensure consistency before rendering transaction groups
+    MagnateData.loadData();
     renderTransactionGroups();
   }
 });

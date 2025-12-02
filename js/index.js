@@ -13,6 +13,9 @@ if ('serviceWorker' in navigator) {
 
 // DOM Ready Initializations
 document.addEventListener('DOMContentLoaded', function () {
+  // Store references to event listeners for potential cleanup later
+  const eventListeners = [];
+
   // Redirect from old path
   if (window.location.pathname === '/Financier/index.html') {
     window.location.replace('/Financier/');
@@ -35,23 +38,37 @@ document.addEventListener('DOMContentLoaded', function () {
   // Get Started button animation and navigation
   const getStartedBtn = document.getElementById('getStartedBtn');
   if (getStartedBtn) {
-    getStartedBtn.addEventListener('click', function () {
+    const clickHandler = function () {
       getStartedBtn.classList.add('clicked');
       setTimeout(() => {
         window.location.href = "Goals%20%26%20Categories.html";
       }, 300);
-    });
+    };
+    getStartedBtn.addEventListener('click', clickHandler);
+    eventListeners.push({ element: getStartedBtn, type: 'click', handler: clickHandler });
   }
 
   // Feature cards hover effects
   const featureCards = document.querySelectorAll('.card');
   featureCards.forEach(card => {
-    card.addEventListener('mouseenter', function () {
+    const mouseEnterHandler = function () {
       this.style.zIndex = '10';
-    });
-
-    card.addEventListener('mouseleave', function () {
+    };
+    const mouseLeaveHandler = function () {
       this.style.zIndex = '1';
+    };
+
+    card.addEventListener('mouseenter', mouseEnterHandler);
+    card.addEventListener('mouseleave', mouseLeaveHandler);
+
+    eventListeners.push({ element: card, type: 'mouseenter', handler: mouseEnterHandler });
+    eventListeners.push({ element: card, type: 'mouseleave', handler: mouseLeaveHandler });
+  });
+
+  // Cleanup function to remove event listeners when page unloads
+  window.addEventListener('beforeunload', () => {
+    eventListeners.forEach(({ element, type, handler }) => {
+      element.removeEventListener(type, handler);
     });
   });
 });

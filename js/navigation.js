@@ -1,5 +1,34 @@
+// Store references to event listeners for potential cleanup
+const eventListeners = [];
+
+// Helper function to add event listener and store reference for cleanup
+function addListener(element, event, handler) {
+  if (element) {
+    element.addEventListener(event, handler);
+    eventListeners.push({ element, event, handler });
+  }
+}
+
+// Helper function to update all elements' states
+function updateSidebarState(isActive) {
+  if (sidebar) sidebar.classList.toggle('active', isActive);
+  if (hamburger) hamburger.classList.toggle('active', isActive);
+  if (backdrop) backdrop.classList.toggle('active', isActive);
+  if (swipeFeedback) {
+    swipeFeedback.classList.remove('active');
+    swipeFeedback.style.width = '10px';
+  }
+}
+
 const hamburger = document.getElementById('hamburger');
 const sidebar = document.getElementById('sidebar');
+
+// Verify that required elements exist before continuing
+if (!hamburger || !sidebar) {
+  console.error('Required navigation elements not found');
+  // Exit gracefully if navigation elements are not present
+  return;
+}
 
 // Create backdrop element
 const backdrop = document.createElement('div');
@@ -11,18 +40,13 @@ const swipeFeedback = document.createElement('div');
 swipeFeedback.className = 'swipe-feedback';
 document.body.appendChild(swipeFeedback);
 
-hamburger.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
-  hamburger.classList.toggle('active');
-  backdrop.classList.toggle('active');
+addListener(hamburger, 'click', () => {
+  updateSidebarState(!sidebar.classList.contains('active'));
 });
 
 // Close sidebar when clicking on backdrop
-backdrop.addEventListener('click', () => {
-  sidebar.classList.remove('active');
-  hamburger.classList.remove('active');
-  backdrop.classList.remove('active');
-  swipeFeedback.classList.remove('active');
+addListener(backdrop, 'click', () => {
+  updateSidebarState(false);
 });
 
 // Touch variables for swipe detection
@@ -44,18 +68,12 @@ function handleSwipe() {
     // Check if it's a left swipe (negative direction) and meets minimum distance
     if (swipeDistanceX < -minSwipeDistance && sidebar.classList.contains('active')) {
       // Close sidebar
-      sidebar.classList.remove('active');
-      hamburger.classList.remove('active');
-      backdrop.classList.remove('active');
-      swipeFeedback.classList.remove('active');
+      updateSidebarState(false);
     }
     // Check if it's a right swipe (positive direction) and meets minimum distance
     else if (swipeDistanceX > minSwipeDistance && !sidebar.classList.contains('active') && touchStartX <= 50) {
       // Open sidebar only if swipe started near the left edge (to avoid interfering with browser back)
-      sidebar.classList.add('active');
-      hamburger.classList.add('active');
-      backdrop.classList.add('active');
-      swipeFeedback.classList.remove('active');
+      updateSidebarState(true);
     }
   }
 }
@@ -63,56 +81,58 @@ function handleSwipe() {
 // Add swipe detection to the entire container for better UX
 const container = document.querySelector('.container');
 
-container.addEventListener('touchstart', (e) => {
-  // Prevent swipe feedback if touch starts on the hamburger menu
-  if (e.target.closest('#hamburger')) {
-    return;
-  }
-
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
-
-  // Show swipe feedback only if touch starts near the left edge
-  if (touchStartX <= 50 && !sidebar.classList.contains('active')) {
-    swipeFeedback.classList.add('active');
-  }
-}, { passive: true });
-
-container.addEventListener('touchmove', (e) => {
-  // Prevent swipe feedback if touch starts on the hamburger menu
-  if (e.target.closest('#hamburger')) {
-    return;
-  }
-
-  // Update swipe feedback position during swipe
-  if (touchStartX <= 50 && !sidebar.classList.contains('active')) {
-    const currentX = e.changedTouches[0].screenX;
-    const deltaX = currentX - touchStartX;
-
-    // Only show feedback for right swipes within reasonable bounds
-    if (deltaX > 0 && deltaX < 100) {
-      swipeFeedback.style.width = deltaX + 'px';
+if (container) {
+  addListener(container, 'touchstart', (e) => {
+    // Prevent swipe feedback if touch starts on the hamburger menu
+    if (e.target.closest('#hamburger')) {
+      return;
     }
-  }
-}, { passive: true });
 
-container.addEventListener('touchend', (e) => {
-  // Prevent swipe feedback if touch starts on the hamburger menu
-  if (e.target.closest('#hamburger')) {
-    return;
-  }
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
 
-  touchEndX = e.changedTouches[0].screenX;
-  touchEndY = e.changedTouches[0].screenY;
-  handleSwipe();
+    // Show swipe feedback only if touch starts near the left edge
+    if (touchStartX <= 50 && !sidebar.classList.contains('active')) {
+      swipeFeedback.classList.add('active');
+    }
+  }, { passive: true });
 
-  // Hide swipe feedback
-  swipeFeedback.classList.remove('active');
-  swipeFeedback.style.width = '10px';
-}, { passive: true });
+  addListener(container, 'touchmove', (e) => {
+    // Prevent swipe feedback if touch starts on the hamburger menu
+    if (e.target.closest('#hamburger')) {
+      return;
+    }
+
+    // Update swipe feedback position during swipe
+    if (touchStartX <= 50 && !sidebar.classList.contains('active')) {
+      const currentX = e.changedTouches[0].screenX;
+      const deltaX = currentX - touchStartX;
+
+      // Only show feedback for right swipes within reasonable bounds
+      if (deltaX > 0 && deltaX < 100) {
+        swipeFeedback.style.width = deltaX + 'px';
+      }
+    }
+  }, { passive: true });
+
+  addListener(container, 'touchend', (e) => {
+    // Prevent swipe feedback if touch starts on the hamburger menu
+    if (e.target.closest('#hamburger')) {
+      return;
+    }
+
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+
+    // Hide swipe feedback
+    swipeFeedback.classList.remove('active');
+    swipeFeedback.style.width = '10px';
+  }, { passive: true });
+}
 
 // Also add swipe detection to the sidebar for closing
-sidebar.addEventListener('touchstart', (e) => {
+addListener(sidebar, 'touchstart', (e) => {
   // Prevent swipe detection if touch starts on interactive elements
   if (e.target.closest('a, button')) {
     return;
@@ -122,7 +142,7 @@ sidebar.addEventListener('touchstart', (e) => {
   touchStartY = e.changedTouches[0].screenY;
 }, { passive: true });
 
-sidebar.addEventListener('touchend', (e) => {
+addListener(sidebar, 'touchend', (e) => {
   // Prevent swipe detection if touch ends on interactive elements
   if (e.target.closest('a, button')) {
     return;
@@ -132,3 +152,18 @@ sidebar.addEventListener('touchend', (e) => {
   touchEndY = e.changedTouches[0].screenY;
   handleSwipe();
 }, { passive: true });
+
+// Cleanup function to remove event listeners when page unloads
+window.addEventListener('beforeunload', () => {
+  eventListeners.forEach(({ element, event, handler }) => {
+    element.removeEventListener(event, handler);
+  });
+
+  // Remove dynamically created elements
+  if (backdrop && backdrop.parentNode) {
+    backdrop.parentNode.removeChild(backdrop);
+  }
+  if (swipeFeedback && swipeFeedback.parentNode) {
+    swipeFeedback.parentNode.removeChild(swipeFeedback);
+  }
+});
