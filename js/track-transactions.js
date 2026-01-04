@@ -17,17 +17,24 @@ function updateWeekHeading() {
 }
 
 function getWeekTransactions(date) {
+  // Get date range for current week using normalized format for consistent comparison
   let startStr = MagnateUtils.getLocalDateString(date);
   let weekEndDate = new Date(date);
   weekEndDate.setDate(weekEndDate.getDate() + 6);
   let endStr = MagnateUtils.getLocalDateString(weekEndDate);
 
+  // Normalize the date strings for consistent comparison
+  const normalizedStart = MagnateUtils.normalizeDateFormat(startStr);
+  const normalizedEnd = MagnateUtils.normalizeDateFormat(endStr);
+
   // Helper function to filter transactions by date range
   const filterForWeek = (transactionList) => {
     return transactionList.filter(item => {
       try {
-        let itemDateLocal = MagnateUtils.getLocalDateString(MagnateUtils.parseLocalDateString(item.date));
-        return itemDateLocal >= startStr && itemDateLocal <= endStr;
+        // Use the same normalization as getTransactionGroups for consistency
+        const itemDateNormalized = MagnateUtils.normalizeDateFormat(item.date);
+        const isInRange = itemDateNormalized >= normalizedStart && itemDateNormalized <= normalizedEnd;
+        return isInRange;
       } catch (e) {
         console.warn('Invalid date in transaction item:', item.date, item);
         return false;
