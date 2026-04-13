@@ -1,6 +1,16 @@
 /* Utility & Helper Functions */
 // All utility functions have been moved to utils.js
 
+// Format number with commas for display
+function formatNumber(num) {
+    const numStr = num.toString();
+    const parts = numStr.split('.');
+    const integerPart = parts[0];
+    const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return formattedInteger + decimalPart;
+}
+
 // For toggling weekly and monthly category views
 let categoryView = 'spending';
 let monthlyCategoryView = 'spending';
@@ -106,9 +116,9 @@ function updateAnalytics() {
     let totalBudget = MagnateData.monthlyBudgets[key] || 1000;
 
     // Update budget amounts
-    document.getElementById('totalBudget').textContent = '$' + totalBudget;
+    document.getElementById('totalBudget').textContent = '$' + formatNumber(totalBudget);
     let remaining = totalBudget - totalMonthlyExpenses;
-    document.getElementById('remainingBudget').textContent = '$' + remaining;
+    document.getElementById('remainingBudget').textContent = '$' + formatNumber(remaining);
 
     // Update progress circle
     let percentage = totalBudget > 0
@@ -250,7 +260,7 @@ function renderWeeklyChart() {
                         callbacks: {
                             label: function (context) {
                                 const label = context.dataset.label ? context.dataset.label + ': ' : '';
-                                return label + '$' + context.parsed.y;
+                                return label + '$' + formatNumber(context.parsed.y);
                             }
                         }
                     },
@@ -303,7 +313,7 @@ function createCategoryCard(name, total, budget = 0, color, isIncome = false) {
         <span class="percentage" style="color: ${color};">
             ${Math.round(percentage)}%
         </span>
-        (${total.toFixed(2)}${!isIncome ? '/' + budget : ''})
+        (${formatNumber(total.toFixed(2))}${!isIncome ? '/' + formatNumber(budget.toFixed(2)) : ''})
     `;
     card.appendChild(breakdown);
 

@@ -20,13 +20,23 @@ const SVG_DELETE_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" style="pos
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // Format number with commas for display
+    function formatNumber(num) {
+        const numStr = num.toString();
+        const parts = numStr.split('.');
+        const integerPart = parts[0];
+        const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return formattedInteger + decimalPart;
+    }
+
     // Highlight dollar amounts within an element's text
     function highlightDollarAmounts(element) {
         const text = element.textContent;
         element.textContent = "";
-        const parts = text.split(/(\$\d+(?:\.\d+)?)/g);
+        const parts = text.split(/(\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)/g);
         parts.forEach(part => {
-            if (/^\$\d+(?:\.\d+)?$/.test(part)) {
+            if (/^\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?$/.test(part)) {
                 const span = document.createElement('span');
                 span.className = 'dollar';
                 span.textContent = part;
@@ -75,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<span id="currentMonthYear"> ' + monthYearStr + ' </span>' +
             '<button id="nextMonth" class="icon-btn" style="font-size: inherit;">&gt;</button>' +
             ' : ' +
-            '<span class="dollar">$' + getMonthlyBudget() + '</span>';
+            '<span class="dollar">$' + formatNumber(getMonthlyBudget()) + '</span>';
 
         // Attach new event listeners
         const newPrevBtn = document.getElementById('prevMonth');
@@ -158,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             info.appendChild(progressContainer);
 
             const pAmount = document.createElement('p');
-            pAmount.innerHTML = "<span class='dollar'>$" + goal.current + "</span> of <span class='dollar'>$" + goal.target + "</span> saved";
+            pAmount.innerHTML = "<span class='dollar'>$" + formatNumber(goal.current) + "</span> of <span class='dollar'>$" + formatNumber(goal.target) + "</span> saved";
             info.appendChild(pAmount);
 
             card.appendChild(info);
@@ -211,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <button class="prevCatMonth" style="color: #ffffff; font-size: inherit;">&lt;</button>
           <span class="catMonthYear">${selectedMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
           <button class="nextCatMonth" style="color: #ffffff; font-size: inherit;">&gt;</button>
-           : <span class="dollar">$${budgetThisMonth}</span>
+           : <span class="dollar">$${formatNumber(budgetThisMonth)}</span>
         `;
             info.appendChild(pBudget);
             card.appendChild(info);

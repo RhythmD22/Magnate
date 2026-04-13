@@ -61,10 +61,13 @@ function loadCalcHistory() {
       const displayTimestamp = dateObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
         dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
+      // Format the calculation string with commas
+      const formattedCalculation = formatCalculationString(entry.calculation);
+
       const div = document.createElement('div');
       div.className = 'history-entry';
       div.innerHTML = `
-        <span class="calculation">${entry.calculation}</span>
+        <span class="calculation">${formattedCalculation}</span>
         <span class="timestamp">${displayTimestamp}</span>
         <button class="delete-btn" data-index="${index}" aria-label="Delete calculation">
           <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
@@ -150,8 +153,32 @@ let previousValue = null;
 let currentOperation = null;
 let waitingForOperand = false;
 
+function formatNumber(numStr) {
+  // Convert string to number for formatting
+  const num = parseFloat(numStr);
+  if (isNaN(num)) return numStr;
+
+  // Split into integer and decimal parts
+  const parts = numStr.split('.');
+  const integerPart = parts[0];
+  const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+
+  // Add commas to integer part
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return formattedInteger + decimalPart;
+}
+
+function formatCalculationString(calcStr) {
+  // Format a calculation string like "1000 + 2000 = 3000" to "1,000 + 2,000 = 3,000"
+  // Match numbers (with optional decimals) and format them with commas
+  return calcStr.replace(/(\d+\.?\d*)/g, (match) => {
+    return formatNumber(match);
+  });
+}
+
 function updateDisplay(value) {
-  calcDisplay.textContent = value;
+  calcDisplay.textContent = formatNumber(value);
 }
 
 function clearAll() {
@@ -167,7 +194,9 @@ function inputDigit(digit) {
     currentValue = digit;
     waitingForOperand = false;
   } else {
-    currentValue = currentValue === '0' ? digit : currentValue + digit;
+    // Strip commas before appending digit
+    const cleanValue = currentValue.replace(/,/g, '');
+    currentValue = cleanValue === '0' ? digit : cleanValue + digit;
   }
   updateDisplay(currentValue);
 }
@@ -176,19 +205,24 @@ function inputDecimal() {
   if (waitingForOperand) {
     currentValue = '0.';
     waitingForOperand = false;
-  } else if (!currentValue.includes('.')) {
-    currentValue += '.';
+  } else {
+    // Strip commas before checking for decimal
+    const cleanValue = currentValue.replace(/,/g, '');
+    if (!cleanValue.includes('.')) {
+      currentValue = cleanValue + '.';
+    }
   }
   updateDisplay(currentValue);
 }
 
 function handleOperator(nextOperator) {
-  const inputValue = parseFloat(currentValue);
+  const cleanValue = currentValue.replace(/,/g, '');
+  const inputValue = parseFloat(cleanValue);
 
   if (previousValue === null) {
     previousValue = inputValue;
   } else if (currentOperation) {
-    const currentValueFloat = parseFloat(currentValue);
+    const currentValueFloat = parseFloat(cleanValue);
     const result = performCalculation(currentOperation, previousValue, currentValueFloat);
 
     if (result !== null) { // Only proceed if calculation was successful (not division by zero)
@@ -208,7 +242,8 @@ function handleOperator(nextOperator) {
 
 function handleEquals() {
   if (currentOperation && previousValue !== null) {
-    const inputValue = parseFloat(currentValue);
+    const cleanValue = currentValue.replace(/,/g, '');
+    const inputValue = parseFloat(cleanValue);
     const result = performCalculation(currentOperation, previousValue, inputValue);
 
     if (result !== null) { // Only proceed if calculation was successful (not division by zero)
@@ -230,12 +265,14 @@ function handleEquals() {
 }
 
 function handleSign() {
-  currentValue = parseFloat(currentValue) * -1 + '';
+  const cleanValue = currentValue.replace(/,/g, '');
+  currentValue = parseFloat(cleanValue) * -1 + '';
   updateDisplay(currentValue);
 }
 
 function handlePercent() {
-  currentValue = parseFloat(currentValue) / 100 + '';
+  const cleanValue = currentValue.replace(/,/g, '');
+  currentValue = parseFloat(cleanValue) / 100 + '';
   updateDisplay(currentValue);
 }
 

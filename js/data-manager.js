@@ -14,7 +14,7 @@ MagnateData.defaultCategories = [
 ];
 
 MagnateData.defaultGoals = [
-  { id: 1, title: "Emergency Fund", description: "Save $1000 by December 2025", current: 450, target: 1000, sanitized: true }
+  { id: 1, title: "Emergency Fund", description: "Save $1,000 by December 2025", current: 450, target: 1000, sanitized: true }
 ];
 
 // Data storage

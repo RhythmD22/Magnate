@@ -11,6 +11,16 @@ if (!currentWeekStart) {
   currentWeekStart.setHours(0, 0, 0, 0);
 }
 
+// Format number with commas for display
+function formatNumber(num) {
+  const numStr = num.toString();
+  const parts = numStr.split('.');
+  const integerPart = parts[0];
+  const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return formattedInteger + decimalPart;
+}
+
 function updateWeekHeading() {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   document.getElementById('weekHeading').textContent = "Week of " + currentWeekStart.toLocaleDateString('en-US', options);
@@ -99,7 +109,8 @@ function createTransactionCard(item, type) {
   rightDiv.className = 'transaction-right-row';
   const amountSpan = document.createElement('span');
   amountSpan.className = 'transaction-amount';
-  amountSpan.textContent = (item.amount < 0 ? '-' : '+') + '$' + Math.abs(item.amount).toFixed(2);
+  const absAmount = Math.abs(item.amount);
+  amountSpan.textContent = (item.amount < 0 ? '-' : '+') + '$' + formatNumber(absAmount.toFixed(2));
   amountSpan.classList.add(item.amount < 0 ? 'negative' : 'positive');
   rightDiv.appendChild(amountSpan);
 
@@ -417,7 +428,7 @@ function renderTransactionGroups() {
       if (budgetAmount > 0) {
         budgetDiv = document.createElement('div');
         budgetDiv.className = 'transaction-group-budget';
-        budgetDiv.textContent = `Budget: $${budgetAmount.toFixed(2)}`;
+        budgetDiv.textContent = `Budget: $${formatNumber(budgetAmount.toFixed(2))}`;
         budgetDiv.style.fontSize = '0.9rem';
         budgetDiv.style.color = '#A3A3A3';
         budgetDiv.style.fontWeight = '500';
@@ -436,13 +447,13 @@ function renderTransactionGroups() {
 
     // Color code the total based on value
     if (group.total > 0) {
-      totalDiv.textContent = `Net: +$${group.total.toFixed(2)}`;
+      totalDiv.textContent = `Net: +$${formatNumber(group.total.toFixed(2))}`;
       totalDiv.style.color = '#34D399'; // Green for positive
     } else if (group.total < 0) {
-      totalDiv.textContent = `Net: -$${Math.abs(group.total).toFixed(2)}`;
+      totalDiv.textContent = `Net: -$${formatNumber(Math.abs(group.total).toFixed(2))}`;
       totalDiv.style.color = '#F87171'; // Red for negative
     } else {
-      totalDiv.textContent = `Net: $${group.total.toFixed(2)}`;
+      totalDiv.textContent = `Net: $${formatNumber(group.total.toFixed(2))}`;
       totalDiv.style.color = '#CCCCCC'; // Gray for zero
     }
 
@@ -460,7 +471,7 @@ function renderTransactionGroups() {
 
       const amountSpan = document.createElement('span');
       amountSpan.className = 'transaction-item-amount expense';
-      amountSpan.textContent = `-$${Math.abs(expense.amount).toFixed(2)}`;
+      amountSpan.textContent = `-$${formatNumber(Math.abs(expense.amount).toFixed(2))}`;
       itemDiv.appendChild(amountSpan);
 
       card.appendChild(itemDiv);
@@ -478,7 +489,7 @@ function renderTransactionGroups() {
 
       const amountSpan = document.createElement('span');
       amountSpan.className = 'transaction-item-amount income';
-      amountSpan.textContent = `+$${Math.abs(income.amount).toFixed(2)}`;
+      amountSpan.textContent = `+$${formatNumber(Math.abs(income.amount).toFixed(2))}`;
       itemDiv.appendChild(amountSpan);
 
       card.appendChild(itemDiv);
