@@ -1,4 +1,17 @@
-/* APP HEADER */
+.main-content {
+  overflow-y: hidden;
+  padding: 4rem 2rem 2rem;
+  position: relative;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
 .app-header {
   position: fixed;
   top: 10px;
@@ -9,28 +22,18 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  z-index: 100;
+  z-index: var(--z-sidebar);
   box-sizing: border-box;
   background-color: transparent;
-}
-
-/* Add translucent background only on mobile */
-@media (max-width: 768px) {
-  .app-header {
-    height: 50px;
-    background-color: rgba(15, 17, 20, 0.80);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
 }
 
 .header-title {
   display: flex;
   align-items: center;
   font-size: 1.8rem;
-  color: #FFFFFF;
+  color: var(--color-text-primary);
   font-weight: 600;
-  font-family: "Figtree", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: "Figtree", var(--font-sans);
 }
 
 .header-title img {
@@ -40,55 +43,6 @@
   vertical-align: middle;
 }
 
-/* Ensure sidebar title uses the same font as header for consistency */
-.sidebar-title {
-  font-family: "Figtree", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-/* On mobile, center the header title and move higher */
-@media (max-width: 768px) {
-  .app-header {
-    top: 5px;
-    height: 50px;
-    padding: 5px 15px 10px;
-    justify-content: center;
-  }
-}
-
-/* Push content down on mobile to make space for the header */
-@media (max-width: 768px) {
-  .main-content {
-    margin-top: 40px;
-  }
-}
-
-/* MAIN CONTENT */
-.main-content {
-  flex: 1;
-  overflow-y: hidden;
-  /* Prevent vertical scrolling on desktop */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 4rem 2rem 2rem;
-  position: relative;
-}
-
-/* On mobile, adjust padding to account for header */
-@media (max-width: 768px) {
-  .main-content {
-    padding-top: 0;
-  }
-}
-
-/* Allow scrolling on mobile devices */
-@media (max-width: 768px) {
-  .main-content {
-    overflow-y: auto;
-  }
-}
-
-/* On desktop, hide sidebar and make main content full width on index page only */
 @media (min-width: 769px) {
   body.index-page .sidebar {
     display: none;
@@ -100,30 +54,6 @@
   }
 }
 
-/* Sidebar pop-in animation for homepage - commented out for index page */
-/*
-@media (min-width: 769px) {
-  .sidebar {
-    animation: sidebarPopIn 0.5s ease-out 0.3s forwards;
-    transform-origin: left center;
-    opacity: 0;
-  }
-
-  @keyframes sidebarPopIn {
-    0% {
-      opacity: 0;
-      transform: scaleX(0.9) translateX(-10px);
-    }
-
-    100% {
-      opacity: 1;
-      transform: scaleX(1) translateX(0);
-    }
-  }
-}
-*/
-
-/* Animated background elements */
 .main-content::before {
   content: "";
   position: absolute;
@@ -148,18 +78,6 @@
   }
 }
 
-/* Inner wrapper to limit width and center everything */
-.content-wrapper {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-/* TOP SECTION */
 .top-section {
   text-align: center;
   margin-bottom: 3rem;
@@ -169,7 +87,6 @@
 
 .top-section h1 {
   font-size: 2rem;
-  /* Add margin-top to move heading down slightly */
   margin-bottom: 1rem;
   opacity: 0;
   animation: slideInDown 0.6s ease-out 0.2s forwards;
@@ -177,7 +94,7 @@
 
 .top-section p {
   font-size: 1rem;
-  color: #B0B0B0;
+  color: var(--color-text-secondary);
   margin-bottom: 1.5rem;
   max-width: 600px;
   margin-left: auto;
@@ -187,8 +104,8 @@
 }
 
 .btn-primary {
-  background-color: #1043B1;
-  color: #FFFFFF;
+  background-color: var(--color-accent);
+  color: var(--color-text-primary);
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   border-radius: 6px;
@@ -201,7 +118,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #2D6FE4;
+  background-color: var(--color-accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
@@ -241,16 +158,14 @@
   }
 }
 
-/* Disable hover effects on touch devices */
 @media (hover: none) {
   .btn-primary:hover {
-    background-color: #1043B1;
+    background-color: var(--color-accent);
     transform: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 }
 
-/* Entrance animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -285,7 +200,6 @@
   }
 }
 
-/* FEATURE CARDS */
 .feature-cards {
   display: flex;
   flex-wrap: wrap;
@@ -296,7 +210,7 @@
 }
 
 .card {
-  background-color: #1C1F24;
+  background-color: var(--color-surface-alt);
   width: 260px;
   border-radius: 8px;
   padding: 1.5rem;
@@ -305,7 +219,7 @@
   flex-direction: column;
   align-items: flex-start;
   transition: all 0.3s ease;
-  border: 1px solid #2d2f34;
+  border: 1px solid var(--color-border);
   opacity: 0;
   transform: translateY(20px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -338,14 +252,14 @@
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  border-color: #3B82F6;
+  border-color: var(--color-accent-light);
 }
 
 .card svg {
   width: 48px;
   height: 48px;
   margin-bottom: 1rem;
-  color: #3B82F6;
+  color: var(--color-accent-light);
   background-color: #161a1d;
   padding: 0.75rem;
   border-radius: 6px;
@@ -357,7 +271,6 @@
   transform: scale(1.1);
 }
 
-/* Prevent background color change on touch devices for better visibility */
 @media (hover: none) {
   .card:hover svg {
     background-color: #161a1d;
@@ -378,20 +291,14 @@
 }
 
 .card:hover h2 {
-  color: #3B82F6;
+  color: var(--color-accent-light);
 }
 
 .card p {
   font-size: 0.9rem;
-  color: #B0B0B0;
+  color: var(--color-text-secondary);
 }
 
-/* ICON WRAPPER for small icon cards */
-.icon-wrapper {
-  margin-bottom: 1rem;
-}
-
-/* WHY STUDENTS LOVE US */
 .why-section {
   text-align: center;
   margin-bottom: 3rem;
@@ -414,12 +321,12 @@
 }
 
 .why-card {
-  background-color: #1C1F24;
+  background-color: var(--color-surface-alt);
   width: 260px;
   border-radius: 8px;
   padding: 1.5rem;
   text-align: center;
-  border: 1px solid #2d2f34;
+  border: 1px solid var(--color-border);
   transition: all 0.3s ease;
   transform: scale(0.95);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -428,7 +335,7 @@
 .why-card:hover {
   transform: scale(1);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  border-color: #4e80ee;
+  border-color: var(--color-accent-text);
 }
 
 .why-card h3 {
@@ -438,30 +345,37 @@
 }
 
 .why-card:hover h3 {
-  color: #4e80ee;
+  color: var(--color-accent-text);
 }
 
 .why-card p {
   font-size: 0.9rem;
-  color: #B0B0B0;
+  color: var(--color-text-secondary);
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
-  html {
-    overflow-x: hidden;
+  .app-header {
+    top: 5px;
+    height: 50px;
+    padding: 5px 15px 10px;
+    justify-content: center;
+    background-color: rgba(15, 17, 20, 0.80);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
-  body {
-    overflow-x: hidden;
+  .header-title {
+    font-size: 1.3rem;
   }
 
   .main-content {
     padding: 60px 1rem 1rem;
+    margin-top: 40px;
+    overflow-y: auto;
   }
 
   .main-content::before {
-    background: none;
+    background-image: none;
   }
 
   .top-section h1 {
