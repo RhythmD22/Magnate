@@ -1,532 +1,362 @@
-// Store references to event listeners for potential cleanup
-const eventListeners = [];
+(function () {
+  'use strict';
 
-// Helper function to add event listener and store reference for cleanup
-function addListener(element, event, handler) {
-    if (element) {
-        element.addEventListener(event, handler);
-        eventListeners.push({ element, event, handler });
-    }
-}
+  let lm;
 
-// SVG Icon templates to avoid duplication
-const SVG_EDIT_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" style="display: block; margin: auto; position: relative; top: 2px; left: 3px;">
-  <path d="M2.66795 14.6297L13.3222 3.98517L11.6133 2.26642L0.949202 12.911L0.021468 15.0887C-0.0761882 15.3231 0.177718 15.5965 0.412093 15.4988ZM14.1816 3.14533L15.168 2.17853C15.666 1.68048 15.6953 1.14338 15.2461 0.694157L14.914 0.362125C14.4746-0.0773278 13.9375-0.0382653 13.4394 0.450016L12.4531 1.42658Z" fill="white" fill-opacity="0.85"/>
-</svg>`;
+  document.addEventListener('DOMContentLoaded', function () {
+    lm = MagnateUtils.createListenerManager();
 
-const SVG_DELETE_ICON = `<svg viewBox="0 0 24 24" fill="currentColor" style="position: relative; left: 1.5px; top: 0px;">
-  <path d="M6.5625 18.6035C6.93359 18.6035 7.17773 18.3691 7.16797 18.0273L6.86523 7.57812C6.85547 7.23633 6.61133 7.01172 6.25977 7.01172C5.88867 7.01172 5.64453 7.24609 5.6543 7.58789L5.94727 18.0273C5.95703 18.3789 6.20117 18.6035 6.5625 18.6035ZM9.45312 18.6035C9.82422 18.6035 10.0879 18.3691 10.0879 18.0273L10.0879 7.58789C10.0879 7.24609 9.82422 7.01172 9.45312 7.01172C9.08203 7.01172 8.82812 7.24609 8.82812 7.58789L8.82812 18.0273C8.82812 18.3691 9.08203 18.6035 9.45312 18.6035ZM12.3535 18.6035C12.7051 18.6035 12.9492 18.3789 12.959 18.0273L13.252 7.58789C13.2617 7.24609 13.0176 7.01172 12.6465 7.01172C12.2949 7.01172 12.0508 7.23633 12.041 7.58789L11.748 18.0273C11.7383 18.3691 11.9824 18.6035 12.3535 18.6035ZM5.16602 4.46289L6.71875 4.46289L6.71875 2.37305C6.71875 1.81641 7.10938 1.45508 7.69531 1.45508L11.1914 1.45508C11.7773 1.45508 12.168 1.81641 12.168 2.37305L12.168 4.46289L13.7207 4.46289L13.7207 2.27539C13.7207 0.859375 12.8027 0 11.2988 0L7.58789 0C6.08398 0 5.16602 0.859375 5.16602 2.27539ZM0.732422 5.24414L18.1836 5.24414C18.584 5.24414 18.9062 4.90234 18.9062 4.50195C18.9062 4.10156 18.584 3.76953 18.1836 3.76953L0.732422 3.76953C0.341797 3.76953 0 4.10156 0 4.50195C0 4.91211 0.341797 5.24414 0.732422 5.24414ZM4.98047 21.748L13.9355 21.748C15.332 21.748 16.2695 20.8398 16.3379 19.4434L17.0215 5.05859L15.4492 5.05859L14.7949 19.2773C14.7754 19.8633 14.3555 20.2734 13.7793 20.2734L5.11719 20.2734C4.56055 20.2734 4.14062 19.8535 4.11133 19.2773L3.41797 5.05859L1.88477 5.05859L2.57812 19.4531C2.64648 20.8496 3.56445 21.748 4.98047 21.748Z" fill="white" fill-opacity="0.85"/>
-</svg>`;
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    // Format number with commas for display
-    function formatNumber(num) {
-        const numStr = num.toString();
-        const parts = numStr.split('.');
-        const integerPart = parts[0];
-        const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
-        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        return formattedInteger + decimalPart;
-    }
-
-    // Highlight dollar amounts within an element's text
     function highlightDollarAmounts(element) {
-        const text = element.textContent;
-        element.textContent = "";
-        const parts = text.split(/(\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)/g);
-        parts.forEach(part => {
-            if (/^\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?$/.test(part)) {
-                const span = document.createElement('span');
-                span.className = 'dollar';
-                span.textContent = part;
-                element.appendChild(span);
-            } else {
-                element.appendChild(document.createTextNode(part));
-            }
-        });
+      const text = element.textContent;
+      element.textContent = "";
+      const parts = text.split(/(\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)/g);
+      parts.forEach(part => {
+        if (/^\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?$/.test(part)) {
+          const span = document.createElement('span');
+          span.className = 'dollar';
+          span.textContent = part;
+          element.appendChild(span);
+        } else {
+          element.appendChild(document.createTextNode(part));
+        }
+      });
     }
 
-    // Ensure data is loaded before using it
-    MagnateData.loadData();
-
-    // Use centralized data management
     let goals = MagnateData.goals;
     let categories = MagnateData.categories;
     let monthlyBudgets = MagnateData.monthlyBudgets;
     let categoryBudgets = MagnateData.categoryBudgets;
 
-    function getMonthKey(date) {
-        return date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2);
-    }
-
-    // Global selectedMonth shared by total budget and category budgets
     let selectedMonth = new Date();
     selectedMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
 
-    // Total monthly budget getters and renderers
+    function saveAndRefreshGoals() {
+      MagnateData.saveData();
+      renderGoals();
+    }
+
+    function saveAndRefreshCategories() {
+      MagnateData.saveData();
+      renderCategories();
+    }
+
     function getMonthlyBudget() {
-        let key = getMonthKey(selectedMonth);
-        return monthlyBudgets[key] || 1000;
+      let key = MagnateUtils.getMonthKey(selectedMonth);
+      return monthlyBudgets[key] || 1000;
     }
 
     function updateMonthlyBudgetDisplay() {
-        // Remove old event listeners if they exist
-        const prevBtn = document.getElementById('prevMonth');
-        const nextBtn = document.getElementById('nextMonth');
-
-        if (prevBtn) prevBtn.replaceWith(prevBtn.cloneNode(true)); // Remove event listeners
-        if (nextBtn) nextBtn.replaceWith(nextBtn.cloneNode(true)); // Remove event listeners
-
-        let key = getMonthKey(selectedMonth);
-        let monthYearStr = selectedMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
-        document.getElementById('monthlyBudgetDisplay').innerHTML =
-            '<button id="prevMonth" class="icon-btn" style="font-size: inherit;">&lt;</button>' +
-            '<span id="currentMonthYear"> ' + monthYearStr + ' </span>' +
-            '<button id="nextMonth" class="icon-btn" style="font-size: inherit;">&gt;</button>' +
-            ' : ' +
-            '<span class="dollar">$' + formatNumber(getMonthlyBudget()) + '</span>';
-
-        // Attach new event listeners
-        const newPrevBtn = document.getElementById('prevMonth');
-        const newNextBtn = document.getElementById('nextMonth');
-        addListener(newPrevBtn, 'click', () => changeMonth(-1));
-        addListener(newNextBtn, 'click', () => changeMonth(1));
+      let monthYearStr = selectedMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+      document.getElementById('monthlyBudgetDisplay').innerHTML =
+        '<button class="icon-btn month-nav-btn" style="font-size: inherit;">&lt;</button>' +
+        '<span class="current-month-year">' + monthYearStr + '</span>' +
+        '<button class="icon-btn month-nav-btn" style="font-size: inherit;">&gt;</button>' +
+        ' : ' +
+        '<span class="dollar">$' + MagnateUtils.formatNumber(getMonthlyBudget()) + '</span>';
     }
 
-    function changeMonth(offset) {
-        let newMonth = selectedMonth.getMonth() + offset;
-        selectedMonth = new Date(selectedMonth.getFullYear(), newMonth, 1);
-        let key = getMonthKey(selectedMonth);
-        if (monthlyBudgets[key] === undefined) {
-            let newBudget = MagnateUtils.promptNumber("Enter new Total Monthly Budget:");
-            monthlyBudgets[key] = newBudget === null ? 1000 : newBudget;
-            MagnateData.saveData();
-        }
-        updateMonthlyBudgetDisplay();
-        // Re-render categories so that each category's month shows the new value
-        renderCategories();
-        if (typeof updateAnalytics === 'function') {
-            updateAnalytics();
-        }
+    async function changeMonth(offset) {
+      let newMonth = selectedMonth.getMonth() + offset;
+      selectedMonth = new Date(selectedMonth.getFullYear(), newMonth, 1);
+      let key = MagnateUtils.getMonthKey(selectedMonth);
+      if (monthlyBudgets[key] === undefined) {
+        let newBudget = await MagnateUtils.promptNumber("Enter new Total Monthly Budget:");
+        monthlyBudgets[key] = newBudget === null ? 1000 : newBudget;
+        MagnateData.saveData();
+      }
+      updateMonthlyBudgetDisplay();
+      renderCategories();
     }
 
-    // Create action buttons (edit/delete) for goals and categories
     function createActionButtons(onEdit, onDelete) {
-        const actions = document.createElement('div');
-        actions.className = 'goal-actions'; // Using the same class for consistency
+      const actions = document.createElement('div');
+      actions.className = 'goal-actions';
 
-        const editBtn = document.createElement('div');
-        editBtn.className = 'icon-btn';
-        editBtn.innerHTML = SVG_EDIT_ICON;
-        addListener(editBtn, 'click', onEdit);
-        actions.appendChild(editBtn);
+      const editBtn = document.createElement('div');
+      editBtn.className = 'icon-btn';
+      editBtn.innerHTML = MagnateUtils.SVG_EDIT_ICON;
+      lm.add(editBtn, 'click', onEdit);
+      actions.appendChild(editBtn);
 
-        const deleteBtn = document.createElement('div');
-        deleteBtn.className = 'icon-btn';
-        deleteBtn.innerHTML = SVG_DELETE_ICON;
-        addListener(deleteBtn, 'click', onDelete);
-        actions.appendChild(deleteBtn);
+      const deleteBtn = document.createElement('div');
+      deleteBtn.className = 'icon-btn';
+      deleteBtn.innerHTML = MagnateUtils.SVG_DELETE_ICON;
+      lm.add(deleteBtn, 'click', onDelete);
+      actions.appendChild(deleteBtn);
 
-        return actions;
+      return actions;
     }
 
-    // Render Goals
     function renderGoals() {
-        const container = document.getElementById('goalsContainer');
-        if (!container) return;
-        container.innerHTML = "";
-        goals.forEach(goal => {
-            const card = document.createElement('div');
-            card.className = 'goal-card';
-            const info = document.createElement('div');
-            info.className = 'goal-info';
-            const h3 = document.createElement('h3');
-            h3.textContent = goal.title;
-            highlightDollarAmounts(h3);
-            info.appendChild(h3);
-            const pDesc = document.createElement('p');
-            if (goal.description && goal.description.trim() !== "") {
-                pDesc.textContent = goal.description;
-                highlightDollarAmounts(pDesc);
-            } else {
-                // Maintain spacing even when there's no description
-                pDesc.innerHTML = "&nbsp;"; // Non-breaking space to maintain height
-            }
-            info.appendChild(pDesc);
+      const container = document.getElementById('goalsContainer');
+      if (!container) return;
+      container.innerHTML = "";
+      lm.clearDetached();
+      goals.forEach(goal => {
+        const card = document.createElement('div');
+        card.className = 'goal-card';
+        const info = document.createElement('div');
+        info.className = 'goal-info';
+        const h3 = document.createElement('h3');
+        h3.textContent = goal.title;
+        highlightDollarAmounts(h3);
+        info.appendChild(h3);
+        const pDesc = document.createElement('p');
+        if (goal.description && goal.description.trim() !== "") {
+          pDesc.textContent = goal.description;
+          highlightDollarAmounts(pDesc);
+        } else {
+          pDesc.innerHTML = "&nbsp;";
+        }
+        info.appendChild(pDesc);
 
-            const progressContainer = document.createElement('div');
-            progressContainer.className = 'goal-progress';
-            const progressBg = document.createElement('div');
-            progressBg.className = 'progress-bar-bg';
-            const progressFill = document.createElement('div');
-            progressFill.className = 'progress-bar-fill';
-            let percentage = (goal.current / goal.target) * 100;
-            progressFill.style.width = percentage + "%";
-            progressBg.appendChild(progressFill);
-            progressContainer.appendChild(progressBg);
-            info.appendChild(progressContainer);
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'goal-progress';
+        const progressBg = document.createElement('div');
+        progressBg.className = 'progress-bar-bg';
+        const progressFill = document.createElement('div');
+        progressFill.className = 'progress-bar-fill';
+        let percentage = goal.target > 0 ? (goal.current / goal.target) * 100 : 0;
+        progressFill.style.width = percentage + "%";
+        progressBg.appendChild(progressFill);
+        progressContainer.appendChild(progressBg);
+        info.appendChild(progressContainer);
 
-            const pAmount = document.createElement('p');
-            pAmount.innerHTML = "<span class='dollar'>$" + formatNumber(goal.current) + "</span> of <span class='dollar'>$" + formatNumber(goal.target) + "</span> saved";
-            info.appendChild(pAmount);
+        const pAmount = document.createElement('p');
+        pAmount.innerHTML = "<span class='dollar'>$" + MagnateUtils.formatNumber(goal.current) + "</span> of <span class='dollar'>$" + MagnateUtils.formatNumber(goal.target) + "</span> saved";
+        info.appendChild(pAmount);
 
-            card.appendChild(info);
+        card.appendChild(info);
 
-            // Create action buttons for this goal
-            const actions = createActionButtons(
-                () => editGoal(goal.id),
-                () => deleteGoal(goal.id)
-            );
-            card.appendChild(actions);
-            container.appendChild(card);
-        });
+        const actions = createActionButtons(
+          () => editGoal(goal.id),
+          () => deleteGoal(goal.id)
+        );
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
     }
 
-    // Render Expense Categories with monthly budget and month navigation
     function renderCategories() {
-        const container = document.getElementById('categoriesContainer');
-        if (!container) return;
-        container.innerHTML = "";
+      const container = document.getElementById('categoriesContainer');
+      if (!container) return;
+      container.innerHTML = "";
+      lm.clearDetached();
 
-        let monthKey = getMonthKey(selectedMonth);
-        // Ensure there is an object for this month
-        if (!categoryBudgets[monthKey]) {
-            categoryBudgets[monthKey] = {};
+      let monthKey = MagnateUtils.getMonthKey(selectedMonth);
+      if (!categoryBudgets[monthKey]) {
+        categoryBudgets[monthKey] = {};
+      }
+
+      categories.forEach(cat => {
+        const catIdStr = String(cat.id);
+        if (categoryBudgets[monthKey][catIdStr] === undefined) {
+          categoryBudgets[monthKey][catIdStr] = cat.budget;
         }
+        const budgetThisMonth = categoryBudgets[monthKey][catIdStr];
 
-        categories.forEach(cat => {
-            // Initialize the category's monthly budget if not already set
-            const catIdStr = String(cat.id);
-            if (categoryBudgets[monthKey][catIdStr] === undefined) {
-                categoryBudgets[monthKey][catIdStr] = cat.budget;
-            }
-            const budgetThisMonth = categoryBudgets[monthKey][catIdStr];
+        const card = document.createElement('div');
+        card.className = 'category-card';
 
-            // Create the category card
-            const card = document.createElement('div');
-            card.className = 'category-card';
+        const info = document.createElement('div');
+        info.className = 'category-info';
 
-            const info = document.createElement('div');
-            info.className = 'category-info';
+        const h3 = document.createElement('h3');
+        h3.textContent = cat.name;
+        info.appendChild(h3);
 
-            // Category title
-            const h3 = document.createElement('h3');
-            h3.textContent = cat.name;
-            info.appendChild(h3);
+        const pBudget = document.createElement('p');
+        pBudget.innerHTML = `Budget: <span class="dollar">$${MagnateUtils.formatNumber(budgetThisMonth)}</span>`;
+        info.appendChild(pBudget);
+        card.appendChild(info);
 
-            // Build the month navigation and budget display line
-            const pBudget = document.createElement('p');
-            pBudget.innerHTML = `
-          <button class="prevCatMonth" style="color: #ffffff; font-size: inherit;">&lt;</button>
-          <span class="catMonthYear">${selectedMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
-          <button class="nextCatMonth" style="color: #ffffff; font-size: inherit;">&gt;</button>
-           : <span class="dollar">$${formatNumber(budgetThisMonth)}</span>
-        `;
-            info.appendChild(pBudget);
-            card.appendChild(info);
+        const actions = createActionButtons(
+          () => editCategory(cat.id),
+          () => deleteCategory(cat.id)
+        );
+        actions.className = 'category-actions';
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+      MagnateData.saveData();
+    }
 
-            // Hook up month arrow buttons (they update the global month)
-            const prevBtn = pBudget.querySelector('.prevCatMonth');
-            const nextBtn = pBudget.querySelector('.nextCatMonth');
-            addListener(prevBtn, 'click', () => {
-                changeMonth(-1);
-                renderCategories();
-            });
-            addListener(nextBtn, 'click', () => {
-                changeMonth(1);
-                renderCategories();
-            });
+    async function editGoal(id) {
+      let goal = goals.find(g => g.id === id);
+      if (!goal) return;
 
-            // Actions for edit/delete
-            const actions = createActionButtons(
-                () => editCategory(cat.id),
-                () => deleteCategory(cat.id)
-            );
-            actions.className = 'category-actions'; // Different class for categories
-            card.appendChild(actions);
-            container.appendChild(card);
-        });
-        // Save updated categoryBudgets using centralized data management
+      let hasChanges = false;
+
+      let newTitle = await MagnateUI.prompt("Edit goal title:", goal.title);
+      if (newTitle === null) return;
+      newTitle = newTitle.trim();
+      if (newTitle === "") newTitle = goal.title;
+      if (newTitle !== goal.title) {
+        goal.title = newTitle;
+        hasChanges = true;
+      }
+
+      let newDesc = await MagnateUI.prompt("Edit goal description:", goal.description);
+      if (newDesc === null) { if (hasChanges) saveAndRefreshGoals(); return; }
+      newDesc = newDesc.trim();
+      if (newDesc !== goal.description) {
+        goal.description = newDesc;
+        hasChanges = true;
+      }
+
+      let newCurrent = await MagnateUtils.promptNumber("Edit current saved amount (current: " + goal.current + "):");
+      if (newCurrent === null) { if (hasChanges) saveAndRefreshGoals(); return; }
+      if (newCurrent !== goal.current) {
+        goal.current = newCurrent;
+        hasChanges = true;
+      }
+
+      let newTarget = await MagnateUtils.promptNumber("Edit goal target amount (current: " + goal.target + "):");
+      if (newTarget === null) { if (hasChanges) saveAndRefreshGoals(); return; }
+      if (newTarget <= 0) {
+        await MagnateUI.alert("Target must be greater than 0.");
+        if (hasChanges) saveAndRefreshGoals();
+        return;
+      }
+      if (newTarget !== goal.target) {
+        goal.target = newTarget;
+        hasChanges = true;
+      }
+
+      if (hasChanges) saveAndRefreshGoals();
+    }
+
+    async function deleteGoal(id) {
+      const confirmed = await MagnateUI.confirm("Are you sure you want to delete this goal?");
+      if (confirmed) {
+        MagnateData.goals = MagnateData.goals.filter(g => g.id !== id);
         MagnateData.saveData();
-    }
-
-    // Goal editing and deletion functions
-    function editGoal(id) {
-        let goal = goals.find(g => g.id === id);
-        if (goal) {
-            // Track whether we have any changes to save
-            let hasChanges = false;
-
-            // Title prompt
-            let newTitle = prompt("Edit goal title:", goal.title);
-            if (newTitle === null) {
-                // User cancelled, but we might have previous changes to save
-                if (hasChanges) {
-                    MagnateData.saveData();
-                    renderGoals();
-                    if (typeof updateAnalytics === 'function') {
-                        updateAnalytics();
-                    }
-                }
-                return;
-            }
-            newTitle = newTitle.trim();
-            if (newTitle === "") newTitle = goal.title;
-            if (newTitle !== goal.title) {
-                goal.title = newTitle;
-                hasChanges = true;
-            }
-
-            // Description prompt
-            let newDesc = prompt("Edit goal description:", goal.description);
-            if (newDesc === null) {
-                // User cancelled, but we might have previous changes to save
-                if (hasChanges) {
-                    MagnateData.saveData();
-                    renderGoals();
-                    if (typeof updateAnalytics === 'function') {
-                        updateAnalytics();
-                    }
-                }
-                return;
-            }
-            newDesc = newDesc.trim();
-            if (newDesc !== goal.description) {
-                goal.description = newDesc;
-                hasChanges = true;
-            }
-
-            // Current amount prompt
-            let newCurrent = MagnateUtils.promptNumber("Edit current saved amount (current: " + goal.current + "):");
-            if (newCurrent === null) {
-                // User cancelled, but we might have previous changes to save
-                if (hasChanges) {
-                    // Ensure the goal is marked as sanitized
-                    goal.sanitized = true;
-                    MagnateData.saveData();
-                    renderGoals();
-                    if (typeof updateAnalytics === 'function') {
-                        updateAnalytics();
-                    }
-                }
-                return;
-            }
-            if (newCurrent !== goal.current) {
-                goal.current = newCurrent;
-                hasChanges = true;
-            }
-
-            // Target amount prompt
-            let newTarget = MagnateUtils.promptNumber("Edit goal target amount (current: " + goal.target + "):");
-            if (newTarget === null) {
-                // User cancelled, but we might have previous changes to save
-                if (hasChanges) {
-                    // Ensure the goal is marked as sanitized
-                    goal.sanitized = true;
-                    MagnateData.saveData();
-                    renderGoals();
-                    if (typeof updateAnalytics === 'function') {
-                        updateAnalytics();
-                    }
-                }
-                return;
-            }
-            if (newTarget <= 0) {
-                alert("Target must be greater than 0.");
-                // Even if there was an error, save any previous valid changes
-                if (hasChanges) {
-                    // Ensure the goal is marked as sanitized
-                    goal.sanitized = true;
-                    MagnateData.saveData();
-                    renderGoals();
-                    if (typeof updateAnalytics === 'function') {
-                        updateAnalytics();
-                    }
-                }
-                return;
-            }
-            if (newTarget !== goal.target) {
-                goal.target = newTarget;
-                hasChanges = true;
-            }
-
-            // If we have changes, render and update
-            if (hasChanges) {
-                MagnateData.saveData();
-                renderGoals();
-                if (typeof updateAnalytics === 'function') {
-                    updateAnalytics();
-                }
-            }
-        }
-    }
-
-    function deleteGoal(id) {
-        if (confirm("Are you sure you want to delete this goal?")) {
-            MagnateData.goals = MagnateData.goals.filter(g => g.id !== id);
-            MagnateData.saveData();
-            goals = MagnateData.goals;
-            renderGoals();
-            if (typeof updateAnalytics === 'function') {
-                updateAnalytics();
-            }
-        }
-    }
-
-    // Category editing and deletion functions
-    function editCategory(id) {
-        let cat = categories.find(c => c.id === id);
-        if (cat) {
-            let hasChanges = false;
-
-            let newName = prompt("Edit category name:", cat.name);
-            if (newName === null) {
-                // No changes to save for category edit
-                return;
-            }
-            newName = newName.trim();
-            if (newName === "") newName = cat.name;
-            if (newName !== cat.name) {
-                cat.name = newName;
-                hasChanges = true;
-            }
-
-            let monthKey = getMonthKey(selectedMonth);
-            // Ensure an object for this month exists
-            if (!categoryBudgets[monthKey]) {
-                categoryBudgets[monthKey] = {};
-            }
-
-            const catIdStr = String(cat.id);
-            let currentBudget = categoryBudgets[monthKey][catIdStr] !== undefined ? categoryBudgets[monthKey][catIdStr] : cat.budget;
-            let newBudget = MagnateUtils.promptNumber("Edit monthly budget for " + cat.name + " (current: " + currentBudget + "):");
-            if (newBudget === null) {
-                // User cancelled budget edit, but save name change if it happened
-                if (hasChanges) {
-                    MagnateData.saveData();
-                    renderCategories();
-                    if (typeof updateAnalytics === 'function') {
-                        updateAnalytics();
-                    }
-                }
-                return;
-            }
-            if (newBudget !== currentBudget) {
-                // Update the budget in the categoryBudgets for the current month
-                categoryBudgets[monthKey][catIdStr] = newBudget;
-
-                // Also update the main category object's budget for consistency across the app
-                cat.budget = newBudget;
-
-                MagnateData.saveData();
-                hasChanges = true;
-            }
-
-            // If we have changes, render and update
-            if (hasChanges) {
-                MagnateData.saveData();
-                renderCategories();
-                if (typeof updateAnalytics === 'function') {
-                    updateAnalytics();
-                }
-            }
-        }
-    }
-
-    function deleteCategory(id) {
-        if (confirm("Are you sure you want to delete this category?")) {
-            MagnateData.categories = MagnateData.categories.filter(c => c.id !== id);
-            MagnateData.saveData();
-            categories = MagnateData.categories;
-            renderCategories();
-            if (typeof updateAnalytics === 'function') {
-                updateAnalytics();
-            }
-        }
-    }
-
-    // New Category Add: also initialize its monthly budget for the current month
-    const addCategoryHandler = () => {
-        const name = prompt("Enter category name:");
-        if (!name) return;
-        const budget = MagnateUtils.promptNumber("Enter monthly budget for this category:");
-        if (budget === null) return;
-
-        const newCat = { id: MagnateUtils.generateId(), name: name.trim(), budget: budget };
-        categories.push(newCat);
-
-        let monthKey = getMonthKey(selectedMonth);
-        if (!categoryBudgets[monthKey]) {
-            categoryBudgets[monthKey] = {};
-        }
-        categoryBudgets[monthKey][String(newCat.id)] = budget;
-        MagnateData.saveData();
-
-        renderCategories();
-        updateAnalytics();
-    };
-
-    addListener(document.getElementById('btnAddCategory'), 'click', addCategoryHandler);
-
-    // New Goal Add
-    const addGoalHandler = () => {
-        const title = prompt("Enter goal title:");
-        if (!title) return;
-        const description = prompt("Enter goal description:");
-        const current = MagnateUtils.promptNumber("Enter current saved amount:");
-        if (current === null) return;
-        const target = MagnateUtils.promptNumber("Enter goal target amount:");
-        if (target === null) return;
-        if (target <= 0) {
-            alert("Target must be greater than 0.");
-            return;
-        }
-        const newGoal = {
-            id: MagnateUtils.generateId(),
-            title: title.trim(),
-            description: description ? description.trim() : "",
-            current: current,
-            target: target
-        };
-        goals.push(newGoal);
-        MagnateData.saveData();
+        goals = MagnateData.goals;
         renderGoals();
-        updateAnalytics();
-    };
+      }
+    }
 
-    addListener(document.getElementById('btnAddGoal'), 'click', addGoalHandler);
+    async function editCategory(id) {
+      let cat = categories.find(c => c.id === id);
+      if (!cat) return;
 
-    // Edit Total Monthly Budget
-    const editBudgetHandler = () => {
-        let key = getMonthKey(selectedMonth);
-        let newBudget = MagnateUtils.promptNumber("Enter new Total Monthly Budget:");
-        if (newBudget !== null) {
-            monthlyBudgets[key] = newBudget;
-            MagnateData.saveData();
-            updateMonthlyBudgetDisplay();
-            if (typeof updateAnalytics === 'function') {
-                updateAnalytics();
-            }
+      let hasChanges = false;
+
+      let newName = await MagnateUI.prompt("Edit category name:", cat.name);
+      if (newName === null) return;
+      newName = newName.trim();
+      if (newName === "") newName = cat.name;
+      if (newName !== cat.name) {
+        cat.name = newName;
+        hasChanges = true;
+      }
+
+      let monthKey = MagnateUtils.getMonthKey(selectedMonth);
+      if (!categoryBudgets[monthKey]) {
+        categoryBudgets[monthKey] = {};
+      }
+
+      const catIdStr = String(cat.id);
+      let currentBudget = categoryBudgets[monthKey][catIdStr] !== undefined ? categoryBudgets[monthKey][catIdStr] : cat.budget;
+      let newBudget = await MagnateUtils.promptNumber("Edit monthly budget for " + cat.name + " (current: " + currentBudget + "):");
+      if (newBudget === null) {
+        if (hasChanges) saveAndRefreshCategories();
+        return;
+      }
+      if (newBudget !== currentBudget) {
+        categoryBudgets[monthKey][catIdStr] = newBudget;
+        cat.budget = newBudget;
+        hasChanges = true;
+      }
+
+      if (hasChanges) saveAndRefreshCategories();
+    }
+
+    async function deleteCategory(id) {
+      const confirmed = await MagnateUI.confirm("Are you sure you want to delete this category?");
+      if (confirmed) {
+        MagnateData.categories = MagnateData.categories.filter(c => c.id !== id);
+        const catIdStr = String(id);
+        for (const monthKey in MagnateData.categoryBudgets) {
+          delete MagnateData.categoryBudgets[monthKey][catIdStr];
         }
+        MagnateData.saveData();
+        categories = MagnateData.categories;
+        renderCategories();
+      }
+    }
+
+    const addCategoryHandler = async () => {
+      const name = await MagnateUI.prompt("Enter category name:");
+      if (!name) return;
+      const budget = await MagnateUtils.promptNumber("Enter monthly budget for this category:");
+      if (budget === null) return;
+
+      const newCat = { id: MagnateUtils.generateId(), name: name.trim(), budget: budget };
+      categories.push(newCat);
+
+      let monthKey = MagnateUtils.getMonthKey(selectedMonth);
+      if (!categoryBudgets[monthKey]) {
+        categoryBudgets[monthKey] = {};
+      }
+      categoryBudgets[monthKey][String(newCat.id)] = budget;
+      MagnateData.saveData();
+
+      renderCategories();
     };
 
-    addListener(document.getElementById('btnEditBudget'), 'click', editBudgetHandler);
+    lm.add(document.getElementById('btnAddCategory'), 'click', addCategoryHandler);
 
-    // Initial rendering
+    const addGoalHandler = async () => {
+      const title = await MagnateUI.prompt("Enter goal title:");
+      if (!title) return;
+      const description = await MagnateUI.prompt("Enter goal description:");
+      const current = await MagnateUtils.promptNumber("Enter current saved amount:");
+      if (current === null) return;
+      const target = await MagnateUtils.promptNumber("Enter goal target amount:");
+      if (target === null) return;
+      if (target <= 0) {
+        await MagnateUI.alert("Target must be greater than 0.");
+        return;
+      }
+      const newGoal = {
+        id: MagnateUtils.generateId(),
+        title: title.trim(),
+        description: description ? description.trim() : "",
+        current: current,
+        target: target
+      };
+      goals.push(newGoal);
+      MagnateData.saveData();
+      renderGoals();
+    };
+
+    lm.add(document.getElementById('btnAddGoal'), 'click', addGoalHandler);
+
+    const editBudgetHandler = async () => {
+      let key = MagnateUtils.getMonthKey(selectedMonth);
+      let newBudget = await MagnateUtils.promptNumber("Enter new Total Monthly Budget:");
+      if (newBudget !== null) {
+        monthlyBudgets[key] = newBudget;
+        MagnateData.saveData();
+        updateMonthlyBudgetDisplay();
+      }
+    };
+
+    lm.add(document.getElementById('btnEditBudget'), 'click', editBudgetHandler);
+
+    lm.add(document.getElementById('monthlyBudgetDisplay'), 'click', function (e) {
+      const btn = e.target.closest('.month-nav-btn');
+      if (!btn) return;
+      changeMonth(btn.textContent === '<' ? -1 : 1);
+    });
+
     renderGoals();
     renderCategories();
     updateMonthlyBudgetDisplay();
+  });
 
-    // Update analytics if the function exists
-    if (typeof updateAnalytics === 'function') {
-        updateAnalytics();
-    }
-});
-
-// Cleanup function to remove event listeners when page unloads
-window.addEventListener('beforeunload', () => {
-    eventListeners.forEach(({ element, event, handler }) => {
-        element.removeEventListener(event, handler);
-    });
-});
+  window.addEventListener('beforeunload', function () {
+    if (lm) lm.cleanup();
+  });
+})();
