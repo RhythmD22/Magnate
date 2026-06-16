@@ -1,5 +1,4 @@
-// Service Worker for Magnate PWA (Static Site)
-const CACHE_NAME = 'magnate-v1.0'; // Updated version to force refresh
+const CACHE_NAME = 'magnate-v3.0';
 const urlsToCache = [
   '/Magnate/',
   '/Magnate/manifest.json',
@@ -23,26 +22,34 @@ const urlsToCache = [
   '/Magnate/js/csv-handler.js',
   '/Magnate/js/calculator.js',
   '/Magnate/js/money-tips.js',
+  '/Magnate/js/tips-data.js',
   '/Magnate/js/navigation.js',
   '/Magnate/js/utils.js',
+  '/Magnate/js/dialogs.js',
   '/Magnate/js/data-manager.js',
   '/Magnate/favicon.ico',
   '/Magnate/apple-touch-icon.png',
   '/Magnate/android-chrome-192x192.png',
   '/Magnate/android-chrome-512x512.png',
   '/Magnate/images/undraw_calculator.png',
-  '/Magnate/images/undraw_online-calendar.png'
+  '/Magnate/images/undraw_online-calendar.png',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.5.1',
+  'https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.css',
+  'https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.js',
+  'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap'
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Caches opened');
+        console.log('Pre-caching assets');
         return cache.addAll(urlsToCache);
       })
       .catch(err => {
-        console.error('Failed to cache assets', err);
+        console.error('Failed to pre-cache assets — install will retry:', err);
+        throw err;
       })
   );
 });
@@ -51,20 +58,16 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return cached version if available
         if (response) {
           return response;
         }
 
-        // Otherwise, fetch from network
         return fetch(event.request).then(
           response => {
-            // Check if we received a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            if (!response || response.status !== 200) {
               return response;
             }
 
-            // Clone the response to store in cache
             const responseToCache = response.clone();
 
             return caches.open(CACHE_NAME)
@@ -74,9 +77,10 @@ self.addEventListener('fetch', event => {
               .then(() => response);
           }
         ).catch(() => {
-          // Serve cached index.html for navigation requests when offline
           if (event.request.mode === 'navigate') {
-            return caches.match('/Magnate/index.html');
+            return caches.match(event.request).then(cachedResponse => {
+              return cachedResponse || caches.match('/Magnate/index.html');
+            });
           }
         });
       })
@@ -89,7 +93,6 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
