@@ -2,18 +2,15 @@
   --color-bg: #0F1114;
   --color-surface: #181A1E;
   --color-surface-hover: #24272B;
-  --color-surface-alt: #1C1F24;
   --color-border: #2D2F34;
   --color-border-hover: #3A3D42;
   --color-text-primary: #FFFFFF;
-  --color-text-secondary: #B0B0B0;
-  --color-text-muted: #A3A3A3;
+  --color-text-muted: #A5A5A5;
   --color-accent: #1043B1;
   --color-accent-hover: #2D6FE4;
   --color-accent-light: #3B82F6;
   --color-accent-text: #508de6;
   --color-expense: #F87171;
-  --color-nav-icon: #9CA3AF;
   --color-danger: #dc2626;
   --color-danger-hover: #EF4444;
   --color-success: #34D399;
@@ -64,8 +61,16 @@ a {
 button {
   cursor: pointer;
   border: none;
-  outline: none;
   background: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 2px;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .container {
@@ -133,7 +138,7 @@ button {
   align-items: center;
   padding: 0.65rem 0.75rem;
   text-decoration: none;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   transition: background 0.2s ease, color 0.2s ease;
   width: 100%;
   border-radius: var(--radius-md);
@@ -157,7 +162,7 @@ button {
   width: 20px;
   height: 20px;
   margin-right: 0.75rem;
-  color: var(--color-nav-icon);
+  color: var(--color-text-muted);
   flex-shrink: 0;
   transition: color 0.2s ease;
 }
@@ -180,7 +185,7 @@ button {
 
 .icon-btn {
   cursor: pointer;
-  color: var(--color-nav-icon);
+  color: var(--color-text-muted);
   transition: color 0.2s ease;
   background-color: var(--color-border);
   padding: var(--spacing-sm) 0.75rem;
@@ -230,7 +235,7 @@ button {
 }
 
 .btn-blue:active {
-  background-color: var(--color-accent);
+  background-color: #0C338A;
 }
 
 @media (hover: hover) {
@@ -243,15 +248,15 @@ button {
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: 10px;
   position: fixed;
-  top: 15px;
-  left: 15px;
+  top: 5px;
+  left: 5px;
   z-index: 101;
 }
 
@@ -366,7 +371,7 @@ button {
     justify-content: center;
     margin: 1rem 0;
     padding: 0.75rem;
-    color: var(--color-nav-icon);
+    color: var(--color-text-muted);
     font-size: 0.85rem;
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
@@ -448,6 +453,16 @@ button {
 
   .sidebar-backdrop {
     display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tips-row-inner {
+    animation: none !important;
+  }
+
+  .main-content::before {
+    animation: none !important;
   }
 }
 
@@ -546,7 +561,7 @@ button {
 
 .m-dialog-btn-cancel {
   background-color: var(--color-border);
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
 }
 
 .m-dialog-btn-cancel:hover {

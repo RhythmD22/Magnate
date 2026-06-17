@@ -1,5 +1,5 @@
 .content-wrapper {
-  max-width: 1300px;
+  max-width: 1200px;
   display: grid;
   grid-template-rows: auto auto auto auto;
   gap: 1rem;
@@ -42,7 +42,7 @@
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  padding: 1rem;
+  padding: 0.65rem 0.75rem;
   display: inline-block;
 }
 
@@ -56,12 +56,12 @@
 }
 
 .budget-heading {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
 .budget-amount {
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--color-accent-text);
 }
@@ -207,7 +207,7 @@
 
 .expense-category-breakdown {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   text-align: center;
 }
 
@@ -279,14 +279,18 @@
 #toggleCategoryView,
 #toggleMonthlyView {
   margin-left: auto;
-  background: none;
-  border: none;
+  background-color: var(--color-border);
+  border: 1px solid var(--color-border);
   color: var(--color-text-primary);
-  font-size: 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 4px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 125px;
+  text-align: center;
 }
 
 .week-arrow:active {
@@ -305,8 +309,9 @@
 
   #toggleCategoryView:hover,
   #toggleMonthlyView:hover {
-    color: var(--color-accent-text) !important;
     background-color: var(--color-border-hover);
+    border-color: var(--color-accent-light);
+    color: var(--color-text-primary);
   }
 }
 

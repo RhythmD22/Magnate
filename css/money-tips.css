@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -53,6 +53,7 @@
   height: calc(100% - 4rem);
   gap: 0;
   overflow: hidden;
+  visibility: hidden;
 }
 
 .tips-row {
@@ -108,10 +109,8 @@
   border-color: var(--color-accent-text);
 }
 
-.tip-card.empty {
-  background-color: #000000;
-  opacity: 0.5;
-  color: transparent;
+.tips-row:hover .tips-row-inner {
+  animation-play-state: paused;
 }
 
 .categories-wrapper {
@@ -128,7 +127,6 @@
 @media (max-width: 768px) {
   .categories-wrapper {
     position: static;
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
     max-width: 100%;

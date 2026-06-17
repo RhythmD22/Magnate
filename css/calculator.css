@@ -40,6 +40,11 @@
   font-family: var(--font-mono);
 }
 
+.calculator-display:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--color-accent-light);
+}
+
 .calculator-buttons {
   flex: 1;
   display: grid;
@@ -80,6 +85,10 @@
 
 .btn-equals:hover {
   background-color: var(--color-accent-light);
+}
+
+.btn-equals:active {
+  background-color: var(--color-accent);
 }
 
 .history-panel {
@@ -157,7 +166,7 @@
 }
 
 .history-list .timestamp {
-  color: var(--color-nav-icon);
+  color: var(--color-text-muted);
   font-size: 0.8rem;
   margin-left: 1rem;
   white-space: nowrap;
@@ -180,7 +189,7 @@
 }
 
 .history-entry .timestamp {
-  color: var(--color-nav-icon);
+  color: var(--color-text-muted);
   font-size: 0.8rem;
   white-space: nowrap;
   margin-right: 25px;
