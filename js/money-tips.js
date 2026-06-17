@@ -17,7 +17,7 @@
   const generateCardsHTML = (tips) => {
     let cardsHTML = "";
     tips.forEach(tip => {
-      cardsHTML += `<div class="tip-card">${tip}</div><div class="tip-card empty"></div>`;
+      cardsHTML += `<div class="tip-card">${tip}</div>`;
     });
     return cardsHTML + cardsHTML;
   };
@@ -51,8 +51,8 @@
     const selectedTips = tipsBank[category];
     document.querySelectorAll('.tips-row-inner').forEach(inner => {
       if (inner) {
-        const randomizedTips = shuffle([...selectedTips]);
-        inner.innerHTML = generateCardsHTML(randomizedTips);
+        const rowTips = shuffle([...selectedTips]);
+        inner.innerHTML = generateCardsHTML(rowTips);
       }
     });
   };
@@ -66,7 +66,7 @@
   }
 
   function setupCategoryButtons() {
-    const container = document.querySelector('.categories-container');
+    const container = document.querySelector('.categories-wrapper');
     if (!container) {
       lm.add(document, 'click', function (e) {
         const button = e.target.closest('.category-button');
@@ -126,6 +126,8 @@
           row.classList.add('scroll-animate');
         }
       });
+      const tipsRows = document.querySelector('.tips-rows');
+      if (tipsRows) tipsRows.style.visibility = 'visible';
       const activeBtn = document.querySelector('.category-button.active');
       if (activeBtn) {
         const activeCategory = activeBtn.getAttribute('data-category');

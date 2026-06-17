@@ -39,16 +39,40 @@
     }
 
     const featureCards = document.querySelectorAll('.card');
+    const cardLinks = {
+      cardGoalSetting: 'Goals%20%26%20Categories.html',
+      cardExpenseTracking: 'Track%20Transactions.html',
+      cardVisualAnalytics: 'Analytics.html'
+    };
+
     featureCards.forEach(card => {
-      const mouseEnterHandler = function () {
-        this.style.zIndex = '10';
-      };
-      const mouseLeaveHandler = function () {
-        this.style.zIndex = '1';
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+
+      const navigate = function () {
+        const page = cardLinks[card.id];
+        if (page) {
+          card.classList.add('clicked');
+          setTimeout(() => {
+            window.location.href = page;
+          }, 200);
+        }
       };
 
-      lm.add(card, 'mouseenter', mouseEnterHandler);
-      lm.add(card, 'mouseleave', mouseLeaveHandler);
+      lm.add(card, 'click', navigate);
+      lm.add(card, 'keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          navigate();
+        }
+      });
+
+      lm.add(card, 'mouseenter', function () {
+        this.style.zIndex = '10';
+      });
+      lm.add(card, 'mouseleave', function () {
+        this.style.zIndex = '1';
+      });
     });
 
     window.addEventListener('beforeunload', function () {

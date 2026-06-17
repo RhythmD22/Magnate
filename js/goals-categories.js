@@ -92,6 +92,14 @@
       if (!container) return;
       container.innerHTML = "";
       lm.clearDetached();
+
+      if (goals.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.style.cssText = 'text-align:center;padding:2rem 1rem;color:var(--color-text-muted);';
+        emptyState.innerHTML = '<p style="font-size:1rem;margin-bottom:0.5rem;">No goals yet</p><p style="font-size:0.85rem;">Click "+ Add Goal" above to set your first financial goal.</p>';
+        container.appendChild(emptyState);
+        return;
+      }
       goals.forEach(goal => {
         const card = document.createElement('div');
         card.className = 'goal-card';
@@ -142,6 +150,14 @@
       if (!container) return;
       container.innerHTML = "";
       lm.clearDetached();
+
+      if (categories.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.style.cssText = 'text-align:center;padding:2rem 1rem;color:var(--color-text-muted);grid-column:1/-1;';
+        emptyState.innerHTML = '<p style="font-size:1rem;margin-bottom:0.5rem;">No categories yet</p><p style="font-size:0.85rem;">Click "+ Add Category" above to create your first expense category.</p>';
+        container.appendChild(emptyState);
+        return;
+      }
 
       let monthKey = MagnateUtils.getMonthKey(selectedMonth);
       if (!categoryBudgets[monthKey]) {

@@ -39,12 +39,51 @@
     lm.clearDetached();
 
     const weekTransactions = getWeekTransactions(currentWeekStart);
+    const searchQuery = document.getElementById('transactionSearch')?.value?.toLowerCase() || '';
 
-    weekTransactions.expenses.forEach(item => {
+    let filteredExpenses = weekTransactions.expenses;
+    let filteredIncomes = weekTransactions.incomes;
+
+    if (searchQuery) {
+      filteredExpenses = filteredExpenses.filter(t =>
+        t.title.toLowerCase().includes(searchQuery) ||
+        (t.category && t.category.toLowerCase().includes(searchQuery))
+      );
+      filteredIncomes = filteredIncomes.filter(t =>
+        t.title.toLowerCase().includes(searchQuery) ||
+        (t.category && t.category.toLowerCase().includes(searchQuery))
+      );
+    }
+
+    const hasExpenses = filteredExpenses.length > 0;
+    const hasIncomes = filteredIncomes.length > 0;
+
+    if (!hasExpenses && !hasIncomes) {
+      const emptyMsg = document.createElement('p');
+      emptyMsg.style.cssText = 'text-align:center;padding:1.5rem;color:var(--color-text-muted);font-size:0.9rem;grid-column:1/-1;';
+      emptyMsg.textContent = 'No transactions this week. Add an expense or income above.';
+      expensesColumn.appendChild(emptyMsg);
+      return;
+    }
+
+    if (!hasExpenses) {
+      const emptyMsg = document.createElement('p');
+      emptyMsg.style.cssText = 'text-align:center;padding:1rem 0;color:var(--color-text-muted);font-size:0.85rem;';
+      emptyMsg.textContent = 'No expenses this week.';
+      expensesColumn.appendChild(emptyMsg);
+    }
+    if (!hasIncomes) {
+      const emptyMsg = document.createElement('p');
+      emptyMsg.style.cssText = 'text-align:center;padding:1rem 0;color:var(--color-text-muted);font-size:0.85rem;';
+      emptyMsg.textContent = 'No income this week.';
+      incomeColumn.appendChild(emptyMsg);
+    }
+
+    filteredExpenses.forEach(item => {
       const card = createTransactionCard(item, 'expense');
       expensesColumn.appendChild(card);
     });
-    weekTransactions.incomes.forEach(item => {
+    filteredIncomes.forEach(item => {
       const card = createTransactionCard(item, 'income');
       incomeColumn.appendChild(card);
     });
@@ -269,6 +308,19 @@
   lm.add(document.getElementById('btnAddExpense'), 'click', () => addTransaction('expense'));
   lm.add(document.getElementById('btnAddIncome'), 'click', () => addTransaction('income'));
 
+  const searchInput = document.getElementById('transactionSearch');
+  if (searchInput) {
+    lm.add(searchInput, 'input', debounce(() => renderTransactions(), 250));
+  }
+
+  function debounce(fn, delay) {
+    let timer;
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(fn, delay);
+    };
+  }
+
   function renderTransactionGroups() {
     const expenseContainer = document.getElementById('expenseGroupsContainer');
     const incomeContainer = document.getElementById('incomeGroupsContainer');
@@ -373,10 +425,10 @@
       toolbar: ["bold", "italic", "heading", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "|", "preview", "side-by-side", "fullscreen", "|", "guide"],
     });
 
-    easyMDE.codemirror.on("change", function () {
+    easyMDE.codemirror.on("change", debounce(function () {
       MagnateData.notes = easyMDE.value();
       MagnateData.saveData();
-    });
+    }, 500));
   }
 
   const visibilityHandler = function () {

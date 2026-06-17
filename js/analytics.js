@@ -7,6 +7,13 @@
   let monthlyCategoryView = 'spending';
   let currentWeekStart = MagnateData.currentWeekStart;
 
+  const styles = getComputedStyle(document.documentElement);
+  const colorExpense = styles.getPropertyValue('--color-expense').trim() || '#F87171';
+  const colorSuccess = styles.getPropertyValue('--color-success').trim() || '#34D399';
+  const colorTextMuted = styles.getPropertyValue('--color-text-muted').trim() || '#A5A5A5';
+  const colorBorderHover = styles.getPropertyValue('--color-border-hover').trim() || '#3A3D42';
+  const colorTextPrimary = styles.getPropertyValue('--color-text-primary').trim() || '#FFFFFF';
+
   function updateWeekLabel() {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const weekLabel = document.getElementById('weekLabel');
@@ -19,6 +26,10 @@
   document.addEventListener('DOMContentLoaded', () => {
     const toggleCategoryViewBtn = document.getElementById('toggleCategoryView');
     if (toggleCategoryViewBtn) {
+      const updateToggleBtn = () => {
+        toggleCategoryViewBtn.textContent = categoryView === 'spending' ? 'Show Income' : 'Show Spending';
+      };
+      updateToggleBtn();
       lm.add(toggleCategoryViewBtn, 'click', () => {
         categoryView = (categoryView === 'spending') ? 'income' : 'spending';
         const categoryCardTitle = document.getElementById('categoryCardTitle');
@@ -26,12 +37,17 @@
           categoryCardTitle.textContent =
             (categoryView === 'spending') ? 'Weekly Spending by Category:' : 'Weekly Income by Category:';
         }
+        updateToggleBtn();
         updateCategoryCards();
       });
     }
 
     const toggleMonthlyViewBtn = document.getElementById('toggleMonthlyView');
     if (toggleMonthlyViewBtn) {
+      const updateMonthlyToggleBtn = () => {
+        toggleMonthlyViewBtn.textContent = monthlyCategoryView === 'spending' ? 'Show Income' : 'Show Spending';
+      };
+      updateMonthlyToggleBtn();
       lm.add(toggleMonthlyViewBtn, 'click', () => {
         monthlyCategoryView = (monthlyCategoryView === 'spending') ? 'income' : 'spending';
         const monthlyCardTitle = document.getElementById('monthlyCardTitle');
@@ -39,6 +55,7 @@
           monthlyCardTitle.textContent =
             (monthlyCategoryView === 'spending') ? 'Monthly Spending by Category:' : 'Monthly Income by Category:';
         }
+        updateMonthlyToggleBtn();
         updateMonthlyCategoryCards();
       });
     }
@@ -91,12 +108,43 @@
       0
     );
 
+    let monthlyIncomes = [];
+    if (Array.isArray(MagnateData.incomes)) {
+      monthlyIncomes = MagnateData.incomes.filter(inc => {
+        if (!inc.date) return false;
+        const normalized = MagnateUtils.normalizeDateFormat(inc.date);
+        return normalized >= startStrMonth && normalized <= endStrMonth;
+      });
+    }
+    let totalMonthlyIncomes = monthlyIncomes.reduce(
+      (sum, inc) => sum + Math.abs(inc.amount),
+      0
+    );
+
+    let netAmount = totalMonthlyIncomes - totalMonthlyExpenses;
+    const netEl = document.getElementById('netAmount');
+    if (netEl) {
+      const netSign = netAmount >= 0 ? '+' : '-';
+      netEl.textContent = netSign + '$' + MagnateUtils.formatNumber(Math.abs(netAmount));
+      netEl.style.color = netAmount >= 0 ? colorSuccess : colorExpense;
+    }
+
+    const hasData = MagnateData.expenses.length > 0 || MagnateData.incomes.length > 0;
+    const defaultBudget = MagnateData.monthlyBudgets[MagnateUtils.getMonthKey(firstDay)] || 1000;
+
+    if (!hasData) {
+      document.getElementById('totalBudget').textContent = '$' + MagnateUtils.formatNumber(defaultBudget);
+      document.getElementById('remainingBudget').textContent = '$' + MagnateUtils.formatNumber(defaultBudget);
+      document.getElementById('progressText').innerHTML = '0%<br/>Spent';
+      document.getElementById('progressCircle').style.strokeDashoffset = '628';
+      document.getElementById('categoriesCards').innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">Add transactions to see category breakdowns.</p>';
+      document.getElementById('monthlyCategoryCards').innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">Add transactions to see monthly breakdowns.</p>';
+      renderWeeklyChart();
+      return;
+    }
+
     let key = MagnateUtils.getMonthKey(firstDay);
     let totalBudget = MagnateData.monthlyBudgets[key] || 1000;
-
-    document.getElementById('totalBudget').textContent = '$' + MagnateUtils.formatNumber(totalBudget);
-    let remaining = totalBudget - totalMonthlyExpenses;
-    document.getElementById('remainingBudget').textContent = '$' + MagnateUtils.formatNumber(remaining);
 
     let percentage = totalBudget > 0
       ? (totalMonthlyExpenses / totalBudget) * 100
@@ -173,15 +221,15 @@
             {
               label: 'Expenses',
               data: expenseData,
-              backgroundColor: '#dd524c',
-              borderColor: '#dd524c',
+              backgroundColor: colorExpense,
+              borderColor: colorExpense,
               borderWidth: 1
             },
             {
               label: 'Income',
               data: incomeData,
-              backgroundColor: '#5ec269',
-              borderColor: '#5ec269',
+              backgroundColor: colorSuccess,
+              borderColor: colorSuccess,
               borderWidth: 1
             }
           ]
@@ -197,26 +245,26 @@
               stacked: true,
               ticks: {
                 stepSize: 10,
-                color: '#A3A3A3'
+                color: colorTextMuted
               },
               grid: {
-                color: '#3A3D42'
+                color: colorBorderHover
               },
               title: {
                 display: true,
                 text: 'Amount ($)',
-                color: '#FFFFFF',
+                color: colorTextPrimary,
                 font: { size: 14 }
               }
             },
             x: {
               stacked: true,
-              grid: { color: '#3A3D42' },
-              ticks: { color: '#A3A3A3' },
+              grid: { color: colorBorderHover },
+              ticks: { color: colorTextMuted },
               title: {
                 display: true,
                 text: 'Days of the Week',
-                color: '#FFFFFF',
+                color: colorTextPrimary,
                 font: { size: 14 }
               }
             }
@@ -233,7 +281,7 @@
             legend: {
               display: true,
               labels: {
-                color: '#9E9E9E'
+                color: colorTextMuted
               }
             }
           }
@@ -265,11 +313,12 @@
 
     const breakdown = document.createElement('div');
     breakdown.className = 'expense-category-breakdown';
+    const prefix = isIncome ? '+' : '-';
     breakdown.innerHTML = `
           <span class="percentage" style="color: ${color};">
               ${Math.round(percentage)}%
           </span>
-          (${MagnateUtils.formatNumber(total.toFixed(2))}${!isIncome ? '/' + MagnateUtils.formatNumber(budget.toFixed(2)) : ''})
+          (${prefix}$${MagnateUtils.formatNumber(total.toFixed(2))}${!isIncome ? '/' + MagnateUtils.formatNumber(budget.toFixed(2)) : ''})
       `;
     card.appendChild(breakdown);
 
@@ -359,7 +408,7 @@
 
     const groupedTransactions = getTransactionsByDateRangeAndCategory(mondayStr, weekEndStr, categoryView);
 
-    const color = categoryView === 'spending' ? '#e77975' : '#69cd9b';
+    const color = categoryView === 'spending' ? colorExpense : colorSuccess;
     const isIncome = categoryView === 'income';
 
     for (let key in groupedTransactions) {
@@ -385,7 +434,7 @@
 
     const groupedTransactions = getTransactionsByDateRangeAndCategory(startDate, endDate, monthlyCategoryView);
 
-    const color = monthlyCategoryView === 'spending' ? '#e77975' : '#69cd9b';
+    const color = monthlyCategoryView === 'spending' ? colorExpense : colorSuccess;
     const isIncome = monthlyCategoryView === 'income';
 
     for (let key in groupedTransactions) {

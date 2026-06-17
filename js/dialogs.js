@@ -13,10 +13,12 @@
 
   const messageEl = document.createElement('div');
   messageEl.className = 'm-dialog-message';
+  messageEl.id = 'mdialog-message';
 
   const inputEl = document.createElement('input');
   inputEl.className = 'm-dialog-input';
   inputEl.type = 'text';
+  inputEl.setAttribute('aria-labelledby', 'mdialog-message');
 
   const errorEl = document.createElement('div');
   errorEl.className = 'm-dialog-error';

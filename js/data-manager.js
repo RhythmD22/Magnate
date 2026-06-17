@@ -10,7 +10,7 @@
   ];
 
   MagnateData.defaultGoals = [
-    { id: 1, title: "Emergency Fund", description: "Save $1,000 by December 2025", current: 450, target: 1000, sanitized: true }
+    { id: 1, title: "Emergency Fund", description: "Save $1,000 by December " + (new Date().getFullYear() + 1), current: 450, target: 1000, sanitized: true }
   ];
 
   MagnateData.expenses = [];

@@ -48,6 +48,14 @@
     calcHistoryElement.innerHTML = '';
     lm.clearDetached();
 
+    if (calcHistory.length === 0) {
+      const emptyMsg = document.createElement('p');
+      emptyMsg.style.cssText = 'text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;';
+      emptyMsg.textContent = 'No calculations yet.';
+      calcHistoryElement.appendChild(emptyMsg);
+      return;
+    }
+
     const fragment = document.createDocumentFragment();
 
     calcHistory.forEach((entry, index) => {
@@ -302,6 +310,8 @@
     }
   };
 
+  let handleKeydown = null;
+
   document.addEventListener('DOMContentLoaded', function () {
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
     if (clearHistoryBtn) {
@@ -313,11 +323,53 @@
       lm.add(calcContainer, 'click', calcBtnHandler);
     }
 
+    handleKeydown = function (e) {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
+      if (document.querySelector('.m-dialog-active')) return;
+
+      const key = e.key;
+      if (key >= '0' && key <= '9') {
+        inputDigit(key);
+      } else if (key === '.') {
+        inputDecimal();
+      } else if (key === '+') {
+        handleOperator('+');
+      } else if (key === '-') {
+        handleOperator('-');
+      } else if (key === '*') {
+        handleOperator('*');
+      } else if (key === '/') {
+        e.preventDefault();
+        handleOperator('/');
+      } else if (key === 'Enter' || key === '=') {
+        e.preventDefault();
+        handleEquals();
+      } else if (key === 'Escape') {
+        clearAll();
+      } else if (key === 'Backspace') {
+        e.preventDefault();
+        const clean = currentValue.replace(/,/g, '');
+        if (clean.length <= 1 || (clean.length === 2 && clean.startsWith('-'))) {
+          currentValue = '0';
+        } else {
+          currentValue = clean.slice(0, -1);
+        }
+        updateDisplay(currentValue);
+      } else if (key === '%') {
+        handlePercent();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+
     loadCalcHistory();
     clearAll();
+    document.getElementById('calcDisplay')?.focus();
   });
 
   window.addEventListener('beforeunload', function () {
     lm.cleanup();
+    if (handleKeydown) document.removeEventListener('keydown', handleKeydown);
   });
 })();
