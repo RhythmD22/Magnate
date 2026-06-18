@@ -309,8 +309,32 @@
   lm.add(document.getElementById('btnAddIncome'), 'click', () => addTransaction('income'));
 
   const searchInput = document.getElementById('transactionSearch');
+  const searchClearBtn = document.getElementById('transactionSearchClear');
+
   if (searchInput) {
-    lm.add(searchInput, 'input', debounce(() => renderTransactions(), 250));
+    const debouncedRender = debounce(() => renderTransactions(), 250);
+    lm.add(searchInput, 'input', () => {
+      searchClearBtn.classList.toggle('visible', searchInput.value.length > 0);
+      debouncedRender();
+    });
+    lm.add(searchInput, 'blur', () => {
+      if (searchInput.value.trim() === '') {
+        searchClearBtn.classList.remove('visible');
+      }
+    });
+  }
+
+  if (searchClearBtn) {
+    lm.add(searchClearBtn, 'pointerdown', (e) => {
+      e.preventDefault();
+    });
+    lm.add(searchClearBtn, 'click', (e) => {
+      e.stopPropagation();
+      searchInput.value = '';
+      searchClearBtn.classList.remove('visible');
+      searchInput.focus();
+      renderTransactions();
+    });
   }
 
   function debounce(fn, delay) {
