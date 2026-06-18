@@ -121,6 +121,7 @@ Magnate uses a CSS custom properties system consolidated into a cohesive dark th
 | `--color-surface-hover` | `#24272B` | Hover states |
 | `--color-border` | `#2D2F34` | Card borders, button backgrounds |
 | `--color-border-hover` | `#3A3D42` | Border hover |
+| `--color-progress-track` | `#40454A` | Progress bar backgrounds |
 
 ### Text
 
@@ -133,9 +134,10 @@ Magnate uses a CSS custom properties system consolidated into a cohesive dark th
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--color-accent` | `#1043B1` | Buttons, progress bars |
-| `--color-accent-hover` | `#2D6FE4` | Accent hover states |
-| `--color-accent-light` | `#3B82F6` | Focus rings, chart highlights |
+| `--color-accent` | `#1043B1` | Primary buttons |
+| `--color-accent-hover` | `#2D6FE4` | Button hover states |
+| `--color-accent-active` | `#0C338A` | Button active/pressed states |
+| `--color-accent-light` | `#3B82F6` | Focus rings, charts, progress bar fills |
 | `--color-accent-text` | `#508de6` | SVG icons, dollar amounts |
 
 ### Semantic Colors
