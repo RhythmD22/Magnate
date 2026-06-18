@@ -454,20 +454,97 @@
   color: var(--color-success);
 }
 
-.search-input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
+.search-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: var(--color-surface-hover);
   border: 1px solid var(--color-border);
   border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.search-pill:focus-within {
+  border-color: var(--color-accent-light);
+}
+
+.pill-search-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-text-muted);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") center/contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") center/contain no-repeat;
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
   color: var(--color-text-primary);
   font-size: 16px;
-  margin-bottom: 1rem;
   outline: none;
 }
 
-.search-input:focus {
-  border-color: var(--color-accent-light);
+.search-clear-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.search-clear-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+}
+
+.search-clear-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+  .search-pill {
+    padding: 0.4rem 0.85rem;
+  }
+
+  .pill-search-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .search-input {
+    font-size: 1rem;
+    padding: 0.6rem 0;
+  }
+
+  .search-clear-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+  }
 }
 
 svg.icon {
