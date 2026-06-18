@@ -14,6 +14,7 @@
 - [Demo](#demo)
 - [Install](#install)
 - [Architecture](#architecture)
+- [Design System](#design-system)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [PWA Support](#progressive-web-app-pwa-support)
@@ -39,57 +40,6 @@
 | Responsive Design | Mobile-first layout with swipe-to-open sidebar, touch-friendly targets, and adaptive charts |
 | Keyboard & Screen Reader | Focus-visible outlines, `aria-hidden` on decorative SVGs, labelled inputs, reduced-motion support |
 | PWA Support | Install on mobile for a native app-like experience with offline access |
-
----
-
-## Design System
-
-Magnate uses a CSS custom properties system consolidated into a cohesive dark theme:
-
-### Backgrounds
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-bg` | `#0F1114` | Page background |
-| `--color-surface` | `#181A1E` | Cards, sidebar, dialogs |
-| `--color-surface-hover` | `#24272B` | Hover states |
-| `--color-border` | `#2D2F34` | Card borders, button backgrounds |
-| `--color-border-hover` | `#3A3D42` | Border hover |
-
-### Text
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-text-primary` | `#FFFFFF` | Headings, body text |
-| `--color-text-muted` | `#A5A5A5` | Descriptions, secondary UI, icons, timestamps |
-
-### Accent
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-accent` | `#1043B1` | Buttons, progress bars |
-| `--color-accent-hover` | `#2D6FE4` | Accent hover states |
-| `--color-accent-light` | `#3B82F6` | Focus rings, chart highlights |
-| `--color-accent-text` | `#508de6` | SVG icons, dollar amounts |
-
-### Semantic Colors
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-expense` | `#F87171` | Expense amounts |
-| `--color-success` | `#34D399` | Income amounts |
-| `--color-danger` | `#dc2626` | Delete/AC buttons |
-| `--color-danger-hover` | `#EF4444` | Danger hover states |
-
-### Typography & Spacing
-
-Typography uses **Figtree** for headings and the system font stack for body text. Spacing follows a 4-scale system (`--space-xs`: 0.25rem through `--space-xl`: 2rem). All cards share a consistent border-radius of 6px with a 1px border.
-
-**Key design decisions:**
-- **Vanilla JS modules** — shared scripts (`data-manager.js`, `dialogs.js`, `navigation.js`, `csv-handler.js`, `utils.js`) loaded across pages via `<script>` tags
-- **No build step** — all libraries loaded via CDN, no bundler or package manager
-- **Custom dialogs** — accessible dark-themed modals with `role="dialog"`, `aria-modal`, `aria-labelledby`, and keyboard support
-- **Multi-page SPA** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
 
 ---
 
@@ -155,6 +105,57 @@ Magnate/
 ```
 
 The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules (`data-manager.js`, `dialogs.js`, `navigation.js`, `utils.js`, `csv-handler.js`) loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts. There is no build step or bundler.
+
+---
+
+## Design System
+
+Magnate uses a CSS custom properties system consolidated into a cohesive dark theme:
+
+### Backgrounds
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-bg` | `#0F1114` | Page background |
+| `--color-surface` | `#181A1E` | Cards, sidebar, dialogs |
+| `--color-surface-hover` | `#24272B` | Hover states |
+| `--color-border` | `#2D2F34` | Card borders, button backgrounds |
+| `--color-border-hover` | `#3A3D42` | Border hover |
+
+### Text
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-text-primary` | `#FFFFFF` | Headings, body text |
+| `--color-text-muted` | `#A5A5A5` | Descriptions, secondary UI, icons, timestamps |
+
+### Accent
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-accent` | `#1043B1` | Buttons, progress bars |
+| `--color-accent-hover` | `#2D6FE4` | Accent hover states |
+| `--color-accent-light` | `#3B82F6` | Focus rings, chart highlights |
+| `--color-accent-text` | `#508de6` | SVG icons, dollar amounts |
+
+### Semantic Colors
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-expense` | `#F87171` | Expense amounts |
+| `--color-success` | `#34D399` | Income amounts |
+| `--color-danger` | `#dc2626` | Delete/AC buttons |
+| `--color-danger-hover` | `#EF4444` | Danger hover states |
+
+### Typography & Spacing
+
+Typography uses **Figtree** for headings and the system font stack for body text. Spacing follows a 4-scale system (`--space-xs`: 0.25rem through `--space-xl`: 2rem). All cards share a consistent border-radius of 6px with a 1px border.
+
+**Key design decisions:**
+- **Vanilla JS modules** — shared scripts (`data-manager.js`, `dialogs.js`, `navigation.js`, `csv-handler.js`, `utils.js`) loaded across pages via `<script>` tags
+- **No build step** — all libraries loaded via CDN, no bundler or package manager
+- **Custom dialogs** — accessible dark-themed modals with `role="dialog"`, `aria-modal`, `aria-labelledby`, and keyboard support
+- **Multi-page SPA** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
 
 ---
 
