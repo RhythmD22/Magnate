@@ -267,7 +267,7 @@
   height: 48px;
   margin-bottom: 1rem;
   color: var(--color-accent-light);
-  background-color: #161a1d;
+  background-color: var(--color-surface-hover);
   padding: 0.75rem;
   border-radius: 6px;
   transition: all 0.3s ease;
@@ -280,7 +280,7 @@
 
 @media (hover: none) {
   .card:hover svg {
-    background-color: #161a1d;
+    background-color: var(--color-surface-hover);
     transform: scale(1.1);
   }
 }

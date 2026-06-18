@@ -8,12 +8,14 @@
   --color-text-muted: #A5A5A5;
   --color-accent: #1043B1;
   --color-accent-hover: #2D6FE4;
+  --color-accent-active: #0C338A;
   --color-accent-light: #3B82F6;
   --color-accent-text: #508de6;
   --color-expense: #F87171;
   --color-danger: #dc2626;
   --color-danger-hover: #EF4444;
   --color-success: #34D399;
+  --color-progress-track: #40454A;
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -235,7 +237,7 @@ button:focus:not(:focus-visible) {
 }
 
 .btn-blue:active {
-  background-color: #0C338A;
+  background-color: var(--color-accent-active);
 }
 
 @media (hover: hover) {

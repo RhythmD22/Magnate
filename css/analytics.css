@@ -216,7 +216,7 @@
 }
 
 .category-progress-bar {
-  background-color: var(--color-border);
+  background-color: var(--color-progress-track);
   border-radius: 4px;
   height: 8px;
   width: 100%;
