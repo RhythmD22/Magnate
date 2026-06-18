@@ -137,8 +137,8 @@
       document.getElementById('remainingBudget').textContent = '$' + MagnateUtils.formatNumber(defaultBudget);
       document.getElementById('progressText').innerHTML = '0%<br/>Spent';
       document.getElementById('progressCircle').style.strokeDashoffset = '628';
-      document.getElementById('categoriesCards').innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">Add transactions to see category breakdowns.</p>';
-      document.getElementById('monthlyCategoryCards').innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">Add transactions to see monthly breakdowns.</p>';
+      document.getElementById('categoriesCards').innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">Add a transaction to get started.</p>';
+      document.getElementById('monthlyCategoryCards').innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">Add a transaction to get started.</p>';
       renderWeeklyChart();
       return;
     }
@@ -411,6 +411,11 @@
     const color = categoryView === 'spending' ? colorExpense : colorSuccess;
     const isIncome = categoryView === 'income';
 
+    if (Object.keys(groupedTransactions).length === 0) {
+      container.innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">No ' + categoryView + ' this week.</p>';
+      return;
+    }
+
     for (let key in groupedTransactions) {
       let group = groupedTransactions[key];
       const card = createCategoryCard(group.name, group.total, group.budget || 0, color, isIncome);
@@ -436,6 +441,11 @@
 
     const color = monthlyCategoryView === 'spending' ? colorExpense : colorSuccess;
     const isIncome = monthlyCategoryView === 'income';
+
+    if (Object.keys(groupedTransactions).length === 0) {
+      container.innerHTML = '<p style="text-align:center;padding:2rem 1rem;color:var(--color-text-muted);font-size:0.9rem;">No ' + monthlyCategoryView + ' this month.</p>';
+      return;
+    }
 
     for (let key in groupedTransactions) {
       let group = groupedTransactions[key];
