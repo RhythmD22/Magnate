@@ -46,25 +46,50 @@
 
 Magnate uses a CSS custom properties system consolidated into a cohesive dark theme:
 
-| Token | Value |
-|-------|-------|
-| `--color-bg` | `#0F1114` (page background) |
-| `--color-surface` | `#181A1E` (cards, sidebar, dialogs) |
-| `--color-surface-hover` | `#24272B` (hover states) |
-| `--color-border` | `#2D2F34` (card borders, button backgrounds) |
-| `--color-border-hover` | `#3A3D42` (border hover) |
-| `--color-text-primary` | `#FFFFFF` (headings, body) |
-| `--color-text-muted` | `#A5A5A5` (descriptions, secondary UI, icons, timestamps) |
-| `--color-accent` | `#1043B1` (buttons, progress bars) |
-| `--color-accent-hover` | `#2D6FE4` (accent hover) |
-| `--color-accent-light` | `#3B82F6` (focus rings, chart highlights) |
-| `--color-accent-text` | `#508de6` (SVG icons, dollar amounts) |
-| `--color-expense` | `#F87171` (expense amounts) |
-| `--color-success` | `#34D399` (income amounts) |
-| `--color-danger` | `#dc2626` (delete/AC buttons) |
-| `--color-danger-hover` | `#EF4444` (danger hover) |
+### Backgrounds
 
-Typography uses Figtree for headings and the system font stack for body text. Spacing follows a 4-scale system (xs: 0.25rem through xl: 2rem) and all cards share a consistent border-radius of 6px with a 1px border.
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-bg` | `#0F1114` | Page background |
+| `--color-surface` | `#181A1E` | Cards, sidebar, dialogs |
+| `--color-surface-hover` | `#24272B` | Hover states |
+| `--color-border` | `#2D2F34` | Card borders, button backgrounds |
+| `--color-border-hover` | `#3A3D42` | Border hover |
+
+### Text
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-text-primary` | `#FFFFFF` | Headings, body text |
+| `--color-text-muted` | `#A5A5A5` | Descriptions, secondary UI, icons, timestamps |
+
+### Accent
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-accent` | `#1043B1` | Buttons, progress bars |
+| `--color-accent-hover` | `#2D6FE4` | Accent hover states |
+| `--color-accent-light` | `#3B82F6` | Focus rings, chart highlights |
+| `--color-accent-text` | `#508de6` | SVG icons, dollar amounts |
+
+### Semantic Colors
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-expense` | `#F87171` | Expense amounts |
+| `--color-success` | `#34D399` | Income amounts |
+| `--color-danger` | `#dc2626` | Delete/AC buttons |
+| `--color-danger-hover` | `#EF4444` | Danger hover states |
+
+### Typography & Spacing
+
+Typography uses **Figtree** for headings and the system font stack for body text. Spacing follows a 4-scale system (`--space-xs`: 0.25rem through `--space-xl`: 2rem). All cards share a consistent border-radius of 6px with a 1px border.
+
+**Key design decisions:**
+- **Vanilla JS modules** — shared scripts (`data-manager.js`, `dialogs.js`, `navigation.js`, `csv-handler.js`, `utils.js`) loaded across pages via `<script>` tags
+- **No build step** — all libraries loaded via CDN, no bundler or package manager
+- **Custom dialogs** — accessible dark-themed modals with `role="dialog"`, `aria-modal`, `aria-labelledby`, and keyboard support
+- **Multi-page SPA** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
 
 ---
 
