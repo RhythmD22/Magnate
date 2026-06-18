@@ -130,11 +130,11 @@ Magnate/
 ├── css/
 │   ├── styles.css              # Global variables, reset, and layout
 │   ├── index.css               # Dashboard styles
-│   ├── goals-categories.css
-│   ├── track-transactions.css
-│   ├── analytics.css
-│   ├── calculator.css
-│   └── money-tips.css
+│   ├── goals-categories.css    # Goal and category page styles
+│   ├── track-transactions.css  # Transaction tracking page styles
+│   ├── analytics.css           # Charts and analytics page styles
+│   ├── calculator.css          # Financial calculator styles
+│   └── money-tips.css          # Budgeting tips page styles
 ├── js/
 │   ├── data-manager.js         # localStorage CRUD operations
 │   ├── dialogs.js              # Custom dark-themed dialog system
@@ -148,12 +148,10 @@ Magnate/
 │   ├── calculator.js           # Sequential calculator with history
 │   ├── money-tips.js           # Tips page interactivity
 │   └── tips-data.js            # Static financial tip content
-├── images/
-├── SVGs/
+├── images/                     # Static illustrations (calculator, calendar)
+├── SVGs/                       # SVG icons for categories and UI elements
 ├── manifest.json               # PWA manifest
-├── service-worker.js           # Offline caching and install flow
-├── LICENSE
-└── README.md
+└── service-worker.js           # Offline caching and install flow
 ```
 
 The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules (`data-manager.js`, `dialogs.js`, `navigation.js`, `utils.js`, `csv-handler.js`) loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts. There is no build step or bundler.
