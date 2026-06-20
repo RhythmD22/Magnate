@@ -61,7 +61,9 @@
     if (!hasExpenses && !hasIncomes) {
       const emptyMsg = document.createElement('p');
       emptyMsg.style.cssText = 'text-align:center;padding:1.5rem;color:var(--color-text-muted);font-size:0.9rem;grid-column:1/-1;';
-      emptyMsg.textContent = 'No transactions this week. Add an expense or income above.';
+      emptyMsg.textContent = searchQuery
+        ? 'No transactions match your search.'
+        : 'No transactions yet. Add an expense or income above.';
       expensesColumn.appendChild(emptyMsg);
       return;
     }
