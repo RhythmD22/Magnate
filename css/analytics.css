@@ -56,12 +56,12 @@
 }
 
 .budget-heading {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
 .budget-amount {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-accent-text);
 }
@@ -335,6 +335,10 @@
     gap: 1.5rem;
     width: 100%;
     padding: 0;
+  }
+
+  .top-section .progress-card {
+    order: -1;
   }
 
   .budget-card {
