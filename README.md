@@ -71,6 +71,7 @@ Open `http://localhost:8000` in your browser. You can also open `index.html` dir
 
 ```
 Magnate/
+├── .gitignore                  # Git ignore rules
 ├── index.html                  # Dashboard / home page
 ├── Goals & Categories.html     # Goal and category management
 ├── Track Transactions.html     # Transaction entries with notes
