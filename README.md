@@ -18,7 +18,6 @@
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [PWA Support](#progressive-web-app-pwa-support)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
