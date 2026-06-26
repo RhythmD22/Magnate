@@ -1,4 +1,4 @@
-const CACHE_NAME = 'magnate-v3.0';
+const CACHE_NAME = 'magnate-v2.0';
 const urlsToCache = [
   '/Magnate/',
   '/Magnate/manifest.json',
