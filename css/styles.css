@@ -128,6 +128,7 @@ button:focus:not(:focus-visible) {
   height: 24px;
   margin-right: 8px;
   vertical-align: middle;
+  border-radius: 6px;
 }
 
 .nav-item {

@@ -41,6 +41,7 @@
   height: 24px;
   margin-right: 8px;
   vertical-align: middle;
+  border-radius: 6px;
 }
 
 @media (min-width: 769px) {
@@ -262,24 +263,31 @@
   transition: all 0.1s ease;
 }
 
-.card svg {
+.card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 48px;
   height: 48px;
   margin-bottom: 1rem;
-  color: var(--color-accent-light);
   background-color: var(--color-surface-hover);
   padding: 0.75rem;
   border-radius: 6px;
   transition: all 0.3s ease;
-  transform: scale(1);
 }
 
-.card:hover svg {
+.card-icon svg {
+  width: 100%;
+  height: 100%;
+  color: var(--color-accent-light);
+}
+
+.card:hover .card-icon {
   transform: scale(1.1);
 }
 
 @media (hover: none) {
-  .card:hover svg {
+  .card:hover .card-icon {
     background-color: var(--color-surface-hover);
     transform: scale(1.1);
   }
