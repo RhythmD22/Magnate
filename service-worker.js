@@ -29,6 +29,7 @@ const urlsToCache = [
   '/Magnate/js/dialogs.js',
   '/Magnate/js/data-manager.js',
   '/Magnate/icon.svg',
+  '/Magnate/icon-maskable.svg',
   '/Magnate/favicon.ico',
   '/Magnate/apple-touch-icon.png',
   '/Magnate/apple-touch-icon-dark.png',
