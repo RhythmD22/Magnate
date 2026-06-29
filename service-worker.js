@@ -52,12 +52,13 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Pre-caching assets');
-        return cache.addAll(urlsToCache);
+        return Promise.allSettled(
+          urlsToCache.map(url => cache.add(url).catch(err => {
+            console.warn('Failed to pre-cache:', url, err.message);
+          }))
+        );
       })
-      .catch(err => {
-        console.error('Failed to pre-cache assets — install will retry:', err);
-        throw err;
-      })
+      .then(() => self.skipWaiting())
   );
 });
 

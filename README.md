@@ -98,7 +98,6 @@ Magnate/
 │   ├── money-tips.js           # Tips page interactivity
 │   └── tips-data.js            # Static financial tip content
 ├── images/                     # Static illustrations (calculator, calendar)
-├── SVGs/                       # SVG icons for categories and UI elements
 ├── icon.svg                    # Vector PWA icon (source)
 ├── icon-maskable.svg           # Maskable icon variant (source)
 ├── android-chrome-192x192.png  # PWA icon 192x192
