@@ -1,7 +1,8 @@
 const CACHE_NAME = 'magnate-v2.0';
 const urlsToCache = [
   '/Magnate/',
-  '/Magnate/manifest.json',
+  '/Magnate/manifest-light.json',
+  '/Magnate/manifest-dark.json',
   '/Magnate/index.html',
   '/Magnate/Goals%20%26%20Categories.html',
   '/Magnate/Track%20Transactions.html',
@@ -39,6 +40,8 @@ const urlsToCache = [
   '/Magnate/apple-touch-icon-167x167-dark.png',
   '/Magnate/android-chrome-192x192.png',
   '/Magnate/android-chrome-512x512.png',
+  '/Magnate/dark-android-chrome-192x192.png',
+  '/Magnate/dark-android-chrome-512x512.png',
   '/Magnate/android-chrome-maskable-192x192.png',
   '/Magnate/android-chrome-maskable-512x512.png',
   '/Magnate/images/undraw_calculator.png',

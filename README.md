@@ -102,8 +102,10 @@ Magnate/
 ├── SVGs/                       # SVG icons for categories and UI elements
 ├── icon.svg                    # Vector PWA icon (source)
 ├── icon-maskable.svg           # Maskable icon variant (source)
-├── android-chrome-192x192.png  # PWA icon 192x192
-├── android-chrome-512x512.png  # PWA icon 512x512
+├── android-chrome-192x192.png  # PWA icon 192x192 (light)
+├── dark-android-chrome-192x192.png  # PWA icon 192x192 (dark)
+├── android-chrome-512x512.png  # PWA icon 512x512 (light)
+├── dark-android-chrome-512x512.png  # PWA icon 512x512 (dark)
 ├── android-chrome-maskable-192x192.png  # Android adaptive icon 192x192
 ├── android-chrome-maskable-512x512.png  # Android adaptive icon 512x512
 ├── apple-touch-icon.png          # iOS home screen 180x180 (light)
@@ -115,7 +117,8 @@ Magnate/
 ├── apple-touch-icon-167x167.png  # iOS home screen 167x167 (light)
 ├── apple-touch-icon-167x167-dark.png  # iOS home screen 167x167 (dark)
 ├── favicon.ico                 # Multi-resolution favicon (16+32+48)
-├── manifest.json               # PWA manifest
+├── manifest-light.json         # PWA manifest (light theme)
+├── manifest-dark.json          # PWA manifest (dark theme)
 └── service-worker.js           # Offline caching and install flow
 ```
 
