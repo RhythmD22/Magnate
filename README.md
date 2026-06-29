@@ -70,7 +70,6 @@ Open `http://localhost:8000` in your browser. You can also open `index.html` dir
 
 ```
 Magnate/
-├── .gitignore                  # Git ignore rules
 ├── index.html                  # Dashboard / home page
 ├── Goals & Categories.html     # Goal and category management
 ├── Track Transactions.html     # Transaction entries with notes
@@ -102,24 +101,19 @@ Magnate/
 ├── SVGs/                       # SVG icons for categories and UI elements
 ├── icon.svg                    # Vector PWA icon (source)
 ├── icon-maskable.svg           # Maskable icon variant (source)
-├── android-chrome-192x192.png  # PWA icon 192x192 (light)
-├── dark-android-chrome-192x192.png  # PWA icon 192x192 (dark)
-├── android-chrome-512x512.png  # PWA icon 512x512 (light)
-├── dark-android-chrome-512x512.png  # PWA icon 512x512 (dark)
+├── android-chrome-192x192.png  # PWA icon 192x192
+├── android-chrome-512x512.png  # PWA icon 512x512
 ├── android-chrome-maskable-192x192.png  # Android adaptive icon 192x192
 ├── android-chrome-maskable-512x512.png  # Android adaptive icon 512x512
-├── apple-touch-icon.png          # iOS home screen 180x180 (light)
-├── apple-touch-icon-dark.png     # iOS home screen 180x180 (dark)
-├── apple-touch-icon-120x120.png  # iOS home screen 120x120 (light)
-├── apple-touch-icon-120x120-dark.png  # iOS home screen 120x120 (dark)
-├── apple-touch-icon-152x152.png  # iOS home screen 152x152 (light)
-├── apple-touch-icon-152x152-dark.png  # iOS home screen 152x152 (dark)
-├── apple-touch-icon-167x167.png  # iOS home screen 167x167 (light)
-├── apple-touch-icon-167x167-dark.png  # iOS home screen 167x167 (dark)
+├── apple-touch-icon.png          # iOS home screen 180x180
+├── apple-touch-icon-120x120.png  # iOS home screen 120x120
+├── apple-touch-icon-152x152.png  # iOS home screen 152x152
+├── apple-touch-icon-167x167.png  # iOS home screen 167x167
 ├── favicon.ico                 # Multi-resolution favicon (16+32+48)
-├── manifest-light.json         # PWA manifest (light theme)
-├── manifest-dark.json          # PWA manifest (dark theme)
-└── service-worker.js           # Offline caching and install flow
+├── manifest.json               # PWA manifest
+├── service-worker.js           # Offline caching and install flow
+├── .gitignore
+└── LICENSE
 ```
 
 The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules (`data-manager.js`, `dialogs.js`, `navigation.js`, `utils.js`, `csv-handler.js`) loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts. There is no build step or bundler.

@@ -4,7 +4,7 @@
   function generateSidebarHTML() {
     return '' +
       '<div class="sidebar-title">' +
-      '<img src="dark-android-chrome-512x512.png" alt="Magnate Logo">' +
+      '<img src="android-chrome-512x512.png" alt="Magnate Logo">' +
       'Magnate' +
       '</div>' +
       '<div class="nav-item">' +

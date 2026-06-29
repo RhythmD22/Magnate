@@ -37,8 +37,8 @@
 }
 
 .header-title img {
-  width: 24px;
-  height: 24px;
+  height: 1.3em;
+  width: auto;
   margin-right: 8px;
   vertical-align: middle;
   border-radius: 6px;
