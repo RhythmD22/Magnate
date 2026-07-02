@@ -112,6 +112,7 @@ Magnate/
 ├── manifest.json               # PWA manifest
 ├── service-worker.js           # Offline caching and install flow
 ├── .gitignore
+├── .eslintrc.json              # ESLint config
 └── LICENSE
 ```
 
@@ -184,6 +185,7 @@ Typography uses **Figtree** for headings and the system font stack for body text
 | Analytics | Microsoft Clarity |
 | Hosting | GitHub Pages |
 | PWA | Service Worker API, Web App Manifest |
+| Linting | ESLint (`.eslintrc.json`) |
 
 ---
 
