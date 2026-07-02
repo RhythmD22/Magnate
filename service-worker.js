@@ -1,5 +1,9 @@
-const CACHE_NAME = 'magnate-v2.0';
-const urlsToCache = [
+const CACHE_VERSION = 'v2.0';
+const STATIC_CACHE = `magnate-static-${CACHE_VERSION}`;
+const IMAGE_CACHE = `magnate-images-${CACHE_VERSION}`;
+const RUNTIME_CACHE = `magnate-runtime-${CACHE_VERSION}`;
+
+const PRECACHE_URLS = [
   '/Magnate/',
   '/Magnate/manifest.json',
   '/Magnate/index.html',
@@ -40,71 +44,102 @@ const urlsToCache = [
   '/Magnate/android-chrome-maskable-512x512.png',
   '/Magnate/images/undraw_calculator.png',
   '/Magnate/images/undraw_online-calendar.png',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.5.1',
-  'https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.css',
-  'https://cdn.jsdelivr.net/npm/easymde@2.21.0/dist/easymde.min.js',
-  'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap'
 ];
 
 self.addEventListener('install', event => {
-  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Pre-caching assets');
-        return Promise.allSettled(
-          urlsToCache.map(url => cache.add(url).catch(err => {
-            console.warn('Failed to pre-cache:', url, err.message);
-          }))
-        );
-      })
-      .then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-
-        return fetch(event.request).then(
-          response => {
-            if (!response || response.status !== 200) {
-              return response;
-            }
-
-            const responseToCache = response.clone();
-
-            return caches.open(CACHE_NAME)
-              .then(cache => {
-                return cache.put(event.request, responseToCache);
-              })
-              .then(() => response);
-          }
-        ).catch(() => {
-          if (event.request.mode === 'navigate') {
-            return caches.match(event.request).then(cachedResponse => {
-              return cachedResponse || caches.match('/Magnate/index.html');
-            });
-          }
-        });
-      })
+    caches.open(STATIC_CACHE).then(cache => {
+      return Promise.allSettled(
+        PRECACHE_URLS.map(url =>
+          fetch(url, { credentials: 'same-origin' }).then(response => {
+            if (response.ok) return cache.put(url, response);
+            console.warn(`SW: failed to cache ${url}`);
+          }).catch(() => {
+            console.warn(`SW: failed to fetch ${url}`);
+          })
+        )
+      );
+    }).then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+    (async () => {
+      await clients.claim();
+      const validCaches = [STATIC_CACHE, IMAGE_CACHE, RUNTIME_CACHE];
+      const keys = await caches.keys();
+      await Promise.all(
+        keys.map(key => {
+          if (!validCaches.includes(key)) return caches.delete(key);
         })
       );
-    }).then(() => self.clients.claim())
+    })()
   );
 });
+
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  if (request.method !== 'GET') return;
+  if (request.headers.get('range')) return;
+
+  const path = url.pathname;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (/\.(css|js)$/i.test(path)) {
+    event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
+    return;
+  }
+
+  if (/\.(png|jpg|jpeg|gif|svg|ico|webp|avif)$/i.test(path)) {
+    event.respondWith(cacheFirstWithUpdate(request, IMAGE_CACHE));
+    return;
+  }
+
+  event.respondWith(cacheFirstWithUpdate(request, RUNTIME_CACHE));
+});
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    const cache = await caches.open(STATIC_CACHE);
+    cache.put(request, response.clone());
+    return response;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    const fallback = await caches.match('/Magnate/index.html');
+    return fallback || new Response('Offline', { status: 503 });
+  }
+}
+
+async function staleWhileRevalidate(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  const networkPromise = fetch(request).then(response => {
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  });
+  return cached || networkPromise;
+}
+
+async function cacheFirstWithUpdate(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  const networkPromise = fetch(request).then(response => {
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  }).catch(() => cached);
+
+  if (cached) {
+    networkPromise;
+    return cached;
+  }
+  return networkPromise;
+}
