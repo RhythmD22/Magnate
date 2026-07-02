@@ -38,6 +38,7 @@ export default [
       ],
       'curly': ['warn', 'multi-line'],
       'no-var': 'warn',
+      'no-duplicate-imports': 'error',
     },
   },
 ];
