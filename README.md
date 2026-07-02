@@ -17,6 +17,7 @@
 - [Design System](#design-system)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
+- [Scripts](#scripts)
 - [PWA Support](#progressive-web-app-pwa-support)
 - [License](#license)
 
@@ -213,11 +214,14 @@ Typography uses **Figtree** for headings and the system font stack for body text
 
 No environment variables to configure.
 
-### npm Scripts
+---
 
-| Script | Command | Description |
-|--------|---------|-------------|
-| `lint` | `npm run lint` | Lint JS files with ESLint |
+## Scripts
+
+| Command | Description |
+|---------|------------|
+| `npm install` | Install dev dependencies (ESLint for linting) |
+| `npm run lint` | Lint JS files with ESLint |
 
 ---
 
