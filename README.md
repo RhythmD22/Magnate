@@ -112,11 +112,13 @@ Magnate/
 ├── manifest.json               # PWA manifest
 ├── service-worker.js           # Offline caching and install flow
 ├── .gitignore
-├── .eslintrc.json              # ESLint config
+├── eslint.config.js            # ESLint config
+├── package.json                # npm config & scripts
+├── package-lock.json           # dependency lockfile
 └── LICENSE
 ```
 
-The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules (`data-manager.js`, `dialogs.js`, `navigation.js`, `utils.js`, `csv-handler.js`) loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts. There is no build step or bundler.
+The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules (`data-manager.js`, `dialogs.js`, `navigation.js`, `utils.js`, `csv-handler.js`) loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts. There is no production build step or bundler. Dev tooling (linting) uses npm.
 
 ---
 
@@ -167,7 +169,7 @@ Typography uses **Figtree** for headings and the system font stack for body text
 
 **Key design decisions:**
 - **Vanilla JS modules** — shared scripts (`data-manager.js`, `dialogs.js`, `navigation.js`, `csv-handler.js`, `utils.js`) loaded across pages via `<script>` tags
-- **No build step** — all libraries loaded via CDN, no bundler or package manager
+- **No build step** — all libraries loaded via CDN, no bundler required (npm only for dev tooling)
 - **Custom dialogs** — accessible dark-themed modals with `role="dialog"`, `aria-modal`, `aria-labelledby`, and keyboard support
 - **Multi-page SPA** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
 
@@ -185,7 +187,7 @@ Typography uses **Figtree** for headings and the system font stack for body text
 | Analytics | Microsoft Clarity |
 | Hosting | GitHub Pages |
 | PWA | Service Worker API, Web App Manifest |
-| Linting | ESLint (`.eslintrc.json`) |
+| Linting | ESLint (`eslint.config.js`) |
 
 ---
 
@@ -199,13 +201,23 @@ Typography uses **Figtree** for headings and the system font stack for body text
 ### Local Setup
 
 1. Clone the repository
-2. Start a local server from the project directory:
+2. Install dev dependencies:
+   ```bash
+   npm install
+   ```
+3. Start a local server from the project directory:
    ```bash
    python3 -m http.server
    ```
-3. Open `http://localhost:8000` in your browser
+4. Open `http://localhost:8000` in your browser
 
-No dependencies to install, no environment variables to configure.
+No environment variables to configure.
+
+### npm Scripts
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `lint` | `npm run lint` | Lint JS files with ESLint |
 
 ---
 
