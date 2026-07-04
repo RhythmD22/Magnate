@@ -253,29 +253,6 @@
   width: 100%;
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.button-group {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.export-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  background-color: var(--color-accent);
-  color: var(--color-text-primary);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
 #toggleCategoryView,
 #toggleMonthlyView {
   margin-left: auto;
@@ -295,11 +272,6 @@
 
 .week-arrow:active {
   background-color: var(--color-border-hover);
-}
-
-.export-btn:hover {
-  background-color: var(--color-accent-hover);
-  cursor: pointer;
 }
 
 @media (hover: hover) {
@@ -456,16 +428,5 @@
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
-  }
-
-  .button-group {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-@media (hover: none) {
-  .export-btn:hover {
-    background-color: var(--color-accent);
   }
 }

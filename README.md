@@ -34,7 +34,7 @@
 | Transaction Groups | Group related transactions side-by-side for faster scanning |
 | Notes with Markdown | Rich-text notes section powered by EasyMDE with debounced autosave |
 | Budgeting Tips | Auto-scrolling financial advice with pause-on-hover, 8 categories, and per-row shuffling |
-| CSV Import/Export | Backup or migrate your data with proper date escaping and blob cleanup |
+| CSV Import/Export | Backup or migrate your data via the Settings page — with a full data reset option |
 | Local Data Storage | All data persisted in `localStorage` — no account, no server |
 | Dark-Themed Dialogs | Custom accessible dialogs (`role="dialog"`, `aria-modal`, `aria-labelledby`) with keyboard support |
 | Responsive Design | Mobile-first layout with swipe-to-open sidebar, touch-friendly targets, and adaptive charts |
@@ -77,6 +77,7 @@ Magnate/
 ├── Analytics.html              # Charts and data visualization
 ├── Calculator.html             # Financial calculator
 ├── Money Tips.html             # Budgeting advice
+├── Settings.html               # Data management (import, export, reset)
 ├── css/
 │   ├── styles.css              # Global variables, reset, and layout
 │   ├── index.css               # Dashboard styles
@@ -84,7 +85,8 @@ Magnate/
 │   ├── track-transactions.css  # Transaction tracking page styles
 │   ├── analytics.css           # Charts and analytics page styles
 │   ├── calculator.css          # Financial calculator styles
-│   └── money-tips.css          # Budgeting tips page styles
+│   ├── money-tips.css          # Budgeting tips page styles
+│   └── settings.css             # Settings page styles
 ├── js/
 │   ├── data-manager.js         # localStorage CRUD operations
 │   ├── dialogs.js              # Custom dark-themed dialog system
@@ -97,7 +99,8 @@ Magnate/
 │   ├── analytics.js            # Chart.js visualizations
 │   ├── calculator.js           # Sequential calculator with history
 │   ├── money-tips.js           # Tips page interactivity
-│   └── tips-data.js            # Static financial tip content
+│   ├── tips-data.js            # Static financial tip content
+│   └── settings.js              # Settings page: data export/import/reset
 ├── images/                     # Static illustrations (calculator, calendar)
 ├── icon.svg                    # Vector PWA icon (source)
 ├── icon-maskable.svg           # Maskable icon variant (source)

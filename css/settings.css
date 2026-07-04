@@ -1,0 +1,98 @@
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.settings-page .header-settings-btn {
+  display: none;
+}
+
+.settings-section {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+
+.settings-heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.settings-description {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.settings-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  width: 100%;
+}
+
+.settings-btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.settings-btn-primary:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.settings-btn-primary:active {
+  background-color: var(--color-accent-active);
+}
+
+.settings-btn-danger {
+  background-color: var(--color-danger);
+  color: var(--color-text-primary);
+}
+
+.settings-btn-danger:hover {
+  background-color: var(--color-danger-hover);
+}
+
+.settings-btn-danger:active {
+  background-color: #b91c1c;
+}
+
+.settings-btn svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .settings-section {
+    padding: 1rem;
+  }
+}
+
+@media (hover: none) {
+  .settings-btn-primary:hover {
+    background-color: var(--color-accent);
+  }
+
+  .settings-btn-danger:hover {
+    background-color: var(--color-danger);
+  }
+}

@@ -1,8 +1,6 @@
 (function () {
   'use strict';
 
-  let lm = MagnateUtils.createListenerManager();
-
   function isValidMonthFormat(monthString) {
     return /^\d{4}-\d{2}$/.test(monthString);
   }
@@ -436,20 +434,8 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const exportBtn = document.getElementById('exportCSV');
-    const importBtn = document.getElementById('importCSV');
-
-    if (exportBtn) {
-      lm.add(exportBtn, 'click', function () { exportCSV(); });
-    }
-
-    if (importBtn) {
-      lm.add(importBtn, 'click', function () { importCSV(); });
-    }
-  });
-
-  window.addEventListener('beforeunload', function () {
-    lm.cleanup();
-  });
+  window.MagnateCSV = {
+    exportCSV: exportCSV,
+    importCSV: importCSV
+  };
 })();

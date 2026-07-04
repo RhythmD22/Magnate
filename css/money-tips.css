@@ -15,9 +15,11 @@
   margin: 0 auto;
 }
 
-.page-header {
-  margin-bottom: 1rem;
-  padding-right: 700px;
+@media (min-width: 769px) {
+  .page-header .header-settings-btn {
+    position: relative;
+    z-index: 11;
+  }
 }
 
 .page-title {
@@ -116,7 +118,7 @@
 .categories-wrapper {
   position: absolute;
   top: 1rem;
-  right: 2rem;
+  right: 7rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
