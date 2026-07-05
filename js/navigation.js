@@ -126,9 +126,21 @@
       if (!pageHeader) return;
       if (pageHeader.querySelector('.header-settings-btn')) return;
       var btn = document.createElement('a');
-      btn.href = 'Settings.html';
       btn.className = 'header-settings-btn';
-      btn.setAttribute('aria-label', 'Settings');
+
+      var isSettingsPage = document.body.classList.contains('settings-page');
+
+      if (isSettingsPage) {
+        var previousPage = sessionStorage.getItem('magnate_previousPage') || 'index.html';
+        btn.href = previousPage;
+        btn.setAttribute('aria-label', 'Back');
+      } else {
+        btn.href = 'Settings.html';
+        btn.setAttribute('aria-label', 'Settings');
+        var currentFile = window.location.pathname.split('/').pop() || 'index.html';
+        sessionStorage.setItem('magnate_previousPage', currentFile);
+      }
+
       btn.innerHTML = '<svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
       pageHeader.appendChild(btn);
     }
