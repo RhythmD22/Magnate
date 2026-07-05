@@ -3,6 +3,11 @@
 
   let lm = MagnateUtils.createListenerManager();
 
+  const manualScrollTimers = new Map();
+  let dragRow = null;
+  let dragStartX = 0;
+  let dragStartScrollLeft = 0;
+
   const categoryColors = MagnateTipsData.categoryColors;
   const tipsBank = MagnateTipsData.tipsBank;
 
@@ -13,6 +18,87 @@
     }
     return array;
   };
+
+  function startIdleTimer(row) {
+    clearTimeout(manualScrollTimers.get(row));
+    manualScrollTimers.set(row, setTimeout(function () {
+      const inner = row.querySelector('.tips-row-inner');
+      row.classList.remove('tips-row--manual');
+      if (inner) inner.style.animationPlayState = '';
+      row.scrollLeft = 0;
+      manualScrollTimers.delete(row);
+    }, 3000));
+  }
+
+  const resetManualScroll = () => {
+    if (dragRow) {
+      dragRow.style.userSelect = '';
+      dragRow = null;
+    }
+    manualScrollTimers.forEach(function (timer, row) {
+      clearTimeout(timer);
+      const inner = row.querySelector('.tips-row-inner');
+      row.classList.remove('tips-row--manual');
+      if (inner) inner.style.animationPlayState = '';
+      row.scrollLeft = 0;
+    });
+    manualScrollTimers.clear();
+  };
+
+  function activateManualScroll(row) {
+    const inner = row.querySelector('.tips-row-inner');
+    if (!inner) return;
+
+    if (!row.classList.contains('tips-row--manual')) {
+      inner.style.animationPlayState = 'paused';
+      row.classList.add('tips-row--manual');
+    }
+    startIdleTimer(row);
+  }
+
+  function setupManualScroll() {
+    document.querySelectorAll('.tips-row').forEach(function (row) {
+      if (!row.querySelector('.tips-row-inner')) return;
+
+      lm.add(row, 'wheel', function () {
+        activateManualScroll(row);
+      }, { passive: true });
+      lm.add(row, 'touchstart', function () {
+        activateManualScroll(row);
+      }, { passive: true });
+      lm.add(row, 'touchend', function () {
+        if (row.classList.contains('tips-row--manual')) {
+          startIdleTimer(row);
+        }
+      }, { passive: true });
+      lm.add(row, 'scroll', function () {
+        startIdleTimer(row);
+      }, { passive: true });
+      lm.add(row, 'mousedown', function (e) {
+        if (e.button !== 0) return;
+        activateManualScroll(row);
+        dragRow = row;
+        dragStartX = e.clientX;
+        dragStartScrollLeft = row.scrollLeft;
+        row.style.userSelect = 'none';
+        e.preventDefault();
+      });
+    });
+
+    lm.add(document, 'mousemove', function (e) {
+      if (!dragRow) return;
+      const dx = e.clientX - dragStartX;
+      dragRow.scrollLeft = dragStartScrollLeft - dx * 1.5;
+    });
+
+    lm.add(document, 'mouseup', function () {
+      if (!dragRow) return;
+      const row = dragRow;
+      dragRow = null;
+      row.style.userSelect = '';
+      startIdleTimer(row);
+    });
+  }
 
   const generateCardsHTML = (tips) => {
     let cardsHTML = "";
@@ -47,6 +133,8 @@
       console.warn(`Category "${category}" not found in tipsBank`);
       return;
     }
+
+    resetManualScroll();
 
     const selectedTips = tipsBank[category];
     document.querySelectorAll('.tips-row-inner').forEach(inner => {
@@ -103,6 +191,9 @@
 
   function onDOMContentLoaded() {
     setupCategoryButtons();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setupManualScroll();
+    }
 
     const defaultBtn = document.querySelector('.category-button[data-category="finance"]');
     if (defaultBtn) {
@@ -140,6 +231,7 @@
   window.addEventListener('load', onLoad);
 
   window.addEventListener('beforeunload', function () {
+    resetManualScroll();
     lm.cleanup();
   });
 })();

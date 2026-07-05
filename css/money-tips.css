@@ -105,14 +105,46 @@
   min-width: 250px;
   transform: translateZ(0);
   backface-visibility: hidden;
+  scroll-snap-align: start;
+}
+
+.tips-row--manual {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+  cursor: grab;
+}
+
+.tips-row--manual:active {
+  cursor: grabbing;
+}
+
+.tips-row--manual::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tips-row--manual::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tips-row--manual::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.tips-row--manual .tips-row-inner {
+  animation-play-state: paused;
 }
 
 .tip-card:hover {
   border-color: var(--color-accent-text);
 }
 
-.tips-row:hover .tips-row-inner {
-  animation-play-state: paused;
+@media (hover: hover) {
+  .tips-row:hover .tips-row-inner {
+    animation-play-state: paused;
+  }
 }
 
 .categories-wrapper {
