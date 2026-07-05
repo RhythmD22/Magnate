@@ -35,6 +35,7 @@
 | Notes with Markdown | Rich-text notes section powered by EasyMDE with debounced autosave |
 | Budgeting Tips | Auto-scrolling financial advice with pause-on-hover, 8 categories, and per-row shuffling |
 | CSV Import/Export | Backup or migrate your data via the Settings page — with a full data reset option |
+| OFX/QFX/QBO Import | Import transactions directly from bank downloads (PNC, Chase, BofA, etc.) — no manual entry |
 | Local Data Storage | All data persisted in `localStorage` — no account, no server |
 | Dark-Themed Dialogs | Custom accessible dialogs (`role="dialog"`, `aria-modal`, `aria-labelledby`) with keyboard support |
 | Responsive Design | Mobile-first layout with swipe-to-open sidebar, touch-friendly targets, and adaptive charts |
@@ -92,6 +93,7 @@ Magnate/
 │   ├── dialogs.js              # Custom dark-themed dialog system
 │   ├── navigation.js           # Sidebar, routing, and mobile swipe
 │   ├── csv-handler.js          # CSV import/export with data integrity fixes
+│   ├── ofx-handler.js          # OFX/QFX/QBO bank file import
 │   ├── utils.js                # Shared helpers (formatting, dates, DOM)
 │   ├── index.js                # Dashboard logic
 │   ├── goals-categories.js     # Goal and category management

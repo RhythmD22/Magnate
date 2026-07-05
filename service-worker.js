@@ -26,6 +26,7 @@ const PRECACHE_URLS = [
   '/Magnate/js/track-transactions.js',
   '/Magnate/js/analytics.js',
   '/Magnate/js/csv-handler.js',
+  '/Magnate/js/ofx-handler.js',
   '/Magnate/js/calculator.js',
   '/Magnate/js/money-tips.js',
   '/Magnate/js/tips-data.js',

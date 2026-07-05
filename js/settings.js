@@ -28,7 +28,8 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var exportBtn = document.getElementById('exportData');
-    var importBtn = document.getElementById('importData');
+    var importCSVBtn = document.getElementById('importCSVData');
+    var importOFXBtn = document.getElementById('importOFXData');
     var resetBtn = document.getElementById('resetData');
 
     if (exportBtn) {
@@ -36,9 +37,14 @@
         if (window.MagnateCSV) MagnateCSV.exportCSV();
       });
     }
-    if (importBtn) {
-      importBtn.addEventListener('click', function () {
+    if (importCSVBtn) {
+      importCSVBtn.addEventListener('click', function () {
         if (window.MagnateCSV) MagnateCSV.importCSV();
+      });
+    }
+    if (importOFXBtn) {
+      importOFXBtn.addEventListener('click', function () {
+        if (window.MagnateOFX) MagnateOFX.importOFX();
       });
     }
     if (resetBtn) resetBtn.addEventListener('click', resetData);

@@ -47,6 +47,11 @@
   color: #22C55E;
 }
 
+.icon-circle-import {
+  background-color: rgba(16, 67, 177, 0.15);
+  color: var(--color-accent);
+}
+
 .action-label {
   font-size: 0.95rem;
   font-weight: 500;

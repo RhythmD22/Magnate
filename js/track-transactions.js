@@ -310,6 +310,13 @@
   lm.add(document.getElementById('btnAddExpense'), 'click', () => addTransaction('expense'));
   lm.add(document.getElementById('btnAddIncome'), 'click', () => addTransaction('income'));
 
+  const importOFXBtn = document.getElementById('btnImportOFX');
+  if (importOFXBtn) {
+    lm.add(importOFXBtn, 'click', () => {
+      if (window.MagnateOFX) MagnateOFX.importOFX();
+    });
+  }
+
   const searchInput = document.getElementById('transactionSearch');
   const searchClearBtn = document.getElementById('transactionSearchClear');
 
