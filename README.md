@@ -123,6 +123,7 @@ Magnate/
 ├── favicon.ico                 # Multi-resolution favicon (16+32+48)
 ├── manifest.json               # PWA manifest
 ├── service-worker.js           # Offline caching and install flow
+├── build-bundle.sh             # Shell script to regenerate bundle.js from source modules
 ├── .gitignore
 ├── eslint.config.js            # ESLint config
 ├── package.json                # npm config & scripts
@@ -130,7 +131,9 @@ Magnate/
 └── LICENSE
 ```
 
-The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules (`data-manager.js`, `dialogs.js`, `navigation.js`, `utils.js`, `csv-handler.js`) loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts. There is no production build step or bundler. Dev tooling (linting) uses npm.
+The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts.
+
+For production, run `npm run build` to concatenate all JS files into a single `js/bundle.js`. Each HTML page then loads only the bundle plus any CDN dependencies (Chart.js, EasyMDE).
 
 ---
 
@@ -180,10 +183,10 @@ Magnate uses a CSS custom properties system consolidated into a cohesive dark th
 Typography uses **Figtree** for headings and the system font stack for body text. Spacing follows a 4-scale system (`--space-xs`: 0.25rem through `--space-xl`: 2rem). All cards share a consistent border-radius of 6px with a 1px border.
 
 **Key design decisions:**
-- **Vanilla JS modules** — shared scripts (`data-manager.js`, `dialogs.js`, `navigation.js`, `csv-handler.js`, `utils.js`) loaded across pages via `<script>` tags
-- **No build step** — all libraries loaded via CDN, no bundler required (npm only for dev tooling)
+- **Vanilla JS modules** — shared scripts loaded across pages via `<script>` tags, concatenated into `js/bundle.js` for production
+- **`npm run build`** — concatenates all JS into a single bundle via `build-bundle.sh` (CDN libraries remain separate)
 - **Custom dialogs** — accessible dark-themed modals with `role="dialog"`, `aria-modal`, `aria-labelledby`, and keyboard support
-- **Multi-page SPA** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
+- **Multi-page architecture** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
 
 ---
 
@@ -200,6 +203,8 @@ Typography uses **Figtree** for headings and the system font stack for body text
 | Hosting | GitHub Pages |
 | PWA | Service Worker API, Web App Manifest |
 | Linting | ESLint (`eslint.config.js`) |
+| Testing | Node.js native test runner |
+| Bundling | Shell script concatenation |
 
 ---
 
@@ -232,8 +237,9 @@ No environment variables to configure.
 | Command | Description |
 |---------|------------|
 | `npm install` | Install dev dependencies (ESLint for linting) |
-| `npm run lint` | Lint JS files with ESLint |
-| `npm test` | Run test suite (Node.js native test runner) |
+| `npm run build` | Regenerate `js/bundle.js` from source modules |
+| `npm run lint` | Run ESLint on all JS source files |
+| `npm run test` | Run the test suite |
 
 ---
 
