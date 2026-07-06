@@ -241,6 +241,12 @@
   }
 
   window.MagnateOFX = {
-    importOFX: importOFX
+    importOFX: importOFX,
+    _parseOFXContent: parseOFXContent,
+    _parseTransactionBlock: parseTransactionBlock,
+    _parseOFXDate: parseOFXDate,
+    _getTagContent: getTagContent,
+    _extractAllBlocks: extractAllBlocks,
+    _stripOFXHeader: stripOFXHeader
   };
 })();

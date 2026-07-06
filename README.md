@@ -102,7 +102,13 @@ Magnate/
 │   ├── calculator.js           # Sequential calculator with history
 │   ├── money-tips.js           # Tips page interactivity
 │   ├── tips-data.js            # Static financial tip content
-│   └── settings.js              # Settings page: data export/import/reset
+│   └── settings.js             # Settings page: data export/import/reset
+├── tests/
+│   ├── helpers.js              # Test infrastructure (mocks, module loader)
+│   ├── utils.test.js           # Utils tests (dates, formatting, validation)
+│   ├── data-manager.test.js    # Data layer tests (load, save, validate, groups)
+│   ├── csv-handler.test.js     # CSV parser tests (sections, lines, escapement)
+│   └── ofx-handler.test.js     # OFX parser tests (headers, blocks, transactions)
 ├── images/                     # Static illustrations (calculator, calendar)
 ├── icon.svg                    # Vector PWA icon (source)
 ├── icon-maskable.svg           # Maskable icon variant (source)
@@ -227,6 +233,7 @@ No environment variables to configure.
 |---------|------------|
 | `npm install` | Install dev dependencies (ESLint for linting) |
 | `npm run lint` | Lint JS files with ESLint |
+| `npm test` | Run test suite (Node.js native test runner) |
 
 ---
 

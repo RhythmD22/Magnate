@@ -436,6 +436,19 @@
 
   window.MagnateCSV = {
     exportCSV: exportCSV,
-    importCSV: importCSV
+    importCSV: importCSV,
+    _parseCSVLine: parseCSVLine,
+    _escapeCSVField: escapeCSVField,
+    _parseCSVData: parseCSVData,
+    _detectSection: detectSection,
+    _parseTransactionLine: parseTransactionLine,
+    _parseMonthlyBudgetLine: parseMonthlyBudgetLine,
+    _parseCategoryLine: parseCategoryLine,
+    _parseCategoryBudgetLine: parseCategoryBudgetLine,
+    _parseGoalLine: parseGoalLine,
+    _parseCalcHistoryLine: parseCalcHistoryLine,
+    _isValidMonthFormat: isValidMonthFormat,
+    _isValidNumber: isValidNumber,
+    _formatTimestampForExport: formatTimestampForExport
   };
 })();
