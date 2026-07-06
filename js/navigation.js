@@ -85,36 +85,23 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    const lm = MagnateUtils.createListenerManager();
-
     const sidebarEl = document.getElementById('sidebar');
     if (sidebarEl) {
       sidebarEl.innerHTML = generateSidebarHTML();
     }
 
-    function updateSidebarState(isActive) {
-      if (sidebar) sidebar.classList.toggle('active', isActive);
-      if (hamburger) {
-        hamburger.classList.toggle('active', isActive);
-        hamburger.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-      }
-      if (backdrop) backdrop.classList.toggle('active', isActive);
-      if (swipeFeedback) {
-        swipeFeedback.classList.remove('active');
-        swipeFeedback.style.width = '10px';
-      }
-    }
-
-    const hamburger = document.getElementById('hamburger');
-    const sidebar = document.getElementById('sidebar');
-
     function setActiveNavLink() {
+      const sidebar = document.getElementById('sidebar');
       if (!sidebar) return;
-      const currentPath = window.location.pathname.replace(/\/$/, '');
+      const currentPath = decodeURIComponent(
+        window.location.pathname.replace(/\/$/, '').replace(/\.html$/, '')
+      );
       const navLinks = sidebar.querySelectorAll('.nav-link');
       navLinks.forEach(link => {
         const href = link.getAttribute('href');
-        if (href && currentPath.endsWith(href)) {
+        if (!href) return;
+        const cleanHref = decodeURIComponent(href.replace(/\.html$/, ''));
+        if (currentPath.endsWith(cleanHref)) {
           link.classList.add('active');
         }
       });
@@ -145,6 +132,24 @@
       pageHeader.appendChild(btn);
     }
     injectSettingsButton();
+
+    const lm = MagnateUtils.createListenerManager();
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+
+    function updateSidebarState(isActive) {
+      if (sidebar) sidebar.classList.toggle('active', isActive);
+      if (hamburger) {
+        hamburger.classList.toggle('active', isActive);
+        hamburger.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      }
+      if (backdrop) backdrop.classList.toggle('active', isActive);
+      if (swipeFeedback) {
+        swipeFeedback.classList.remove('active');
+        swipeFeedback.style.width = '10px';
+      }
+    }
 
     if (!hamburger || !sidebar) {
       console.error('Required navigation elements not found');

@@ -84,7 +84,7 @@
 }
 
 .btn-equals:hover {
-  background-color: var(--color-accent-light);
+  background-color: var(--color-accent-hover);
 }
 
 .btn-equals:active {

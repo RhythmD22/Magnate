@@ -185,7 +185,7 @@ button:focus:not(:focus-visible) {
 }
 
 .nav-link.active {
-  background-color: rgba(16, 67, 177, 0.15);
+  background-color: rgba(16, 67, 177, 0.20);
   color: var(--color-text-primary);
 }
 
@@ -242,7 +242,7 @@ button:focus:not(:focus-visible) {
 }
 
 .icon-btn:active {
-  color: var(--color-accent-text);
+  color: var(--color-accent-light);
   background-color: var(--color-border-hover);
 }
 
@@ -605,7 +605,7 @@ button:focus:not(:focus-visible) {
 
 .m-dialog-error {
   display: none;
-  color: var(--color-danger);
+  color: var(--color-danger-hover);
   font-size: 0.85rem;
   margin-bottom: var(--spacing-sm);
 }

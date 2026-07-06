@@ -123,17 +123,14 @@ Magnate/
 ├── favicon.ico                 # Multi-resolution favicon (16+32+48)
 ├── manifest.json               # PWA manifest
 ├── service-worker.js           # Offline caching and install flow
-├── build-bundle.sh             # Shell script to regenerate bundle.js from source modules
-├── .gitignore
 ├── eslint.config.js            # ESLint config
+├── .gitignore
 ├── package.json                # npm config & scripts
 ├── package-lock.json           # dependency lockfile
 └── LICENSE
 ```
 
-The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules loaded across pages. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts.
-
-For production, run `npm run build` to concatenate all JS files into a single `js/bundle.js`. Each HTML page then loads only the bundle plus any CDN dependencies (Chart.js, EasyMDE).
+The app is a single-page-style multi-document application. Each HTML page represents a distinct view, with shared JavaScript modules loaded via individual `<script>` tags. Data flows through `localStorage`, dispatched by `data-manager.js`, and consumed by page-specific scripts.
 
 ---
 
@@ -183,8 +180,7 @@ Magnate uses a CSS custom properties system consolidated into a cohesive dark th
 Typography uses **Figtree** for headings and the system font stack for body text. Spacing follows a 4-scale system (`--space-xs`: 0.25rem through `--space-xl`: 2rem). All cards share a consistent border-radius of 6px with a 1px border.
 
 **Key design decisions:**
-- **Vanilla JS modules** — shared scripts loaded across pages via `<script>` tags, concatenated into `js/bundle.js` for production
-- **`npm run build`** — concatenates all JS into a single bundle via `build-bundle.sh` (CDN libraries remain separate)
+- **Vanilla JS modules** — shared scripts loaded across pages via individual `<script>` tags
 - **Custom dialogs** — accessible dark-themed modals with `role="dialog"`, `aria-modal`, `aria-labelledby`, and keyboard support
 - **Multi-page architecture** — each HTML page is a distinct view, sharing a common navigation sidebar and design system
 
@@ -204,7 +200,6 @@ Typography uses **Figtree** for headings and the system font stack for body text
 | PWA | Service Worker API, Web App Manifest |
 | Linting | ESLint (`eslint.config.js`) |
 | Testing | Node.js native test runner |
-| Bundling | Shell script concatenation |
 
 ---
 
@@ -237,7 +232,6 @@ No environment variables to configure.
 | Command | Description |
 |---------|------------|
 | `npm install` | Install dev dependencies (ESLint for linting) |
-| `npm run build` | Regenerate `js/bundle.js` from source modules |
 | `npm run lint` | Run ESLint on all JS source files |
 | `npm run test` | Run the test suite |
 
