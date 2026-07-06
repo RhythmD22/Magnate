@@ -87,7 +87,7 @@ Magnate/
 │   ├── analytics.css           # Charts and analytics page styles
 │   ├── calculator.css          # Financial calculator styles
 │   ├── money-tips.css          # Budgeting tips page styles
-│   └── settings.css             # Settings page styles
+│   └── settings.css            # Settings page styles
 ├── js/
 │   ├── data-manager.js         # localStorage CRUD operations
 │   ├── dialogs.js              # Custom dark-themed dialog system
