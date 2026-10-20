@@ -681,7 +681,7 @@ html[data-ios27="true"] {
     z-index: var(--z-sidebar);
   }
 
-  html[data-ios27="true"] .sidebar.active~.main-content::before {
+  html[data-ios27="true"] body:not(.index-page) .sidebar.active~.main-content::before {
     display: block;
   }
 
