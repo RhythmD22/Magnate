@@ -673,16 +673,22 @@ html[data-ios27="true"] {
   }
 
   html[data-ios27="true"] .main-content::before {
-    display: none;
+    display: block;
+    height: calc(50px + var(--ios27-blur-gap));
+    background-color: var(--color-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: var(--z-sidebar);
   }
 
   html[data-ios27="true"] .app-header {
     top: 0;
-    height: calc(50px + var(--ios27-blur-gap));
-    padding-top: calc(5px + var(--ios27-blur-gap));
+    height: calc(54.5px + var(--ios27-blur-gap));
+    padding-top: calc(9.5px + var(--ios27-blur-gap));
     background-color: var(--color-bg);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    z-index: calc(var(--z-sidebar) + 1);
   }
 
   html[data-ios27="true"] h1.page-title:not(.top-section h1.page-title) {
