@@ -687,6 +687,16 @@ html[data-ios27="true"] {
 
   html[data-ios27="true"] h1.page-title:not(.top-section h1.page-title) {
     top: calc(15px + var(--ios27-blur-gap));
+    z-index: var(--z-page-title);
+  }
+
+  html[data-ios27="true"] .hamburger {
+    top: calc(5px + var(--ios27-blur-gap));
+    z-index: var(--z-hamburger);
+  }
+
+  html[data-ios27="true"] .sidebar {
+    padding-top: calc(55px + var(--ios27-blur-gap));
   }
 
   html[data-ios27="true"] .page-header .header-settings-btn {
