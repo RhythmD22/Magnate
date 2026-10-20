@@ -1,6 +1,19 @@
 (function () {
   'use strict';
 
+  (function () {
+    var ua = navigator.userAgent || '';
+    var match = ua.match(/Version\/(\d+)/);
+    if (
+      navigator.standalone === true &&
+      /iPhone|iPad|iPod/.test(ua) &&
+      match &&
+      parseInt(match[1], 10) >= 27
+    ) {
+      document.documentElement.dataset.ios27 = 'true';
+    }
+  })();
+
   function generateSidebarHTML() {
     return '' +
       '<div class="sidebar-title">' +
