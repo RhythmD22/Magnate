@@ -111,6 +111,7 @@ Magnate/
 │   └── ofx-handler.test.js     # OFX parser tests (headers, blocks, transactions)
 ├── images/                     # Static illustrations (calculator, calendar)
 ├── icon.svg                    # Vector PWA icon (source)
+├── logo.svg                    # Transparent logo (used in-app)
 ├── icon-maskable.svg           # Maskable icon variant (source)
 ├── android-chrome-192x192.png  # PWA icon 192x192
 ├── android-chrome-512x512.png  # PWA icon 512x512
@@ -121,6 +122,8 @@ Magnate/
 ├── apple-touch-icon-152x152.png  # iOS home screen 152x152
 ├── apple-touch-icon-167x167.png  # iOS home screen 167x167
 ├── favicon.ico                 # Multi-resolution favicon (16+32+48)
+├── favicon-16x16.png           # Favicon 16x16 PNG
+├── favicon-32x32.png           # Favicon 32x32 PNG
 ├── manifest.json               # PWA manifest
 ├── service-worker.js           # Offline caching and install flow
 ├── eslint.config.js            # ESLint config
